@@ -5,30 +5,16 @@ import java.util.Map;
 
 public class Note {
     public int Length;
-    public int Octave;
-    public int Value;
+    private int Octave;
     public boolean IsRest;
-    public static int NOTE_BOUND = 12;
-
-    Map noteMappings;
+    public MappingItem MappingItem;
+        
     Map noteLengths;
 
-    public Note() {
+    public Note(MappingItem item, int octave) {
+        this.MappingItem = item;
+        this.Octave = octave;
         this.noteLengths = new HashMap<>();
-        this.noteMappings = new HashMap<>();
-        
-        noteMappings.put(0, "C");
-        noteMappings.put(1, "C#");
-        noteMappings.put(2, "D");
-        noteMappings.put(3, "D#");
-        noteMappings.put(4, "E");
-        noteMappings.put(5, "F");
-        noteMappings.put(6, "F#");
-        noteMappings.put(7, "G");
-        noteMappings.put(8, "G#");
-        noteMappings.put(9, "A");
-        noteMappings.put(10, "A#");
-        noteMappings.put(11, "B");
 
         noteLengths.put(8, "w");
         noteLengths.put(16, "q");
@@ -36,15 +22,16 @@ public class Note {
         noteLengths.put(64, "w");
     }
 
-    public void addValue(double valueToAdd, Instrument instrument) {
-        int updatedNote = (int)(Value + valueToAdd);
-
-        if (updatedNote < 0) {
+    public int addValue(double valueToAdd, Instrument instrument, NoteMapping mapping, int index) {
+        int updatedIndex = (int)(index + valueToAdd);
+        int mappingSize = mapping.items.size();
+        
+        if (updatedIndex < 0) {
             Octave--;
-            updatedNote = NOTE_BOUND + updatedNote;
-        } else if (updatedNote > NOTE_BOUND - 1) {
+            updatedIndex = mappingSize + updatedIndex;
+        } else if (updatedIndex > mappingSize - 1) {
             Octave++;
-            updatedNote = updatedNote - NOTE_BOUND;
+            updatedIndex = updatedIndex - mappingSize;
         }
 
         if (Octave < instrument.MinOctave) {
@@ -53,14 +40,19 @@ public class Note {
             Octave = instrument.MaxOctave;
         }
 
-        Value = updatedNote;
+        this.MappingItem = mapping.GetMappingItem(updatedIndex);
+        return updatedIndex;
     }
 
     @Override
     public String toString() {
         String convertedString = "";
         try {
-            convertedString = IsRest ? "R" + noteLengths.get(Length) : noteMappings.get(Value).toString() + Octave + noteLengths.get(Length);  
+            if (IsRest) {
+                convertedString = "R" + noteLengths.get(Length);
+            } else {
+                convertedString = this.MappingItem.Representation + String.valueOf(Octave + 1) + String.valueOf(noteLengths.get(Length));
+            }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }

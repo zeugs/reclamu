@@ -13,6 +13,9 @@ public class Composer {
     public static int MAX_LENGTH = 16 * 64;
     public static double MAX_OFFSET = 14;
 
+    public ChromaticNoteMapping chromaticMapping = new ChromaticNoteMapping();
+    public PlainNoteMapping plainMapping = new PlainNoteMapping();
+    
     public Composer() {
         compose();
     }
@@ -39,6 +42,12 @@ public class Composer {
         piano.Name = "Piano";
         piano.VariationGrip = 0.7;
         
+        Instrument piano_sec = new Instrument();
+        piano_sec.MinOctave = 2;
+        piano_sec.MaxOctave = 7;
+        piano_sec.Name = "Piano_Sec";
+        piano_sec.VariationGrip = 0.8;
+
         Instrument cello = new Instrument();
         cello.MinOctave = 2;
         cello.MaxOctave = 6;
@@ -51,20 +60,31 @@ public class Composer {
         violin.Name = "Violin";
         violin.VariationGrip = 0.8;
 
+        Instrument violin2 = new Instrument();
+        violin2.MinOctave = 2;
+        violin2.MaxOctave = 6;
+        violin2.Name = "Violin2";
+        violin2.VariationGrip = 0.7;
+
         Instrument contrabass = new Instrument();
         contrabass.MinOctave = 2;
         contrabass.MaxOctave = 5;
         contrabass.Name = "Contrabass";
-        contrabass.VariationGrip = 0.8;
+        contrabass.VariationGrip = 0.7;
 
         Piece piece = new Piece();
         Track track1 = new Track();
+        Track track5 = new Track();
         Track track2 = new Track();
         Track track3 = new Track();
+        Track track6 = new Track();
         Track track4 = new Track();
 
         Sequence sequence1 = this.getSequence(piano);
         track1.addSequence(sequence1);
+
+        Sequence sequence5 = this.getAccompanimentSequence(sequence1, piano_sec);
+        track5.addSequence(sequence5);
 
         Sequence sequence2 = this.getAccompanimentSequence(sequence1, cello);
         track2.addSequence(sequence2);
@@ -72,12 +92,17 @@ public class Composer {
         Sequence sequence3 = this.getAccompanimentSequence(sequence1, violin);
         track3.addSequence(sequence3);
 
+        Sequence sequence6 = this.getAccompanimentSequence(sequence1, violin2);
+        track6.addSequence(sequence6);
+
         Sequence sequence4 = this.getAccompanimentSequence(sequence1, contrabass);
         track4.addSequence(sequence4);
 
         piece.addTrack(track1);
+        piece.addTrack(track5);
         piece.addTrack(track2);
         piece.addTrack(track3);
+        piece.addTrack(track6);
         piece.addTrack(track4);
 
         return piece;
@@ -85,9 +110,12 @@ public class Composer {
 
     private Sequence getSequence(Instrument instrument) {
         MersenneTwister twister = new MersenneTwister();
+        NoteMapping mapping = this.chromaticMapping;
+        
         int i = 0;
         int octave = twister.nextInt(instrument.MaxOctave - instrument.MinOctave + 1) + instrument.MinOctave;
-        int currentNote = twister.nextInt(Note.NOTE_BOUND);
+        int mappingIndex = twister.nextInt(mapping.items.size());
+        MappingItem item = mapping.GetMappingItem(mappingIndex);
 
         List<Integer> noteLengths = new ArrayList<>();
         noteLengths.add(8);
@@ -107,14 +135,12 @@ public class Composer {
             double baseOffset = twister.nextInt((int)MAX_OFFSET + 1);
             double adjustedOffset = baseOffset - MAX_OFFSET / 2;
 
-            Note note = new Note();
-            note.Value = currentNote;
-            note.Octave = octave;
+            Note note = new Note(item, octave);
             note.Length = lengthPlus;
 
-            note.addValue(adjustedOffset * instrument.VariationGrip, instrument);
+            int currentIndex = note.addValue(adjustedOffset * instrument.VariationGrip, instrument, mapping, mappingIndex);
 
-            currentNote = note.Value;
+            item = mapping.GetMappingItem(currentIndex);
 
             i += lengthPlus;
 
@@ -134,12 +160,11 @@ public class Composer {
         boolean useHighOffset = twister.nextBoolean();
 
         for (Note refNote : master.notes) {
-            Note note = new Note();
-            note.Value = refNote.Value;
-            note.Octave = octave;
+            int currentIndex = this.chromaticMapping.findIndexByRelativePosition(refNote.MappingItem);
+            Note note = new Note(refNote.MappingItem, octave);
             note.Length = refNote.Length;
             note.IsRest = refNote.IsRest;
-            note.addValue(useHighOffset ? 7 : 4, instrument);
+            note.addValue(useHighOffset ? 7 : 4, instrument, this.chromaticMapping, currentIndex);
             note.IsRest = twister.nextInt(10) == 0;
             
             sequence.addNote(note);

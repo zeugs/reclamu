@@ -3,11 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/prj/2018/RaClaMu/src/de/ramota/reclamu/Composer.java</file>
-            <file>file:/D:/prj/2018/RaClaMu/src/de/ramota/reclamu/Track.java</file>
-            <file>file:/D:/prj/2018/RaClaMu/src/de/ramota/reclamu/Sequence.java</file>
-            <file>file:/D:/prj/2018/RaClaMu/src/de/ramota/reclamu/Starter.java</file>
-            <file>file:/D:/prj/2018/RaClaMu/src/de/ramota/reclamu/Note.java</file>
+            <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/NoteMapping.java</file>
+            <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/ChromaticNoteMapping.java</file>
+            <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/PlainNoteMapping.java</file>
+            <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/Track.java</file>
+            <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/Composer.java</file>
+            <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/Instrument.java</file>
+            <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/Sequence.java</file>
+            <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/MappingItem.java</file>
+            <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/Note.java</file>
         </group>
     </open-files>
 </project-private>
