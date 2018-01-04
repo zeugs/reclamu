@@ -7,10 +7,10 @@ public class Instrument {
     public int MaxNoteIndex;
     public double VariationGrip;
     public String Name;
-    public int DefaultLengthIndex;
+    public double DefaultLength;
     
     public Instrument() {
         MersenneTwister twister = new MersenneTwister();
-        this.DefaultLengthIndex = twister.nextInt(5) + 1;
+        this.DefaultLength = twister.nextDouble() * 1.5 + 0.0625; // 1/16
     }
 }

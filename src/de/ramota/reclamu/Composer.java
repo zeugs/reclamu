@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class Composer {
-    public static int MIN_LENGTH = 2 * 64;
-    public static int MAX_LENGTH = 160 * 64;
+    public static int MIN_LENGTH = 2;
+    public static int MAX_LENGTH = 300;
     public static double MAX_OFFSET = 14;
 
     public Composer() {
@@ -110,61 +110,51 @@ public class Composer {
         
         int i = 0;
 
-        List<Integer> noteLengths = new ArrayList<>();
-        noteLengths.add(2);
-        noteLengths.add(4);
-        noteLengths.add(8);
-        noteLengths.add(16);
-        noteLengths.add(32);
-        noteLengths.add(64);
-
         Sequence sequence = new Sequence();
 
         int lengthRange = MAX_LENGTH - MIN_LENGTH;
         int patternLength = twister.nextInt(lengthRange);
         int targetLength = patternLength + MIN_LENGTH;
-        int baseLengthIndex = instrument.DefaultLengthIndex;
+        double baseLength = instrument.DefaultLength;
         int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
         int currentValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;
+        int usedBaseNote = twister.nextInt(12) + 60;
         
         while (i < targetLength) {
-            boolean adaptLength = (twister.nextInt(2 * (noteLengths.size() - baseLengthIndex)) == 0);
+            boolean adaptLength = (twister.nextInt(10) == 0);
 
-            if (adaptLength) { // might still lead to same length
-                int lengthDelta = twister.nextInt(3) - 1;
-                baseLengthIndex = baseLengthIndex + lengthDelta;
+            if (adaptLength) {
+                double lengthDelta = (twister.nextDouble() - 0.5) * 0.5;
+                baseLength = baseLength + lengthDelta;
                 
-                if (baseLengthIndex < 0) {
-                    baseLengthIndex = 0;
-                } else if (baseLengthIndex > noteLengths.size() - 1) {
-                    baseLengthIndex = noteLengths.size() - 1;
+                if (baseLength < 0) {
+                    baseLength = 0;
+                } else if (baseLength > 2.5) {
+                    baseLength = 2.5 - twister.nextDouble() * 0.5;
                 }
             }
             
-            int usedLengthIndex = baseLengthIndex + twister.nextInt(5) - 1;
-            if (usedLengthIndex < 0 ) {
-                usedLengthIndex = 0;
-            } else if (usedLengthIndex > noteLengths.size() - 1) {
-                usedLengthIndex = noteLengths.size() - 1;
+            if (twister.nextInt(20) == 0) {
+                System.out.println("Switched BaseNote");
+                usedBaseNote = twister.nextInt(12) + 60;
             }
             
-            int lengthPlus = noteLengths.get(usedLengthIndex);
-
             double baseOffset = twister.nextInt((int)MAX_OFFSET + 1);
             double adjustedOffset = baseOffset - MAX_OFFSET / 2;
-
+            
             Note note = new Note(currentValue);
-            note.IntendedAccomp = IntendedAccompaniment.values()[twister.nextInt(2)];
-            note.Length = lengthPlus;
+            note.BaseNote = usedBaseNote;
+            note.IntendedAccomp = IntendedAccompaniment.values()[twister.nextInt(1)];
+            note.Length = baseLength;
 
             double actualGrip = instrument.VariationGrip;
-            if (lengthPlus < noteLengths.size() / 2.0) {
+            if (baseLength < 0.5) {
                 actualGrip = actualGrip / 2;
             }
             
             currentValue = note.addValue(adjustedOffset * actualGrip, instrument);
 
-            i += lengthPlus;
+            i += baseLength;
 
             note.IsRest = twister.nextInt(10) == 0;
             sequence.addNote(note);
@@ -180,6 +170,7 @@ public class Composer {
         
         for (Note refNote : master.notes) {
             Note note = new Note(refNote.Value);
+            note.BaseNote = refNote.BaseNote;
             note.Length = refNote.Length;
             note.IsRest = refNote.IsRest;
             note.IntendedAccomp = refNote.IntendedAccomp;
