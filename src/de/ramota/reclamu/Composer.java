@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class Composer {
-    public static int MIN_LENGTH = 4 * 64;
-    public static int MAX_LENGTH = 16 * 64;
+    public static int MIN_LENGTH = 2 * 64;
+    public static int MAX_LENGTH = 160 * 64;
     public static double MAX_OFFSET = 14;
 
     public ChromaticNoteMapping chromaticMapping = new ChromaticNoteMapping();
@@ -113,11 +113,13 @@ public class Composer {
         NoteMapping mapping = this.chromaticMapping;
         
         int i = 0;
-        int octave = twister.nextInt(instrument.MaxOctave - instrument.MinOctave + 1) + instrument.MinOctave;
+        int octave = twister.nextInt(instrument.MaxOctave - instrument.MinOctave - 2) + instrument.MinOctave;
         int mappingIndex = twister.nextInt(mapping.items.size());
         MappingItem item = mapping.GetMappingItem(mappingIndex);
 
         List<Integer> noteLengths = new ArrayList<>();
+        noteLengths.add(2);
+        noteLengths.add(4);
         noteLengths.add(8);
         noteLengths.add(16);
         noteLengths.add(32);
@@ -128,9 +130,23 @@ public class Composer {
         int lengthRange = MAX_LENGTH - MIN_LENGTH;
         int patternLength = twister.nextInt(lengthRange);
         int targetLength = patternLength + MIN_LENGTH;
-
+        int lengthIndex = instrument.DefaultLength;
+        
         while (i < targetLength) {
-            int lengthPlus = noteLengths.get(twister.nextInt(4));
+            boolean adaptLength = (twister.nextInt(2 * (noteLengths.size() - lengthIndex)) == 0);
+
+            if (adaptLength) { // might still lead to same length
+                int lengthDelta = twister.nextInt(3) - 1;
+                lengthIndex = lengthIndex + lengthDelta;
+                
+                if (lengthIndex < 0) {
+                    lengthIndex = 0;
+                } else if (lengthIndex > noteLengths.size() - 1) {
+                    lengthIndex = noteLengths.size() - 1;
+                }
+            }
+            
+            int lengthPlus = noteLengths.get(lengthIndex);
 
             double baseOffset = twister.nextInt((int)MAX_OFFSET + 1);
             double adjustedOffset = baseOffset - MAX_OFFSET / 2;
@@ -138,7 +154,12 @@ public class Composer {
             Note note = new Note(item, octave);
             note.Length = lengthPlus;
 
-            int currentIndex = note.addValue(adjustedOffset * instrument.VariationGrip, instrument, mapping, mappingIndex);
+            double actualGrip = instrument.VariationGrip;
+            if (lengthPlus < noteLengths.size() / 2.0) {
+                actualGrip = actualGrip / 2;
+            }
+            
+            int currentIndex = note.addValue(adjustedOffset * actualGrip, instrument, mapping, mappingIndex);
 
             item = mapping.GetMappingItem(currentIndex);
 
@@ -164,7 +185,7 @@ public class Composer {
             Note note = new Note(refNote.MappingItem, octave);
             note.Length = refNote.Length;
             note.IsRest = refNote.IsRest;
-            note.addValue(useHighOffset ? 7 : 4, instrument, this.chromaticMapping, currentIndex);
+            note.addValue(twister.nextInt(4), instrument, this.chromaticMapping, currentIndex);
             note.IsRest = twister.nextInt(10) == 0;
             
             sequence.addNote(note);

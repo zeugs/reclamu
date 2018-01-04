@@ -16,7 +16,9 @@ public class Note {
         this.Octave = octave;
         this.noteLengths = new HashMap<>();
 
-        noteLengths.put(8, "w");
+        noteLengths.put(2, "t");
+        noteLengths.put(4, "s");
+        noteLengths.put(8, "i");
         noteLengths.put(16, "q");
         noteLengths.put(32, "h");
         noteLengths.put(64, "w");
