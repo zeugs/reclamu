@@ -13,9 +13,6 @@ public class Composer {
     public static int MAX_LENGTH = 160 * 64;
     public static double MAX_OFFSET = 14;
 
-    public ChromaticNoteMapping chromaticMapping = new ChromaticNoteMapping();
-    public PlainNoteMapping plainMapping = new PlainNoteMapping();
-    
     public Composer() {
         compose();
     }
@@ -37,38 +34,38 @@ public class Composer {
 
     private Piece getPatterns() {
         Instrument piano = new Instrument();
-        piano.MinOctave = 2;
-        piano.MaxOctave = 7;
+        piano.MinNoteIndex = 24;
+        piano.MaxNoteIndex = 108;
         piano.Name = "Piano";
         piano.VariationGrip = 0.7;
         
         Instrument piano_sec = new Instrument();
-        piano_sec.MinOctave = 2;
-        piano_sec.MaxOctave = 7;
+        piano_sec.MinNoteIndex = 24;
+        piano_sec.MaxNoteIndex = 108;
         piano_sec.Name = "Piano_Sec";
         piano_sec.VariationGrip = 0.8;
 
         Instrument cello = new Instrument();
-        cello.MinOctave = 2;
-        cello.MaxOctave = 6;
+        cello.MinNoteIndex = 24;
+        cello.MaxNoteIndex = 96;
         cello.Name = "Cello";
         cello.VariationGrip = 0.8;
 
         Instrument violin = new Instrument();
-        violin.MinOctave = 2;
-        violin.MaxOctave = 6;
+        violin.MinNoteIndex = 45;
+        violin.MaxNoteIndex = 96;
         violin.Name = "Violin";
         violin.VariationGrip = 0.8;
 
         Instrument violin2 = new Instrument();
-        violin2.MinOctave = 2;
-        violin2.MaxOctave = 6;
+        violin2.MinNoteIndex = 45;
+        violin2.MaxNoteIndex = 96;
         violin2.Name = "Violin2";
         violin2.VariationGrip = 0.7;
 
         Instrument contrabass = new Instrument();
-        contrabass.MinOctave = 2;
-        contrabass.MaxOctave = 5;
+        contrabass.MinNoteIndex = 24;
+        contrabass.MaxNoteIndex = 84;
         contrabass.Name = "Contrabass";
         contrabass.VariationGrip = 0.7;
 
@@ -110,12 +107,8 @@ public class Composer {
 
     private Sequence getSequence(Instrument instrument) {
         MersenneTwister twister = new MersenneTwister();
-        NoteMapping mapping = this.chromaticMapping;
         
         int i = 0;
-        int octave = twister.nextInt(instrument.MaxOctave - instrument.MinOctave - 2) + instrument.MinOctave;
-        int mappingIndex = twister.nextInt(mapping.items.size());
-        MappingItem item = mapping.GetMappingItem(mappingIndex);
 
         List<Integer> noteLengths = new ArrayList<>();
         noteLengths.add(2);
@@ -130,28 +123,38 @@ public class Composer {
         int lengthRange = MAX_LENGTH - MIN_LENGTH;
         int patternLength = twister.nextInt(lengthRange);
         int targetLength = patternLength + MIN_LENGTH;
-        int lengthIndex = instrument.DefaultLength;
+        int baseLengthIndex = instrument.DefaultLengthIndex;
+        int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
+        int currentValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;
         
         while (i < targetLength) {
-            boolean adaptLength = (twister.nextInt(2 * (noteLengths.size() - lengthIndex)) == 0);
+            boolean adaptLength = (twister.nextInt(2 * (noteLengths.size() - baseLengthIndex)) == 0);
 
             if (adaptLength) { // might still lead to same length
                 int lengthDelta = twister.nextInt(3) - 1;
-                lengthIndex = lengthIndex + lengthDelta;
+                baseLengthIndex = baseLengthIndex + lengthDelta;
                 
-                if (lengthIndex < 0) {
-                    lengthIndex = 0;
-                } else if (lengthIndex > noteLengths.size() - 1) {
-                    lengthIndex = noteLengths.size() - 1;
+                if (baseLengthIndex < 0) {
+                    baseLengthIndex = 0;
+                } else if (baseLengthIndex > noteLengths.size() - 1) {
+                    baseLengthIndex = noteLengths.size() - 1;
                 }
             }
             
-            int lengthPlus = noteLengths.get(lengthIndex);
+            int usedLengthIndex = baseLengthIndex + twister.nextInt(5) - 1;
+            if (usedLengthIndex < 0 ) {
+                usedLengthIndex = 0;
+            } else if (usedLengthIndex > noteLengths.size() - 1) {
+                usedLengthIndex = noteLengths.size() - 1;
+            }
+            
+            int lengthPlus = noteLengths.get(usedLengthIndex);
 
             double baseOffset = twister.nextInt((int)MAX_OFFSET + 1);
             double adjustedOffset = baseOffset - MAX_OFFSET / 2;
 
-            Note note = new Note(item, octave);
+            Note note = new Note(currentValue);
+            note.IntendedAccomp = IntendedAccompaniment.values()[twister.nextInt(2)];
             note.Length = lengthPlus;
 
             double actualGrip = instrument.VariationGrip;
@@ -159,9 +162,7 @@ public class Composer {
                 actualGrip = actualGrip / 2;
             }
             
-            int currentIndex = note.addValue(adjustedOffset * actualGrip, instrument, mapping, mappingIndex);
-
-            item = mapping.GetMappingItem(currentIndex);
+            currentValue = note.addValue(adjustedOffset * actualGrip, instrument);
 
             i += lengthPlus;
 
@@ -177,15 +178,34 @@ public class Composer {
         MersenneTwister twister = new MersenneTwister();
         Sequence sequence = new Sequence();
         
-        int octave = twister.nextInt(instrument.MaxOctave - instrument.MinOctave + 1) + instrument.MinOctave;
-        boolean useHighOffset = twister.nextBoolean();
-
         for (Note refNote : master.notes) {
-            int currentIndex = this.chromaticMapping.findIndexByRelativePosition(refNote.MappingItem);
-            Note note = new Note(refNote.MappingItem, octave);
+            Note note = new Note(refNote.Value);
             note.Length = refNote.Length;
             note.IsRest = refNote.IsRest;
-            note.addValue(twister.nextInt(4), instrument, this.chromaticMapping, currentIndex);
+            note.IntendedAccomp = refNote.IntendedAccomp;
+            
+            int rand = 0;
+            int valueToAdd = 0;
+            
+            if (refNote.IntendedAccomp == IntendedAccompaniment.MAJOR) {
+                twister.nextInt(2);
+                switch (rand) {
+                    case 0: valueToAdd = 4; break;
+                    case 1: valueToAdd = 7; break;
+                    default: break;
+                }                
+            }
+            
+            if (refNote.IntendedAccomp == IntendedAccompaniment.MINOR) {
+                twister.nextInt(2);
+                switch (rand) {
+                    case 0: valueToAdd = 3; break;
+                    case 1: valueToAdd = 7; break;
+                    default: break;
+                }                
+            }
+
+            note.addValue(valueToAdd, instrument);
             note.IsRest = twister.nextInt(10) == 0;
             
             sequence.addNote(note);

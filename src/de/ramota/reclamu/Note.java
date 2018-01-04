@@ -5,15 +5,13 @@ import java.util.Map;
 
 public class Note {
     public int Length;
-    private int Octave;
+    public int Value;
     public boolean IsRest;
-    public MappingItem MappingItem;
-        
+    public IntendedAccompaniment IntendedAccomp;
     Map noteLengths;
 
-    public Note(MappingItem item, int octave) {
-        this.MappingItem = item;
-        this.Octave = octave;
+    public Note(int value) {
+        this.Value = value;
         this.noteLengths = new HashMap<>();
 
         noteLengths.put(2, "t");
@@ -24,26 +22,17 @@ public class Note {
         noteLengths.put(64, "w");
     }
 
-    public int addValue(double valueToAdd, Instrument instrument, NoteMapping mapping, int index) {
-        int updatedIndex = (int)(index + valueToAdd);
-        int mappingSize = mapping.items.size();
+    public int addValue(double valueToAdd, Instrument instrument) {
+        int updatedValue = (int)(Value + valueToAdd);
         
-        if (updatedIndex < 0) {
-            Octave--;
-            updatedIndex = mappingSize + updatedIndex;
-        } else if (updatedIndex > mappingSize - 1) {
-            Octave++;
-            updatedIndex = updatedIndex - mappingSize;
+        if (updatedValue < instrument.MinNoteIndex) {
+            updatedValue += 12;
+        } else if (updatedValue > instrument.MaxNoteIndex) {
+            updatedValue -= 12;
         }
 
-        if (Octave < instrument.MinOctave) {
-            Octave = instrument.MinOctave;
-        } else if (Octave > instrument.MaxOctave) {
-            Octave = instrument.MaxOctave;
-        }
-
-        this.MappingItem = mapping.GetMappingItem(updatedIndex);
-        return updatedIndex;
+        Value = updatedValue;
+        return updatedValue;
     }
 
     @Override
@@ -53,7 +42,7 @@ public class Note {
             if (IsRest) {
                 convertedString = "R" + noteLengths.get(Length);
             } else {
-                convertedString = this.MappingItem.Representation + String.valueOf(Octave + 1) + String.valueOf(noteLengths.get(Length));
+                convertedString = (this.Value + 12) + String.valueOf(noteLengths.get(Length));
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
