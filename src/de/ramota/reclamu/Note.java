@@ -4,16 +4,30 @@ import java.util.ArrayList;
 
 public class Note {
     public double Length;
-    public int Value;
+    private int Value;
     public boolean IsRest;
     public int BaseNote;
     public IntendedAccompaniment IntendedAccomp;
     public static double MAX_LENGTH = 1.0;
-    public static double MIN_LENGTH = 0.125;
+    public static double MIN_LENGTH = 0.1;
     public int Attack;
     
     private final ArrayList<Integer> majorChordOffset = new ArrayList<>();
     private final ArrayList<Integer> minorChordOffset = new ArrayList<>();
+    
+    public void SetValue(int value) {
+        if (value < 0) {
+            value = 0;
+        } else if (value > 127) {
+            value = 127;
+        }
+        
+        this.Value = value;        
+    }
+    
+    public int GetValue() {
+        return this.Value;
+    }
     
     public Note(int value) {
         this.Value = value;
@@ -97,5 +111,16 @@ public class Note {
             System.out.println(ex.getMessage());
         }
         return convertedString;
+    }
+
+    Note getCopy() {
+        Note note = new Note(this.Value);
+        note.Attack = this.Attack;
+        note.BaseNote = this.BaseNote;
+        note.Length = this.Length;
+        note.IntendedAccomp = this.IntendedAccomp;
+        note.IsRest = this.IsRest;
+ 
+        return note;
     }
 }

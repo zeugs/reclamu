@@ -20,4 +20,12 @@ public class Sequence {
 
         return noteInfo;
     }
+
+    public Sequence getCopy() {
+        Sequence sequence = new Sequence();
+        this.notes.forEach((note) -> {
+            sequence.notes.add(note.getCopy());
+        });
+        return sequence;
+    }
 }
