@@ -70,9 +70,58 @@ public class Composer {
         Instrument contrabass = new Instrument();
         contrabass.ValueOffset = -36;
         contrabass.MinNoteIndex = 24;
-        contrabass.MaxNoteIndex = 84;
+        contrabass.MaxNoteIndex = 60;
         contrabass.Name = "Contrabass";
         contrabass.VariationGrip = 0.7;
+
+        Instrument flute = new Instrument();
+        flute.ValueOffset = 0;
+        flute.MinNoteIndex = 48;
+        flute.MaxNoteIndex = 86;
+        flute.Name = "Flute";
+        flute.VariationGrip = 0.7;
+
+        Instrument clarinet = new Instrument();
+        clarinet.ValueOffset = -12;
+        clarinet.MinNoteIndex = 40;
+        clarinet.MaxNoteIndex = 84;
+        clarinet.Name = "Clarinet";
+        clarinet.VariationGrip = 0.7;
+
+        Instrument oboe = new Instrument();
+        oboe.ValueOffset = -12;
+        oboe.MinNoteIndex = 46;
+        oboe.MaxNoteIndex = 81;
+        oboe.Name = "Oboe";
+        oboe.VariationGrip = 0.7;
+
+        Instrument englishHorn = new Instrument();
+        englishHorn.ValueOffset = -36;
+        englishHorn.MinNoteIndex = 47;
+        englishHorn.MaxNoteIndex = 79;
+        englishHorn.Name = "English Horn";
+        englishHorn.VariationGrip = 0.7;
+
+        Instrument frenchHorn = new Instrument();
+        frenchHorn.ValueOffset = -24;
+        frenchHorn.MinNoteIndex = 29;
+        frenchHorn.MaxNoteIndex = 72;
+        frenchHorn.Name = "French Horn";
+        frenchHorn.VariationGrip = 0.7;
+
+        Instrument trombone = new Instrument();
+        trombone.ValueOffset = -24;
+        trombone.MinNoteIndex = 33;
+        trombone.MaxNoteIndex = 67;
+        trombone.Name = "Oboe";
+        trombone.VariationGrip = 0.7;
+
+        Instrument tuba = new Instrument();
+        tuba.ValueOffset = -36;
+        tuba.MinNoteIndex = 14;
+        tuba.MaxNoteIndex = 53;
+        tuba.Name = "Tuba";
+        tuba.VariationGrip = 0.7;
 
         Piece piece = new Piece();
 
@@ -83,6 +132,13 @@ public class Composer {
         Track track3 = this.getAccompanimentTrack(track1, violin);
         Track track6 = this.getAccompanimentTrack(track1, violin2);
         Track track4 = this.getAccompanimentTrack(track1, contrabass);
+        Track track7 = this.getAccompanimentTrack(track1, flute);
+        Track track8 = this.getAccompanimentTrack(track1, clarinet);
+        Track track9 = this.getAccompanimentTrack(track1, oboe);
+        Track track10 = this.getAccompanimentTrack(track1, englishHorn);
+        Track track11 = this.getAccompanimentTrack(track1, frenchHorn);
+        Track track12 = this.getAccompanimentTrack(track1, trombone);
+        Track track13 = this.getAccompanimentTrack(track1, tuba);
 
         piece.addTrack(track1);
         piece.addTrack(track5);
@@ -90,6 +146,13 @@ public class Composer {
         piece.addTrack(track3);
         piece.addTrack(track6);
         piece.addTrack(track4);
+        piece.addTrack(track7);
+        piece.addTrack(track8);
+        piece.addTrack(track9);
+        piece.addTrack(track10);
+        piece.addTrack(track11);
+        piece.addTrack(track12);
+        piece.addTrack(track13);
 
         return piece;
     }
@@ -225,7 +288,8 @@ public class Composer {
         int currentValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;
         int usedBaseNote = twister.nextInt(12);
         IntendedAccompaniment intendedAccomp = IntendedAccompaniment.values()[twister.nextInt(1)];
-        
+        boolean setRest = twister.nextInt(3) == 0;
+
         double i = 0;
 
         while (i < targetLength) {
@@ -282,7 +346,7 @@ public class Composer {
 
             i += actualLength;
 
-            if (sequence.notes.size() > 0) {
+            if (sequence.notes.size() > 0 && !setRest) {
                 if (sequence.notes.get(sequence.notes.size() - 1).IsRest) {
                     note.IsRest = true;
                     if (twister.nextInt(3) == 0) {
@@ -291,6 +355,8 @@ public class Composer {
                 } else {
                     note.IsRest = twister.nextInt(6) == 0;
                 }
+            } else {
+                note.IsRest = true;
             }
             
             sequence.addNote(note);
