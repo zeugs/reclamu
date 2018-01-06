@@ -10,7 +10,7 @@ import java.util.*;
 
 public class Composer {
     public static int MIN_LENGTH = 2;
-    public static int MAX_LENGTH = 300;
+    public static int MAX_LENGTH = 500;
     public static double MAX_OFFSET = 14;
 
     public Composer() {
@@ -40,30 +40,35 @@ public class Composer {
         piano.VariationGrip = 0.7;
         
         Instrument piano_sec = new Instrument();
+        piano_sec.ValueOffset = -12;
         piano_sec.MinNoteIndex = 24;
         piano_sec.MaxNoteIndex = 108;
         piano_sec.Name = "Piano_Sec";
         piano_sec.VariationGrip = 0.8;
 
         Instrument cello = new Instrument();
+        cello.ValueOffset = -24;
         cello.MinNoteIndex = 24;
         cello.MaxNoteIndex = 96;
         cello.Name = "Cello";
         cello.VariationGrip = 0.8;
 
         Instrument violin = new Instrument();
+        violin.ValueOffset = 12;
         violin.MinNoteIndex = 45;
         violin.MaxNoteIndex = 96;
         violin.Name = "Violin";
         violin.VariationGrip = 0.8;
 
         Instrument violin2 = new Instrument();
+        violin2.ValueOffset = -12;
         violin2.MinNoteIndex = 45;
         violin2.MaxNoteIndex = 96;
         violin2.Name = "Violin2";
         violin2.VariationGrip = 0.7;
 
         Instrument contrabass = new Instrument();
+        contrabass.ValueOffset = -36;
         contrabass.MinNoteIndex = 24;
         contrabass.MaxNoteIndex = 84;
         contrabass.Name = "Contrabass";
@@ -106,9 +111,9 @@ public class Composer {
     }
 
     private Sequence getSequence(Instrument instrument) {
-        MersenneTwister twister = new MersenneTwister();
+        MersenneTwister twister = new MersenneTwister(36345);
         
-        int i = 0;
+        double i = 0;
 
         Sequence sequence = new Sequence();
 
@@ -118,45 +123,65 @@ public class Composer {
         double baseLength = instrument.DefaultLength;
         int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
         int currentValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;
-        int usedBaseNote = twister.nextInt(12) + 60;
+        int usedBaseNote = twister.nextInt(12);
         
         while (i < targetLength) {
-            boolean adaptLength = (twister.nextInt(10) == 0);
-
+            boolean adaptLength = (twister.nextInt(8) == 0);
+            boolean switchLength = (twister.nextInt(30) == 0);
+            double actualLength = baseLength;
+            
             if (adaptLength) {
-                double lengthDelta = (twister.nextDouble() - 0.5) * 0.5;
-                baseLength = baseLength + lengthDelta;
+                double lengthDelta = twister.nextDouble() * (baseLength * 0.3); // max 30% change
+                boolean subtractDelta = twister.nextBoolean();
                 
-                if (baseLength < 0) {
-                    baseLength = 0;
-                } else if (baseLength > 2.5) {
-                    baseLength = 2.5 - twister.nextDouble() * 0.5;
+                if (subtractDelta) {
+                    lengthDelta *= -1;
                 }
+                baseLength += lengthDelta;
+                
+                if (baseLength < Note.MIN_LENGTH) {
+                    baseLength = Note.MIN_LENGTH;
+                } else if (baseLength > Note.MAX_LENGTH) {
+                    baseLength = Note.MAX_LENGTH - twister.nextDouble() * 0.5;
+                }
+            }
+            
+            if (switchLength) {
+                baseLength = twister.nextDouble() * Note.MAX_LENGTH / 2 + Note.MIN_LENGTH;
+                actualLength = baseLength;
             }
             
             if (twister.nextInt(20) == 0) {
                 System.out.println("Switched BaseNote");
-                usedBaseNote = twister.nextInt(12) + 60;
+                usedBaseNote = twister.nextInt(12);
             }
             
             double baseOffset = twister.nextInt((int)MAX_OFFSET + 1);
-            double adjustedOffset = baseOffset - MAX_OFFSET / 2;
+            double adjustedOffset = (baseOffset - MAX_OFFSET / 2) + 1;
             
             Note note = new Note(currentValue);
+            note.Attack = twister.nextInt(60) + 40;
             note.BaseNote = usedBaseNote;
             note.IntendedAccomp = IntendedAccompaniment.values()[twister.nextInt(1)];
-            note.Length = baseLength;
+            note.Length = actualLength;
 
             double actualGrip = instrument.VariationGrip;
-            if (baseLength < 0.5) {
+            if (actualLength < 0.3) {
                 actualGrip = actualGrip / 2;
             }
             
-            currentValue = note.addValue(adjustedOffset * actualGrip, instrument);
+            currentValue = note.addValue(adjustedOffset * actualGrip, instrument, true);
 
-            i += baseLength;
+            i += actualLength;
 
-            note.IsRest = twister.nextInt(10) == 0;
+            if (sequence.notes.size() > 0) {
+                if (sequence.notes.get(sequence.notes.size() - 1).IsRest) {
+                    note.IsRest = twister.nextBoolean();
+                } else {
+                    note.IsRest = twister.nextInt(5) == 0;
+                }
+            }
+            
             sequence.addNote(note);
         }    
         
@@ -169,10 +194,10 @@ public class Composer {
         Sequence sequence = new Sequence();
         
         for (Note refNote : master.notes) {
-            Note note = new Note(refNote.Value);
+            Note note = new Note(refNote.Value + instrument.ValueOffset);
+            note.Attack = refNote.Attack + twister.nextInt(30) - 15;
             note.BaseNote = refNote.BaseNote;
             note.Length = refNote.Length;
-            note.IsRest = refNote.IsRest;
             note.IntendedAccomp = refNote.IntendedAccomp;
             
             int rand = 0;
@@ -196,8 +221,15 @@ public class Composer {
                 }                
             }
 
-            note.addValue(valueToAdd, instrument);
-            note.IsRest = twister.nextInt(10) == 0;
+            note.addValue(valueToAdd, instrument, true);
+            
+            if (sequence.notes.size() > 0) {
+                if (sequence.notes.get(sequence.notes.size() - 1).IsRest) {
+                    note.IsRest = twister.nextBoolean();
+                } else {
+                    note.IsRest = twister.nextInt(5) == 0;
+                }
+            }
             
             sequence.addNote(note);
         }

@@ -8,7 +8,10 @@ public class Note {
     public boolean IsRest;
     public int BaseNote;
     public IntendedAccompaniment IntendedAccomp;
-
+    public static double MAX_LENGTH = 1.0;
+    public static double MIN_LENGTH = 0.125;
+    public int Attack;
+    
     private final ArrayList<Integer> majorChordOffset = new ArrayList<>();
     private final ArrayList<Integer> minorChordOffset = new ArrayList<>();
     
@@ -56,12 +59,14 @@ public class Note {
         Value = valueToUse;
     }
 
-    public int addValue(double valueToAdd, Instrument instrument) {
+    public int addValue(double valueToAdd, Instrument instrument, boolean adapt) {
         Value = (int)(Value + valueToAdd);
         
-        if (Value < instrument.MinNoteIndex) {
+        while (Value < instrument.MinNoteIndex) {
             Value += 12;
-        } else if (Value > instrument.MaxNoteIndex) {
+        } 
+        
+        while (Value > instrument.MaxNoteIndex) {
             Value -= 12;
         }
         
@@ -72,8 +77,10 @@ public class Note {
             mappings = minorChordOffset;
         }
         
-        setValueInRange(mappings);
-
+        if (adapt) {
+            setValueInRange(mappings);
+        }
+        
         return Value;
     }
 
@@ -84,7 +91,7 @@ public class Note {
             if (IsRest) {
                 convertedString = "R/" + Length;
             } else {
-                convertedString = (this.Value + 12) + String.valueOf("/" + Length);
+                convertedString = (this.Value + 12) + String.valueOf("/" + Length) + "a" + Attack;
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
