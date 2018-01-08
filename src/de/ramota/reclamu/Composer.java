@@ -164,19 +164,30 @@ public class Composer {
         int numberOfSequences = twister.nextInt(20);
         for (int i = 0; i < numberOfSequences; i++) {
             Sequence sequence = getSequence(instrument);   
+            Sequence adaptedSequence;
+            Sequence sequenceToAdd;
+            
             int repetitions = twister.nextInt(10);
             System.out.println(String.format("Number of repetitions: %d", repetitions));
             for (int j = 0; j < repetitions; j++) {
                 if (twister.nextInt(3) == 0) {
-                    Sequence adaptedSequence = sequence.getCopy();
+                    adaptedSequence = sequence.getCopy();
                     boolean transposeUp = twister.nextBoolean();
                     adaptedSequence.notes.forEach(note -> {
                         note.addValue(transposeUp ? 12 : -12, instrument, false);
                     });
                     track.sequences.add(adaptedSequence);
+                    sequenceToAdd = adaptedSequence;
                 } else {
-                    track.sequences.add(sequence);
+                    sequenceToAdd = sequence;
                 }
+                
+                if (twister.nextInt(3) == 0) {
+                    sequenceToAdd.notes.forEach(note -> {
+                        note.IsRest = true;
+                    });                    
+                }
+                track.sequences.add(sequenceToAdd);
             }
         }
                 
@@ -288,7 +299,6 @@ public class Composer {
         int currentValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;
         int usedBaseNote = twister.nextInt(12);
         IntendedAccompaniment intendedAccomp = IntendedAccompaniment.values()[twister.nextInt(1)];
-        boolean setRest = twister.nextInt(3) == 0;
 
         double i = 0;
 
@@ -346,7 +356,7 @@ public class Composer {
 
             i += actualLength;
 
-            if (sequence.notes.size() > 0 && !setRest) {
+            if (sequence.notes.size() > 0) {
                 if (sequence.notes.get(sequence.notes.size() - 1).IsRest) {
                     note.IsRest = true;
                     if (twister.nextInt(3) == 0) {
@@ -355,8 +365,6 @@ public class Composer {
                 } else {
                     note.IsRest = twister.nextInt(6) == 0;
                 }
-            } else {
-                note.IsRest = true;
             }
             
             sequence.addNote(note);
