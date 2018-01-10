@@ -3,13 +3,13 @@ package de.ramota.reclamu;
 import java.util.ArrayList;
 
 public class Note {
-    public double Length;
     private int Value;
+    private int Length;
     public boolean IsRest;
     public int BaseNote;
     public IntendedAccompaniment IntendedAccomp;
-    public static double MAX_LENGTH = 1.0;
-    public static double MIN_LENGTH = 0.1;
+    public static int MAX_LENGTH = 1000;
+    public static int MIN_LENGTH = 100;
     public int Attack;
     
     private final ArrayList<Integer> majorChordOffset = new ArrayList<>();
@@ -23,6 +23,24 @@ public class Note {
         }
         
         this.Value = value;        
+    }
+    
+    public int SetLength(int length, boolean limit) {
+        
+        if (limit) {
+            if (length < Note.MIN_LENGTH) {
+                length = 0;
+            } else if (length > Note.MAX_LENGTH) {
+                length = 127;
+            }
+        }
+        
+        this.Length = length;    
+        return this.Length;
+    }
+
+    public int GetLength() {
+        return this.Length;
     }
     
     public int GetValue() {
@@ -102,10 +120,12 @@ public class Note {
     public String toString() {
         String convertedString = "";
         try {
+            double outputLength = Length / (Note.MAX_LENGTH * 1.0);
+            
             if (IsRest) {
-                convertedString = "R/" + Length;
+                convertedString = "R/" + outputLength;
             } else {
-                convertedString = (this.Value + 12) + String.valueOf("/" + Length) + "a" + Attack;
+                convertedString = (this.Value + 12) + String.valueOf("/" + outputLength + "a" + Attack);
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
