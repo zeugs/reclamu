@@ -8,7 +8,7 @@ public class Instrument {
     public double VariationGrip;
     public String Name;
     public int DefaultLength;
-    public int ValueOffset;
+    public PlayGroup Group;
     
     public Instrument() {
         MersenneTwister twister = new MersenneTwister();

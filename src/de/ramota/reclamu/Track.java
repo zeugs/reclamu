@@ -4,17 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Track {
-    public List<Sequence> sequences = new ArrayList<>();
+    public List<Sequence> Sequences = new ArrayList<>();
+    public List<PlayGroup> PlayGroups = new ArrayList<>();
 
     public void addSequence(Sequence sequence) {
-        sequences.add(sequence);
+        Sequences.add(sequence);
     }
 
     @Override
     public String toString() {
         String sequenceInfo = "";
 
-        for (Sequence sequence : sequences) {
+        for (Sequence sequence : Sequences) {
             sequenceInfo += sequence.toString();
         }
 

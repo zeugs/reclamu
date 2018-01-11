@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class Composer {
-    public static int MIN_LENGTH =  1000;
-    public static int MAX_LENGTH = 50000;
+    public static int MIN_SEQUENCE_LENGTH =  100;
+    public static int MAX_SEQUENCE_LENGTH = 20000;
     public static double MAX_OFFSET = 4;
 
     public Composer() {
@@ -33,6 +33,36 @@ public class Composer {
     }
 
     private Piece getPatterns() {
+        /* https://en.wikipedia.org/wiki/Orchestra#Expanded_instrumentation
+        
+            Woodwinds
+                2–4 flutes (1 doubling piccolo)
+                2–4 oboes (1 doubling cor anglais)
+                2–4 clarinets (1–2 doubling bass clarinet and/or E♭ Clarinet)
+                2–4 bassoons (1 doubling contrabassoon)
+                (1 or more saxophones of various types)
+
+            Brass
+                4–8 German (usually double) horns in F/B♭ (in France: French horns; in Vienna: Vienna horns)
+                3–6 trumpets in B♭, C
+                3–6 trombones (1–2 bass trombones)
+                1–2 tubas
+                (1 or more baritone horns/euphoniums)
+                (1 or more Wagner tubas)
+
+            Keyboards
+                1 piano
+                1 celesta
+                (pipe organ in some works)
+
+            Strings
+                16 violins 1
+                14 violins 2
+                12 violas
+                10 cellos
+                8 double basses
+                1–2 harps 
+        */
         Instrument piano = new Instrument();
         piano.MinNoteIndex = 24;
         piano.MaxNoteIndex = 108;
@@ -40,84 +70,84 @@ public class Composer {
         piano.VariationGrip = 0.7;
         
         Instrument piano_sec = new Instrument();
-        piano_sec.ValueOffset = -12;
         piano_sec.MinNoteIndex = 24;
         piano_sec.MaxNoteIndex = 108;
         piano_sec.Name = "Piano_Sec";
         piano_sec.VariationGrip = 0.8;
 
+        Instrument viola = new Instrument();
+        viola.MinNoteIndex = 36;
+        viola.MaxNoteIndex = 76;
+        viola.Name = "Viola";
+        viola.VariationGrip = 0.8;
+
         Instrument cello = new Instrument();
-        cello.ValueOffset = -24;
         cello.MinNoteIndex = 24;
         cello.MaxNoteIndex = 96;
         cello.Name = "Cello";
         cello.VariationGrip = 0.8;
 
         Instrument violin = new Instrument();
-        violin.ValueOffset = 0;
         violin.MinNoteIndex = 45;
         violin.MaxNoteIndex = 96;
         violin.Name = "Violin";
         violin.VariationGrip = 0.8;
 
-        Instrument violin2 = new Instrument();
-        violin2.ValueOffset = -12;
-        violin2.MinNoteIndex = 45;
-        violin2.MaxNoteIndex = 96;
-        violin2.Name = "Violin2";
-        violin2.VariationGrip = 0.7;
-
         Instrument contrabass = new Instrument();
-        contrabass.ValueOffset = -36;
         contrabass.MinNoteIndex = 24;
         contrabass.MaxNoteIndex = 60;
         contrabass.Name = "Contrabass";
         contrabass.VariationGrip = 0.7;
 
         Instrument flute = new Instrument();
-        flute.ValueOffset = 0;
         flute.MinNoteIndex = 48;
         flute.MaxNoteIndex = 86;
         flute.Name = "Flute";
         flute.VariationGrip = 0.7;
 
         Instrument clarinet = new Instrument();
-        clarinet.ValueOffset = -12;
         clarinet.MinNoteIndex = 40;
         clarinet.MaxNoteIndex = 84;
         clarinet.Name = "Clarinet";
         clarinet.VariationGrip = 0.7;
 
+        Instrument bassoon = new Instrument();
+        bassoon.MinNoteIndex = 22;
+        bassoon.MaxNoteIndex = 64;
+        bassoon.Name = "Bassoon";
+        bassoon.VariationGrip = 0.7;
+
         Instrument oboe = new Instrument();
-        oboe.ValueOffset = -12;
         oboe.MinNoteIndex = 46;
         oboe.MaxNoteIndex = 81;
         oboe.Name = "Oboe";
         oboe.VariationGrip = 0.7;
 
         Instrument englishHorn = new Instrument();
-        englishHorn.ValueOffset = -36;
         englishHorn.MinNoteIndex = 47;
         englishHorn.MaxNoteIndex = 79;
         englishHorn.Name = "English Horn";
         englishHorn.VariationGrip = 0.7;
 
         Instrument frenchHorn = new Instrument();
-        frenchHorn.ValueOffset = -24;
         frenchHorn.MinNoteIndex = 29;
         frenchHorn.MaxNoteIndex = 72;
         frenchHorn.Name = "French Horn";
         frenchHorn.VariationGrip = 0.7;
 
+        Instrument trumpet = new Instrument();
+        trumpet.MinNoteIndex = 42;
+        trumpet.MaxNoteIndex = 74;
+        trumpet.Name = "Trumpet";
+        trumpet.VariationGrip = 0.7;
+
         Instrument trombone = new Instrument();
-        trombone.ValueOffset = -24;
         trombone.MinNoteIndex = 33;
         trombone.MaxNoteIndex = 67;
         trombone.Name = "Oboe";
         trombone.VariationGrip = 0.7;
 
         Instrument tuba = new Instrument();
-        tuba.ValueOffset = -36;
         tuba.MinNoteIndex = 14;
         tuba.MaxNoteIndex = 53;
         tuba.Name = "Tuba";
@@ -127,32 +157,133 @@ public class Composer {
 
         Track track1 = this.getTrack(piano);
 
+        PlayGroup playGroup = new PlayGroup();
+        playGroup.AddInstrument(viola);
+        track1.PlayGroups.add(playGroup);
+        
+        playGroup = new PlayGroup();
+        playGroup.AddInstrument(cello);
+        track1.PlayGroups.add(playGroup);
+
+        playGroup = new PlayGroup();
+        playGroup.AddInstrument(violin);
+        track1.PlayGroups.add(playGroup);
+
+        playGroup = new PlayGroup();
+        playGroup.AddInstrument(contrabass);
+        track1.PlayGroups.add(playGroup);
+        
+        playGroup = new PlayGroup();
+        playGroup.AddInstrument(flute);
+        track1.PlayGroups.add(playGroup);
+
+        playGroup = new PlayGroup();
+        playGroup.AddInstrument(clarinet);
+        track1.PlayGroups.add(playGroup);
+
+        playGroup = new PlayGroup();
+        playGroup.AddInstrument(oboe);
+        track1.PlayGroups.add(playGroup);
+
+        playGroup = new PlayGroup();
+        playGroup.AddInstrument(bassoon);
+        track1.PlayGroups.add(playGroup);
+        
+        playGroup = new PlayGroup();
+        playGroup.AddInstrument(frenchHorn);
+        track1.PlayGroups.add(playGroup);
+
+        playGroup = new PlayGroup();
+        playGroup.AddInstrument(trumpet);
+        track1.PlayGroups.add(playGroup);
+
+        playGroup = new PlayGroup();
+        playGroup.AddInstrument(trombone);
+        track1.PlayGroups.add(playGroup);
+
+        playGroup = new PlayGroup();
+        playGroup.AddInstrument(tuba);
+        track1.PlayGroups.add(playGroup);
+        
+        MersenneTwister twister = new MersenneTwister();
+        track1.Sequences.forEach((sequence) -> {
+            track1.PlayGroups.forEach((group) -> {
+                boolean insertSilence = twister.nextInt(5) == 0;
+                if (insertSilence) {
+                    sequence.SilencedGroups.add(group);
+                }
+            });
+        });
+
         Track track2 = this.getAccompanimentTrack(track1, piano_sec);
-        Track track3 = this.getAccompanimentTrack(track1, violin);
-        Track track4 = this.getAccompanimentTrack(track1, violin2);
-        Track track5 = this.getAccompanimentTrack(track1, cello);
-        Track track6 = this.getAccompanimentTrack(track1, contrabass);
-        Track track7 = this.getAccompanimentTrack(track1, flute);
-        Track track8 = this.getAccompanimentTrack(track1, clarinet);
-        Track track9 = this.getAccompanimentTrack(track1, oboe);
-        Track track10 = this.getAccompanimentTrack(track1, englishHorn);
-        Track track11 = this.getAccompanimentTrack(track1, frenchHorn);
-        Track track12 = this.getAccompanimentTrack(track1, trombone);
-        Track track13 = this.getAccompanimentTrack(track1, tuba);
 
         piece.addTrack(track1);
         piece.addTrack(track2);
-        piece.addTrack(track3);
-        piece.addTrack(track4);
-        piece.addTrack(track5);
-        piece.addTrack(track6);
-        piece.addTrack(track7);
-        piece.addTrack(track8);
-        piece.addTrack(track9);
-        piece.addTrack(track10);
-        piece.addTrack(track11);
-        piece.addTrack(track12);
-        piece.addTrack(track13);
+        
+        for (int i = 0; i < 12; i++) {
+            Track accompTrack = this.getAccompanimentTrack(track1, viola);
+            piece.addTrack(accompTrack);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            Track accompTrack = this.getAccompanimentTrack(track1, cello);
+            piece.addTrack(accompTrack);
+        }
+
+        for (int i = 0; i < 16; i++) {
+            Track accompTrack = this.getAccompanimentTrack(track1, violin);
+            piece.addTrack(accompTrack);
+        }
+        
+        for (int i = 0; i < 14; i++) {
+            Track accompTrack = this.getAccompanimentTrack(track1, violin);
+            piece.addTrack(accompTrack);
+        }
+
+        for (int i = 0; i < 8; i++) {
+            Track accompTrack = this.getAccompanimentTrack(track1, contrabass);
+            piece.addTrack(accompTrack);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            Track accompTrack = this.getAccompanimentTrack(track1, flute);
+            piece.addTrack(accompTrack);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            Track accompTrack = this.getAccompanimentTrack(track1, clarinet);
+            piece.addTrack(accompTrack);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            Track accompTrack = this.getAccompanimentTrack(track1, oboe);
+            piece.addTrack(accompTrack);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            Track accompTrack = this.getAccompanimentTrack(track1, bassoon);
+            piece.addTrack(accompTrack);
+        }
+
+        for (int i = 0; i < 6; i++) {
+            Track accompTrack = this.getAccompanimentTrack(track1, frenchHorn);
+            piece.addTrack(accompTrack);
+        }
+        
+        for (int i = 0; i < 5; i++) {
+            Track accompTrack = this.getAccompanimentTrack(track1, trumpet);
+            piece.addTrack(accompTrack);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            Track accompTrack = this.getAccompanimentTrack(track1, trombone);
+            piece.addTrack(accompTrack);
+        }
+
+        for (int i = 0; i < 2; i++) {
+            Track accompTrack = this.getAccompanimentTrack(track1, tuba);
+            piece.addTrack(accompTrack);
+        }
 
         return piece;
     }
@@ -161,9 +292,6 @@ public class Composer {
         MersenneTwister twister = new MersenneTwister();
         
         Track track = new Track();
-        int maxRepNum = twister.nextInt(10) + 1;
-        int adaptRange = twister.nextInt(4) + 1;
-        int restRange = twister.nextInt(7) + 1;        
         int numberOfSequences = twister.nextInt(20);
         
         Sequence adaptedSequence;
@@ -171,27 +299,27 @@ public class Composer {
         for (int i = 0; i < numberOfSequences; i++) {
             Sequence sequence = getSequence(instrument);   
             
-            int repetitions = twister.nextInt(maxRepNum);
+            int repetitions = twister.nextInt(10);
             System.out.println(String.format("Number of repetitions: %d", repetitions));
             for (int j = 0; j < repetitions; j++) {
-                if (twister.nextInt(adaptRange) == 0) {
+                if (twister.nextInt(5) == 0) {
                     adaptedSequence = sequence.getCopy();
                     boolean transposeUp = twister.nextBoolean();
                     adaptedSequence.notes.forEach(note -> {
                         note.addValue(transposeUp ? 12 : -12, instrument, false);
                     });
-                    track.sequences.add(adaptedSequence);
+                    track.Sequences.add(adaptedSequence);
                     sequenceToAdd = adaptedSequence;
                 } else {
                     sequenceToAdd = sequence;
                 }
                 
-                if (twister.nextInt(restRange) == 0) {
+                if (twister.nextInt(7) == 0) {
                     sequenceToAdd.notes.forEach(note -> {
                         note.IsRest = true;
                     });                    
                 }
-                track.sequences.add(sequenceToAdd);
+                track.Sequences.add(sequenceToAdd);
             }
         }
                 
@@ -203,18 +331,19 @@ public class Composer {
         Track track = new Track();
         int restRange = twister.nextInt(7) + 1;
 
-        for (Sequence refSequence: masterTrack.sequences) {
+        for (Sequence refSequence: masterTrack.Sequences) {
             Sequence sequence = new Sequence();
     
-            boolean addRest = twister.nextInt(restRange) == 0;
-
-            if (addRest) {
+            boolean addRest = (twister.nextInt(restRange) == 0);
+            boolean silence = refSequence.SilencedGroups.contains(instrument.Group);
+            
+            if (addRest || silence) {
                 for (int j = 0; j < refSequence.notes.size(); j++) {
                     Note noteCopy = refSequence.notes.get(j).getCopy();
                     noteCopy.IsRest = true;
                     sequence.notes.add(noteCopy);
                 }    
-                track.sequences.add(sequence);
+                track.Sequences.add(sequence);
                 
                 continue;
             }                
@@ -222,7 +351,7 @@ public class Composer {
             int attackRange = twister.nextInt(90) + 1;
             int restDelayRange = twister.nextInt(7) + 1;
             int restStartRange = twister.nextInt(12) + 1;
-            int noteLengthenRange = twister.nextInt(12) + 1;
+            int noteLengthRange = twister.nextInt(12) + 1;
             int noteSkipRange = twister.nextInt(8) + 1;
             int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
             int sequenceOffset = twister.nextInt(instrumentRange) - instrumentRange / 2;
@@ -286,7 +415,7 @@ public class Composer {
                     }                    
                 }
 
-                if (twister.nextInt(noteLengthenRange) == 0) {
+                if (twister.nextInt(noteLengthRange) == 0) {
                     int skip = twister.nextInt(noteSkipRange) + 1;
                     int startPos = i + 1;
 
@@ -303,7 +432,7 @@ public class Composer {
                 sequence.addNote(note);                
             }
             
-            track.sequences.add(sequence);
+            track.Sequences.add(sequence);
         }
         
         return track;
@@ -313,9 +442,9 @@ public class Composer {
         MersenneTwister twister = new MersenneTwister();
         Sequence sequence = new Sequence();
 
-        int lengthRange = MAX_LENGTH - MIN_LENGTH;
+        int lengthRange = MAX_SEQUENCE_LENGTH - MIN_SEQUENCE_LENGTH;
         int patternLength = twister.nextInt(lengthRange);
-        int targetLength = patternLength + MIN_LENGTH;
+        int targetLength = patternLength + MIN_SEQUENCE_LENGTH;
         int baseLength = instrument.DefaultLength;
         int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
         int currentValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;
@@ -330,12 +459,10 @@ public class Composer {
         int changeAccompRange = twister.nextInt(10) + 1;
         int restDelayRange = twister.nextInt(7) + 1;
         int restStartRange = twister.nextInt(12) + 1;
-        int adaptLengthRange = twister.nextInt(10) + 1;
-        int switchLengthRange = twister.nextInt(20) + 10;
 
         while (i < targetLength) {
-            boolean adaptLength = (twister.nextInt(adaptLengthRange) == 0);
-            boolean switchLength = (twister.nextInt(switchLengthRange ) == 0);
+            boolean adaptLength = twister.nextInt(8) == 0;
+            boolean switchLength = twister.nextInt(30) == 0;
             int actualLength = baseLength;
                         
             if (adaptLength) {
