@@ -21,4 +21,14 @@ public class Track {
 
         return sequenceInfo;
     }
+
+    public Track getCopy() {
+        Track mirrorTrack = new Track();
+        
+        for (Sequence sequence : Sequences) {
+            mirrorTrack.Sequences.add(sequence.getCopy());
+        }
+        
+        return mirrorTrack;
+    }
 }

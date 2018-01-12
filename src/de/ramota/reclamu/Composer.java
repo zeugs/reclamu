@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class Composer {
-    public static int MIN_SEQUENCE_LENGTH =  100;
-    public static int MAX_SEQUENCE_LENGTH = 20000;
+    public static int MIN_SEQUENCE_LENGTH =  500;
+    public static int MAX_SEQUENCE_LENGTH = 40000;
     public static double MAX_OFFSET = 4;
 
     public Composer() {
@@ -155,56 +155,53 @@ public class Composer {
 
         Piece piece = new Piece();
 
-        Track track1 = this.getTrack(piano);
+        Track track1 = piece.getTrack(piano);
 
+        AddPlayGroup(viola, track1);
+        AddPlayGroup(cello, track1);
+        AddPlayGroup(violin, track1);
+        AddPlayGroup(contrabass, track1);
+        
+        AddPlayGroup(flute, track1);
+        AddPlayGroup(clarinet, track1);
+        AddPlayGroup(oboe, track1);
+        AddPlayGroup(bassoon, track1);
+        AddPlayGroup(frenchHorn, track1);
+        
+        AddPlayGroup(trumpet, track1);
+        AddPlayGroup(trombone, track1);
+        AddPlayGroup(tuba, track1);
+        
+        SetSilencedInstrumentsInSequences(track1);
+
+        piece.AddAccompTrack(track1, piano_sec, 1, 0);
+
+        piece.AddAccompTrack(track1, viola, 12, 6);
+        piece.AddAccompTrack(track1, cello, 10, 5);
+        piece.AddAccompTrack(track1, violin, 16, 8);
+        piece.AddAccompTrack(track1, violin, 14, 7);
+        piece.AddAccompTrack(track1, contrabass, 8, 4);
+        
+        piece.AddAccompTrack(track1, flute, 3, 2);
+        piece.AddAccompTrack(track1, clarinet, 3, 1);
+        piece.AddAccompTrack(track1, oboe, 3, 1);
+        piece.AddAccompTrack(track1, bassoon, 3, 1);
+        piece.AddAccompTrack(track1, frenchHorn, 6, 3);
+
+        piece.AddAccompTrack(track1, trumpet, 5, 2);
+        piece.AddAccompTrack(track1, trombone, 5, 2);
+        piece.AddAccompTrack(track1, tuba, 2, 1);
+        
+        return piece;
+    }
+
+    private void AddPlayGroup(Instrument viola, Track track1) {
         PlayGroup playGroup = new PlayGroup();
         playGroup.AddInstrument(viola);
         track1.PlayGroups.add(playGroup);
-        
-        playGroup = new PlayGroup();
-        playGroup.AddInstrument(cello);
-        track1.PlayGroups.add(playGroup);
+    }
 
-        playGroup = new PlayGroup();
-        playGroup.AddInstrument(violin);
-        track1.PlayGroups.add(playGroup);
-
-        playGroup = new PlayGroup();
-        playGroup.AddInstrument(contrabass);
-        track1.PlayGroups.add(playGroup);
-        
-        playGroup = new PlayGroup();
-        playGroup.AddInstrument(flute);
-        track1.PlayGroups.add(playGroup);
-
-        playGroup = new PlayGroup();
-        playGroup.AddInstrument(clarinet);
-        track1.PlayGroups.add(playGroup);
-
-        playGroup = new PlayGroup();
-        playGroup.AddInstrument(oboe);
-        track1.PlayGroups.add(playGroup);
-
-        playGroup = new PlayGroup();
-        playGroup.AddInstrument(bassoon);
-        track1.PlayGroups.add(playGroup);
-        
-        playGroup = new PlayGroup();
-        playGroup.AddInstrument(frenchHorn);
-        track1.PlayGroups.add(playGroup);
-
-        playGroup = new PlayGroup();
-        playGroup.AddInstrument(trumpet);
-        track1.PlayGroups.add(playGroup);
-
-        playGroup = new PlayGroup();
-        playGroup.AddInstrument(trombone);
-        track1.PlayGroups.add(playGroup);
-
-        playGroup = new PlayGroup();
-        playGroup.AddInstrument(tuba);
-        track1.PlayGroups.add(playGroup);
-        
+    private void SetSilencedInstrumentsInSequences(Track track1) {
         MersenneTwister twister = new MersenneTwister();
         track1.Sequences.forEach((sequence) -> {
             track1.PlayGroups.forEach((group) -> {
@@ -214,319 +211,4 @@ public class Composer {
                 }
             });
         });
-
-        Track track2 = this.getAccompanimentTrack(track1, piano_sec);
-
-        piece.addTrack(track1);
-        piece.addTrack(track2);
-        
-        for (int i = 0; i < 12; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track1, viola);
-            piece.addTrack(accompTrack);
-        }
-
-        for (int i = 0; i < 10; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track1, cello);
-            piece.addTrack(accompTrack);
-        }
-
-        for (int i = 0; i < 16; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track1, violin);
-            piece.addTrack(accompTrack);
-        }
-        
-        for (int i = 0; i < 14; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track1, violin);
-            piece.addTrack(accompTrack);
-        }
-
-        for (int i = 0; i < 8; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track1, contrabass);
-            piece.addTrack(accompTrack);
-        }
-
-        for (int i = 0; i < 3; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track1, flute);
-            piece.addTrack(accompTrack);
-        }
-
-        for (int i = 0; i < 3; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track1, clarinet);
-            piece.addTrack(accompTrack);
-        }
-
-        for (int i = 0; i < 3; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track1, oboe);
-            piece.addTrack(accompTrack);
-        }
-
-        for (int i = 0; i < 3; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track1, bassoon);
-            piece.addTrack(accompTrack);
-        }
-
-        for (int i = 0; i < 6; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track1, frenchHorn);
-            piece.addTrack(accompTrack);
-        }
-        
-        for (int i = 0; i < 5; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track1, trumpet);
-            piece.addTrack(accompTrack);
-        }
-
-        for (int i = 0; i < 5; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track1, trombone);
-            piece.addTrack(accompTrack);
-        }
-
-        for (int i = 0; i < 2; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track1, tuba);
-            piece.addTrack(accompTrack);
-        }
-
-        return piece;
-    }
-
-    private Track getTrack(Instrument instrument) {
-        MersenneTwister twister = new MersenneTwister();
-        
-        Track track = new Track();
-        int numberOfSequences = twister.nextInt(20);
-        
-        Sequence adaptedSequence;
-        Sequence sequenceToAdd;
-        for (int i = 0; i < numberOfSequences; i++) {
-            Sequence sequence = getSequence(instrument);   
-            
-            int repetitions = twister.nextInt(10);
-            System.out.println(String.format("Number of repetitions: %d", repetitions));
-            for (int j = 0; j < repetitions; j++) {
-                if (twister.nextInt(5) == 0) {
-                    adaptedSequence = sequence.getCopy();
-                    boolean transposeUp = twister.nextBoolean();
-                    adaptedSequence.notes.forEach(note -> {
-                        note.addValue(transposeUp ? 12 : -12, instrument, false);
-                    });
-                    track.Sequences.add(adaptedSequence);
-                    sequenceToAdd = adaptedSequence;
-                } else {
-                    sequenceToAdd = sequence;
-                }
-                
-                if (twister.nextInt(7) == 0) {
-                    sequenceToAdd.notes.forEach(note -> {
-                        note.IsRest = true;
-                    });                    
-                }
-                track.Sequences.add(sequenceToAdd);
-            }
-        }
-                
-        return track;
-    }
-
-    private Track getAccompanimentTrack(Track masterTrack, Instrument instrument) {
-        MersenneTwister twister = new MersenneTwister();
-        Track track = new Track();
-        int restRange = twister.nextInt(7) + 1;
-
-        for (Sequence refSequence: masterTrack.Sequences) {
-            Sequence sequence = new Sequence();
-    
-            boolean addRest = (twister.nextInt(restRange) == 0);
-            boolean silence = refSequence.SilencedGroups.contains(instrument.Group);
-            
-            if (addRest || silence) {
-                for (int j = 0; j < refSequence.notes.size(); j++) {
-                    Note noteCopy = refSequence.notes.get(j).getCopy();
-                    noteCopy.IsRest = true;
-                    sequence.notes.add(noteCopy);
-                }    
-                track.Sequences.add(sequence);
-                
-                continue;
-            }                
-            
-            int attackRange = twister.nextInt(90) + 1;
-            int restDelayRange = twister.nextInt(7) + 1;
-            int restStartRange = twister.nextInt(12) + 1;
-            int noteLengthRange = twister.nextInt(12) + 1;
-            int noteSkipRange = twister.nextInt(8) + 1;
-            int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
-            int sequenceOffset = twister.nextInt(instrumentRange) - instrumentRange / 2;
-            sequenceOffset = sequenceOffset - sequenceOffset % 12;
-                    
-            for (int i = 0; i < refSequence.notes.size(); i++) {
-                int delayLength = twister.nextInt(15) + 5;
-                Note refNote = refSequence.notes.get(i);
-                Note note = new Note(refNote.GetValue() + sequenceOffset + refNote.BaseNote);
-                note.Attack = twister.nextInt(attackRange) + 30;
-                note.BaseNote = refNote.BaseNote;
-                note.SetLength(refNote.GetLength() - delayLength, false);
-                note.IntendedAccomp = refNote.IntendedAccomp;
-
-                if (delayLength > 0) {
-                    Note delayPseudoNote = new Note(70);
-                    delayPseudoNote.IsRest = true;
-                    delayPseudoNote.SetLength(delayLength, false);
-                    sequence.addNote(delayPseudoNote);     
-                }
-                
-                int rand = 0;
-                int valueToAdd = 0;
-
-                if (note.Attack > 127) {
-                    note.Attack = 115;
-                } else if (note.Attack < 0) {
-                    note.Attack = 15;
-                }
-
-                if (refNote.IntendedAccomp == IntendedAccompaniment.MAJOR) {
-                    twister.nextInt(3);
-                    switch (rand) {
-                        case 0: valueToAdd = 0; break;
-                        case 1: valueToAdd = 4; break;
-                        case 2: valueToAdd = 7; break;
-                        default: break;
-                    }                
-                }
-
-                if (refNote.IntendedAccomp == IntendedAccompaniment.MINOR) {
-                    twister.nextInt(3);
-                    switch (rand) {
-                        case 0: valueToAdd = 0; break;
-                        case 1: valueToAdd = 3; break;
-                        case 2: valueToAdd = 7; break;
-                        default: break;
-                    }                
-                }
-
-                note.addValue(valueToAdd, instrument, true);
-
-                if (sequence.notes.size() > 0) {
-                    if (sequence.notes.get(sequence.notes.size() - 1).IsRest) {
-                        note.IsRest = true;
-                        if (twister.nextInt(restDelayRange) == 0) {
-                            note.IsRest = false;
-                        }
-                    } else {
-                        note.IsRest = twister.nextInt(restStartRange) == 0;
-                    }                    
-                }
-
-                if (twister.nextInt(noteLengthRange) == 0) {
-                    int skip = twister.nextInt(noteSkipRange) + 1;
-                    int startPos = i + 1;
-
-                    for (int j = startPos; j < startPos + skip; j++) {
-                        if (j < refSequence.notes.size()) {
-                            note.SetLength(note.GetLength() + refSequence.notes.get(j).GetLength(), false);
-                            i++;
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                
-                sequence.addNote(note);                
-            }
-            
-            track.Sequences.add(sequence);
-        }
-        
-        return track;
-    }
-
-    private Sequence getSequence(Instrument instrument) {
-        MersenneTwister twister = new MersenneTwister();
-        Sequence sequence = new Sequence();
-
-        int lengthRange = MAX_SEQUENCE_LENGTH - MIN_SEQUENCE_LENGTH;
-        int patternLength = twister.nextInt(lengthRange);
-        int targetLength = patternLength + MIN_SEQUENCE_LENGTH;
-        int baseLength = instrument.DefaultLength;
-        int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
-        int currentValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;
-        int usedBaseNote = twister.nextInt(12);
-        double maxOffset = twister.nextInt(14) + 2;
-        int changeBaseNoteRange = twister.nextInt(20) + 5;
-        
-        IntendedAccompaniment intendedAccomp = IntendedAccompaniment.values()[twister.nextInt(1)];
-
-        int i = 0;
-        int attackRange = twister.nextInt(90) + 1;
-        int changeAccompRange = twister.nextInt(10) + 1;
-        int restDelayRange = twister.nextInt(7) + 1;
-        int restStartRange = twister.nextInt(12) + 1;
-
-        while (i < targetLength) {
-            boolean adaptLength = twister.nextInt(8) == 0;
-            boolean switchLength = twister.nextInt(30) == 0;
-            int actualLength = baseLength;
-                        
-            if (adaptLength) {
-                double lengthDelta = twister.nextDouble() * (baseLength * 0.3); // max 30% change
-                boolean subtractDelta = twister.nextBoolean();
-                
-                if (subtractDelta) {
-                    lengthDelta *= -1;
-                }
-                baseLength += lengthDelta;
-                
-                if (baseLength < Note.MIN_LENGTH) {
-                    baseLength = Note.MIN_LENGTH;
-                } else if (baseLength > Note.MAX_LENGTH) {
-                    baseLength = Note.MAX_LENGTH - twister.nextInt(Note.MAX_LENGTH) / 2;
-                }
-            }
-            
-            if (switchLength) {
-                baseLength = twister.nextInt(Note.MAX_LENGTH) * Note.MAX_LENGTH / 2 + Note.MIN_LENGTH;
-                actualLength = baseLength;
-            }
-            
-            if (twister.nextInt(changeBaseNoteRange) == 0) {
-                usedBaseNote = twister.nextInt(12);
-            }
-            
-            double baseOffset = twister.nextInt((int)maxOffset + 1);
-            double adjustedOffset = (baseOffset - maxOffset / 2) + 1;
-            
-            Note note = new Note(currentValue);
-            note.Attack = twister.nextInt(attackRange) + 30;
-            note.BaseNote = usedBaseNote;
-            actualLength = note.SetLength(actualLength, true);
-
-            if (twister.nextInt(changeAccompRange) == 0) {
-                intendedAccomp = IntendedAccompaniment.values()[twister.nextInt(1)];
-                System.out.println("Intended Accomp changed!");
-            }
-            
-            note.IntendedAccomp = intendedAccomp;
-            
-            double actualGrip = instrument.VariationGrip;
-            
-            currentValue = note.addValue(adjustedOffset * actualGrip, instrument, true);
-
-            i += actualLength;
-
-            if (sequence.notes.size() > 0) {
-                if (sequence.notes.get(sequence.notes.size() - 1).IsRest) {
-                    note.IsRest = true;
-                    if (twister.nextInt(restDelayRange) == 0) {
-                        note.IsRest = false;
-                    }
-                } else {
-                    note.IsRest = twister.nextInt(restStartRange) == 0;
-                }
-            }
-            
-            sequence.addNote(note);
-        }    
-        
-        System.out.println(String.format("Sequence note num: %s", sequence.notes.size()));
-        
-        return sequence;
-    }
-}
+    }}
