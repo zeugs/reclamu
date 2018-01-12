@@ -67,7 +67,17 @@ public class Piece {
         double maxOffset = twister.nextInt(14) + 2;
         int changeBaseNoteRange = twister.nextInt(20) + 5;
         
-        IntendedAccompaniment intendedAccomp = IntendedAccompaniment.values()[twister.nextInt(1)];
+        List<IntendedAccompaniment> intendedAccomps = new ArrayList<>();
+        
+        sequence.HarmonyStyle = HarmonyStyle.SIMPLE_MAJOR;
+        
+        if (sequence.HarmonyStyle == HarmonyStyle.SIMPLE_MAJOR) {
+            intendedAccomps.add(new IntendedAccompaniment(AccompanimentType.TYPE_MAJOR));
+        } else if (sequence.HarmonyStyle == HarmonyStyle.I_IV_V) {
+            intendedAccomps.add(new IntendedAccompaniment(AccompanimentType.TYPE_I_IV_V));            
+        }
+        
+        IntendedAccompaniment currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
 
         int i = 0;
         int attackRange = twister.nextInt(90) + 1;
@@ -114,11 +124,11 @@ public class Piece {
             actualLength = note.SetLength(actualLength, true);
 
             if (twister.nextInt(changeAccompRange) == 0) {
-                intendedAccomp = IntendedAccompaniment.values()[twister.nextInt(1)];
+                currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
                 System.out.println("Intended Accomp changed!");
             }
             
-            note.IntendedAccomp = intendedAccomp;
+            note.IntendedAccomp = currentAccomp;
             
             double actualGrip = instrument.VariationGrip;
             
@@ -217,24 +227,26 @@ public class Piece {
                     note.Attack = 15;
                 }
 
-                if (refNote.IntendedAccomp == IntendedAccompaniment.MAJOR) {
-                    twister.nextInt(3);
-                    switch (rand) {
-                        case 0: valueToAdd = 0; break;
-                        case 1: valueToAdd = 4; break;
-                        case 2: valueToAdd = 7; break;
-                        default: break;
-                    }                
-                }
+                if (refSequence.HarmonyStyle == HarmonyStyle.SIMPLE_MAJOR) {
+                    if (refNote.IntendedAccomp.GetType() == AccompanimentType.TYPE_MAJOR) {
+                        twister.nextInt(3);
+                        switch (rand) {
+                            case 0: valueToAdd = 0; break;
+                            case 1: valueToAdd = 4; break;
+                            case 2: valueToAdd = 7; break;
+                            default: break;
+                        }                
+                    }
 
-                if (refNote.IntendedAccomp == IntendedAccompaniment.MINOR) {
-                    twister.nextInt(3);
-                    switch (rand) {
-                        case 0: valueToAdd = 0; break;
-                        case 1: valueToAdd = 3; break;
-                        case 2: valueToAdd = 7; break;
-                        default: break;
-                    }                
+                    if (refNote.IntendedAccomp.GetType() == AccompanimentType.TYPE_MINOR) {
+                        twister.nextInt(3);
+                        switch (rand) {
+                            case 0: valueToAdd = 0; break;
+                            case 1: valueToAdd = 3; break;
+                            case 2: valueToAdd = 7; break;
+                            default: break;
+                        }                
+                    }
                 }
 
                 note.addValue(valueToAdd, instrument, true);

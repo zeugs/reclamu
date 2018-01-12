@@ -6,6 +6,7 @@ import java.util.List;
 public class Sequence {
     public List<Note> notes = new ArrayList<>();
     public List<PlayGroup> SilencedGroups = new ArrayList<>();
+    public HarmonyStyle HarmonyStyle;
     
     public void addNote(Note note) {
         notes.add(note);

@@ -11,10 +11,7 @@ public class Note {
     public static int MAX_LENGTH = 1000;
     public static int MIN_LENGTH = 100;
     public int Attack;
-    
-    private final ArrayList<Integer> majorChordOffset = new ArrayList<>();
-    private final ArrayList<Integer> minorChordOffset = new ArrayList<>();
-    
+        
     public void SetValue(int value) {
         if (value < 0) {
             value = 0;
@@ -49,42 +46,19 @@ public class Note {
     
     public Note(int value) {
         this.Value = value;
-        majorChordOffset.add(0);
-        majorChordOffset.add(2);
-        majorChordOffset.add(4);
-        majorChordOffset.add(5);
-        majorChordOffset.add(7);
-        majorChordOffset.add(9);
-        majorChordOffset.add(11);
-        majorChordOffset.add(12);
-
-        minorChordOffset.add(0);
-        minorChordOffset.add(2);
-        minorChordOffset.add(3);
-        minorChordOffset.add(5);
-        minorChordOffset.add(7);
-        minorChordOffset.add(8);
-        minorChordOffset.add(10);
-        minorChordOffset.add(12);
     }
     
     private void setValueInRange(ArrayList<Integer> offsets) {
-        int start;
-        
-        if (Value > BaseNote) {
-            start = Value - (Value - BaseNote) % 12;
-        } else {
-            start = Value - (12 + (Value - BaseNote) % 12);
-        }
+        int relativeValue = (Value - BaseNote) % 12;
         
         int distance = 1000;
         int valueToUse = 0;
         
         for (int offset : offsets) {
-            int currentDist = Math.abs(start + offset - Value);
+            int currentDist = Math.abs(relativeValue - offset);
             if (currentDist < distance) {
                 distance = currentDist;
-                valueToUse = start + offset;
+                valueToUse = Value - relativeValue + offset;
             }
         }
         
@@ -102,12 +76,7 @@ public class Note {
             Value -= 12;
         }
         
-        ArrayList<Integer> mappings = null;
-        if (IntendedAccomp == IntendedAccompaniment.MAJOR) {
-            mappings = majorChordOffset;
-        } else if (IntendedAccomp == IntendedAccompaniment.MINOR) {
-            mappings = minorChordOffset;
-        }
+        ArrayList<Integer> mappings = IntendedAccomp.GetMapping();
         
         if (adapt) {
             setValueInRange(mappings);
