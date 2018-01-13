@@ -7,7 +7,7 @@ public class Note {
     private int Length;
     public boolean IsRest;
     public int BaseNote;
-    public IntendedAccompaniment IntendedAccomp;
+    public Accompaniment IntendedAccomp;
     public static int MAX_LENGTH = 1000;
     public static int MIN_LENGTH = 100;
     public int Attack;

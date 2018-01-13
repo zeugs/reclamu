@@ -67,17 +67,18 @@ public class Piece {
         double maxOffset = twister.nextInt(14) + 2;
         int changeBaseNoteRange = twister.nextInt(20) + 5;
         
-        List<IntendedAccompaniment> intendedAccomps = new ArrayList<>();
+        List<Accompaniment> intendedAccomps = new ArrayList<>();
         
-        sequence.HarmonyStyle = HarmonyStyle.SIMPLE_MAJOR;
+        MajorScaleAccompaniment majorChordsAccomp = new MajorScaleAccompaniment();
+        AccompanimentItem accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(4);
+        accompItem.Offsets.add(7);
+        majorChordsAccomp.Items.add(accompItem);
+        intendedAccomps.add(majorChordsAccomp);
         
-        if (sequence.HarmonyStyle == HarmonyStyle.SIMPLE_MAJOR) {
-            intendedAccomps.add(new IntendedAccompaniment(AccompanimentType.TYPE_MAJOR));
-        } else if (sequence.HarmonyStyle == HarmonyStyle.I_IV_V) {
-            intendedAccomps.add(new IntendedAccompaniment(AccompanimentType.TYPE_I_IV_V));            
-        }
-        
-        IntendedAccompaniment currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
+        Accompaniment currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
 
         int i = 0;
         int attackRange = twister.nextInt(90) + 1;
@@ -218,7 +219,6 @@ public class Piece {
                     sequence.addNote(delayPseudoNote);     
                 }
                 
-                int rand = 0;
                 int valueToAdd = 0;
 
                 if (note.Attack > 127) {
@@ -227,26 +227,18 @@ public class Piece {
                     note.Attack = 15;
                 }
 
-                if (refSequence.HarmonyStyle == HarmonyStyle.SIMPLE_MAJOR) {
-                    if (refNote.IntendedAccomp.GetType() == AccompanimentType.TYPE_MAJOR) {
-                        twister.nextInt(3);
-                        switch (rand) {
-                            case 0: valueToAdd = 0; break;
-                            case 1: valueToAdd = 4; break;
-                            case 2: valueToAdd = 7; break;
-                            default: break;
-                        }                
-                    }
+                if (refNote.IntendedAccomp instanceof MajorScaleAccompaniment) {
+                    ArrayList<Integer> offsets = refNote.IntendedAccomp.GetItemOffsets();
+                    
+                    int valueIndex = twister.nextInt(offsets.size());
+                    valueToAdd = offsets.get(valueIndex);
+                }
 
-                    if (refNote.IntendedAccomp.GetType() == AccompanimentType.TYPE_MINOR) {
-                        twister.nextInt(3);
-                        switch (rand) {
-                            case 0: valueToAdd = 0; break;
-                            case 1: valueToAdd = 3; break;
-                            case 2: valueToAdd = 7; break;
-                            default: break;
-                        }                
-                    }
+                if (refNote.IntendedAccomp instanceof MinorScaleAccompaniment) {
+                    ArrayList<Integer> offsets = refNote.IntendedAccomp.GetItemOffsets();
+                    
+                    int valueIndex = twister.nextInt(offsets.size());
+                    valueToAdd = offsets.get(valueIndex);
                 }
 
                 note.addValue(valueToAdd, instrument, true);
