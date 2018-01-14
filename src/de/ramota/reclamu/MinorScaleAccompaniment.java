@@ -13,6 +13,7 @@ public class MinorScaleAccompaniment extends Accompaniment {
     public ArrayList<Integer> GetMapping() {
         return minorChordOffset;
     }
+    
     public MinorScaleAccompaniment() {
         minorChordOffset.add(0);
         minorChordOffset.add(2);
@@ -22,10 +23,5 @@ public class MinorScaleAccompaniment extends Accompaniment {
         minorChordOffset.add(8);
         minorChordOffset.add(10);
         minorChordOffset.add(12);        
-        
-        AccompanimentItem item = new AccompanimentItem();
-        item.Offsets = minorChordOffset;
-        
-        Items.add(item);
     }
 }

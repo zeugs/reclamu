@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class Composer {
-    public static int MIN_SEQUENCE_LENGTH =  500;
-    public static int MAX_SEQUENCE_LENGTH = 40000;
+    public static int MIN_SEQUENCE_LENGTH =  100;
+    public static int MAX_SEQUENCE_LENGTH = 20000;
     public static double MAX_OFFSET = 4;
 
     public Composer() {
@@ -79,7 +79,7 @@ public class Composer {
         viola.MinNoteIndex = 36;
         viola.MaxNoteIndex = 76;
         viola.Name = "Viola";
-        viola.VariationGrip = 0.8;
+        viola.VariationGrip = 0.7;
 
         Instrument cello = new Instrument();
         cello.MinNoteIndex = 24;
@@ -103,7 +103,7 @@ public class Composer {
         flute.MinNoteIndex = 48;
         flute.MaxNoteIndex = 86;
         flute.Name = "Flute";
-        flute.VariationGrip = 0.7;
+        flute.VariationGrip = 0.8;
 
         Instrument clarinet = new Instrument();
         clarinet.MinNoteIndex = 40;
@@ -145,13 +145,25 @@ public class Composer {
         trombone.MinNoteIndex = 33;
         trombone.MaxNoteIndex = 67;
         trombone.Name = "Oboe";
-        trombone.VariationGrip = 0.7;
+        trombone.VariationGrip = 0.6;
 
         Instrument tuba = new Instrument();
         tuba.MinNoteIndex = 14;
         tuba.MaxNoteIndex = 53;
         tuba.Name = "Tuba";
-        tuba.VariationGrip = 0.7;
+        tuba.VariationGrip = 0.6;
+
+        Instrument harp = new Instrument();
+        harp.MinNoteIndex = 22;
+        harp.MaxNoteIndex = 90;
+        harp.Name = "Harp";
+        harp.VariationGrip = 0.8;
+
+        Instrument bells = new Instrument();
+        bells.MinNoteIndex = 43;
+        bells.MaxNoteIndex = 72;
+        bells.Name = "Bells";
+        bells.VariationGrip = 0.7;
 
         Piece piece = new Piece();
 
@@ -172,6 +184,9 @@ public class Composer {
         AddPlayGroup(trombone, track1);
         AddPlayGroup(tuba, track1);
         
+        AddPlayGroup(harp, track1);
+        AddPlayGroup(bells, track1);
+
         SetSilencedInstrumentsInSequences(track1);
 
         piece.AddAccompTrack(track1, piano_sec, 1, 0);
@@ -190,8 +205,10 @@ public class Composer {
 
         piece.AddAccompTrack(track1, trumpet, 5, 2);
         piece.AddAccompTrack(track1, trombone, 5, 2);
-        piece.AddAccompTrack(track1, tuba, 2, 1);
-        
+        piece.AddAccompTrack(track1, tuba, 2, 1);        
+        piece.AddAccompTrack(track1, harp, 2, 0);
+        piece.AddAccompTrack(track1, bells, 1, 0);
+
         return piece;
     }
 
@@ -205,7 +222,7 @@ public class Composer {
         MersenneTwister twister = new MersenneTwister();
         track1.Sequences.forEach((sequence) -> {
             track1.PlayGroups.forEach((group) -> {
-                boolean insertSilence = twister.nextInt(5) == 0;
+                boolean insertSilence = twister.nextInt(7) == 0;
                 if (insertSilence) {
                     sequence.SilencedGroups.add(group);
                 }

@@ -7,16 +7,11 @@ import java.util.ArrayList;
  * @author Mathies Gräske
  */
 public class MajorScaleAccompaniment extends Accompaniment {
-    ArrayList<Integer> majorChordOffsets = new ArrayList<>();
+    private final ArrayList<Integer> majorChordOffsets = new ArrayList<>();
 
     @Override
     public ArrayList<Integer> GetMapping() {
         return majorChordOffsets;
-    }
-    
-    @Override
-    public ArrayList<Integer> GetItemOffsets() {
-        return Items.get(0).Offsets;
     }
     
     public MajorScaleAccompaniment() {

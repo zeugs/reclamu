@@ -9,6 +9,56 @@ import org.apache.commons.math3.random.MersenneTwister;
 public class Piece {
     public List<Track> Tracks = new ArrayList<>();
     public List<PlayGroup> Groups = new ArrayList<>();
+    private final List<Accompaniment> intendedAccomps;
+    private Accompaniment currentAccomp;
+    
+    public Piece() {
+        MersenneTwister twister = new MersenneTwister();
+        
+        intendedAccomps = new ArrayList<>();
+        AccompanimentItem accompItem;
+
+        MajorScaleAccompaniment majorChordsAccomp = new MajorScaleAccompaniment();
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(4);
+        accompItem.Offsets.add(7);
+        majorChordsAccomp.Items.add(accompItem);
+        intendedAccomps.add(majorChordsAccomp);
+        
+        MajorScaleAccompaniment minorChordsAccomp = new MajorScaleAccompaniment();
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(4);
+        accompItem.Offsets.add(7);
+        minorChordsAccomp.Items.add(accompItem);
+        intendedAccomps.add(minorChordsAccomp);
+
+        /*MajorScaleAccompaniment simpleAccomp = new MajorScaleAccompaniment();
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(4);
+        accompItem.Offsets.add(7);
+        simpleAccomp.Items.add(accompItem);
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(5);
+        accompItem.Offsets.add(9);
+        accompItem.Offsets.add(12);
+        simpleAccomp.Items.add(accompItem);
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(7);
+        accompItem.Offsets.add(11);
+        accompItem.Offsets.add(14);
+        simpleAccomp.Items.add(accompItem);
+        intendedAccomps.add(simpleAccomp);*/
+
+        currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));        
+    }
     
     public void addTrack(Track track) {
         Tracks.add(track);
@@ -67,22 +117,8 @@ public class Piece {
         double maxOffset = twister.nextInt(14) + 2;
         int changeBaseNoteRange = twister.nextInt(20) + 5;
         
-        List<Accompaniment> intendedAccomps = new ArrayList<>();
-        
-        MajorScaleAccompaniment majorChordsAccomp = new MajorScaleAccompaniment();
-        AccompanimentItem accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(0);
-        accompItem.Offsets.add(4);
-        accompItem.Offsets.add(7);
-        majorChordsAccomp.Items.add(accompItem);
-        intendedAccomps.add(majorChordsAccomp);
-        
-        Accompaniment currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
-
         int i = 0;
         int attackRange = twister.nextInt(90) + 1;
-        int changeAccompRange = twister.nextInt(10) + 1;
         int restDelayRange = twister.nextInt(7) + 1;
         int restStartRange = twister.nextInt(12) + 1;
 
@@ -124,7 +160,7 @@ public class Piece {
             note.BaseNote = usedBaseNote;
             actualLength = note.SetLength(actualLength, true);
 
-            if (twister.nextInt(changeAccompRange) == 0) {
+            if (twister.nextInt(20) == 0) {
                 currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
                 System.out.println("Intended Accomp changed!");
             }
@@ -195,18 +231,18 @@ public class Piece {
             }                
             
             int attackRange = twister.nextInt(90) + 1;
-            int restDelayRange = twister.nextInt(7) + 1;
-            int restStartRange = twister.nextInt(12) + 1;
-            int noteLengthRange = twister.nextInt(12) + 1;
-            int noteSkipRange = twister.nextInt(8) + 1;
+            int restDelayRange = twister.nextInt(7) + 2;
+            int restStartRange = twister.nextInt(10) + 2;
             int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
-            int sequenceOffset = twister.nextInt(instrumentRange) - instrumentRange / 2;
-            sequenceOffset = sequenceOffset - sequenceOffset % 12;
-                    
+            int absoluteValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;
+            absoluteValue -= absoluteValue % 12;
+            int noteDiff = absoluteValue - refSequence.notes.get(0).GetValue();
+            
             for (int i = 0; i < refSequence.notes.size(); i++) {
                 int delayLength = twister.nextInt(15) + 5;
+    
                 Note refNote = refSequence.notes.get(i);
-                Note note = new Note(refNote.GetValue() + sequenceOffset + refNote.BaseNote);
+                Note note = new Note(refNote.GetValue() + noteDiff + refNote.BaseNote);
                 note.Attack = twister.nextInt(attackRange) + 30;
                 note.BaseNote = refNote.BaseNote;
                 note.SetLength(refNote.GetLength() - delayLength, false);
@@ -219,27 +255,16 @@ public class Piece {
                     sequence.addNote(delayPseudoNote);     
                 }
                 
-                int valueToAdd = 0;
-
                 if (note.Attack > 127) {
                     note.Attack = 115;
                 } else if (note.Attack < 0) {
                     note.Attack = 15;
                 }
 
-                if (refNote.IntendedAccomp instanceof MajorScaleAccompaniment) {
-                    ArrayList<Integer> offsets = refNote.IntendedAccomp.GetItemOffsets();
-                    
-                    int valueIndex = twister.nextInt(offsets.size());
-                    valueToAdd = offsets.get(valueIndex);
-                }
+                ArrayList<Integer> offsets = refNote.IntendedAccomp.GetItemOffsets();
 
-                if (refNote.IntendedAccomp instanceof MinorScaleAccompaniment) {
-                    ArrayList<Integer> offsets = refNote.IntendedAccomp.GetItemOffsets();
-                    
-                    int valueIndex = twister.nextInt(offsets.size());
-                    valueToAdd = offsets.get(valueIndex);
-                }
+                int valueIndex = twister.nextInt(offsets.size());
+                int valueToAdd = offsets.get(valueIndex);
 
                 note.addValue(valueToAdd, instrument, true);
 
@@ -254,8 +279,8 @@ public class Piece {
                     }                    
                 }
 
-                if (twister.nextInt(noteLengthRange) == 0) {
-                    int skip = twister.nextInt(noteSkipRange) + 1;
+                if (twister.nextInt(12) == 0) {
+                    int skip = twister.nextInt(5);
                     int startPos = i + 1;
 
                     for (int j = startPos; j < startPos + skip; j++) {
