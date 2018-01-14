@@ -6,7 +6,7 @@ import java.util.ArrayList;
  *
  * @author Mathies Gräske
  */
-public class MinorScaleAccompaniment extends Accompaniment {
+public class MinorScaleAccompaniment extends ScaleItem {
     ArrayList<Integer> minorChordOffset = new ArrayList<>();
 
     @Override

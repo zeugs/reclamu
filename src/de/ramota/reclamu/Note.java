@@ -6,8 +6,8 @@ public class Note {
     private int Value;
     private int Length;
     public boolean IsRest;
-    public int BaseNote;
-    public Accompaniment IntendedAccomp;
+    public int ScaleOffset;
+    public ScaleItem IntendedScaleType;
     public static int MAX_LENGTH = 1000;
     public static int MIN_LENGTH = 100;
     public int Attack;
@@ -26,9 +26,9 @@ public class Note {
         
         if (limit) {
             if (length < Note.MIN_LENGTH) {
-                length = 0;
+                length = Note.MIN_LENGTH;
             } else if (length > Note.MAX_LENGTH) {
-                length = 127;
+                length = Note.MAX_LENGTH;
             }
         }
         
@@ -49,7 +49,7 @@ public class Note {
     }
     
     private void setValueInRange(ArrayList<Integer> offsets) {
-        int relativeValue = (Value - BaseNote) % 12;
+        int relativeValue = (Value - ScaleOffset) % 12;
         
         int distance = 1000;
         int valueToUse = 0;
@@ -76,7 +76,7 @@ public class Note {
             Value -= 12;
         }
         
-        ArrayList<Integer> mappings = IntendedAccomp.GetMapping();
+        ArrayList<Integer> mappings = IntendedScaleType.GetMapping();
         
         if (adapt) {
             setValueInRange(mappings);
@@ -105,9 +105,9 @@ public class Note {
     Note getCopy() {
         Note note = new Note(this.Value);
         note.Attack = this.Attack;
-        note.BaseNote = this.BaseNote;
+        note.ScaleOffset = this.ScaleOffset;
         note.Length = this.Length;
-        note.IntendedAccomp = this.IntendedAccomp;
+        note.IntendedScaleType = this.IntendedScaleType;
         note.IsRest = this.IsRest;
  
         return note;

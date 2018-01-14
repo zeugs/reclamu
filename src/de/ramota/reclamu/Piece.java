@@ -1,7 +1,5 @@
 package de.ramota.reclamu;
 
-import static de.ramota.reclamu.Composer.MAX_SEQUENCE_LENGTH;
-import static de.ramota.reclamu.Composer.MIN_SEQUENCE_LENGTH;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.math3.random.MersenneTwister;
@@ -9,34 +7,31 @@ import org.apache.commons.math3.random.MersenneTwister;
 public class Piece {
     public List<Track> Tracks = new ArrayList<>();
     public List<PlayGroup> Groups = new ArrayList<>();
-    private final List<Accompaniment> intendedAccomps;
-    private Accompaniment currentAccomp;
-    
+    private final List<ScaleItem> intendedScaleItems;
+
     public Piece() {
-        MersenneTwister twister = new MersenneTwister();
-        
-        intendedAccomps = new ArrayList<>();
+        intendedScaleItems = new ArrayList<>();
         AccompanimentItem accompItem;
 
-        MajorScaleAccompaniment majorChordsAccomp = new MajorScaleAccompaniment();
+        /*MajorScaleAccompaniment majorChordsAccomp = new MajorScaleAccompaniment();
         accompItem = new AccompanimentItem();
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(0);
         accompItem.Offsets.add(4);
         accompItem.Offsets.add(7);
         majorChordsAccomp.Items.add(accompItem);
-        intendedAccomps.add(majorChordsAccomp);
+        intendedScaleItems.add(majorChordsAccomp);*/
         
-        MajorScaleAccompaniment minorChordsAccomp = new MajorScaleAccompaniment();
+        /*MinorScaleAccompaniment minorChordsAccomp = new MinorScaleAccompaniment();
         accompItem = new AccompanimentItem();
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(0);
         accompItem.Offsets.add(4);
         accompItem.Offsets.add(7);
         minorChordsAccomp.Items.add(accompItem);
-        intendedAccomps.add(minorChordsAccomp);
+        intendedScaleItems.add(minorChordsAccomp);*/
 
-        /*MajorScaleAccompaniment simpleAccomp = new MajorScaleAccompaniment();
+        MajorScaleAccompaniment simpleAccomp = new MajorScaleAccompaniment();
         accompItem = new AccompanimentItem();
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(0);
@@ -55,9 +50,28 @@ public class Piece {
         accompItem.Offsets.add(11);
         accompItem.Offsets.add(14);
         simpleAccomp.Items.add(accompItem);
-        intendedAccomps.add(simpleAccomp);*/
+        intendedScaleItems.add(simpleAccomp);
 
-        currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));        
+        MinorScaleAccompaniment simpleAccomp2 = new MinorScaleAccompaniment();
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(4);
+        accompItem.Offsets.add(7);
+        simpleAccomp2.Items.add(accompItem);
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(5);
+        accompItem.Offsets.add(9);
+        accompItem.Offsets.add(12);
+        simpleAccomp2.Items.add(accompItem);
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(7);
+        accompItem.Offsets.add(11);
+        accompItem.Offsets.add(14);
+        simpleAccomp2.Items.add(accompItem);
+        intendedScaleItems.add(simpleAccomp2);
     }
     
     public void addTrack(Track track) {
@@ -67,13 +81,13 @@ public class Piece {
     public Track getTrack(Instrument instrument) {
         MersenneTwister twister = new MersenneTwister();
         
-        Track track = new Track();
+        Track track = new Track(instrument, intendedScaleItems);
         int numberOfSequences = twister.nextInt(20);
         
         Sequence adaptedSequence;
         Sequence sequenceToAdd;
         for (int i = 0; i < numberOfSequences; i++) {
-            Sequence sequence = getSequence(instrument);   
+            Sequence sequence = track.getSequence(instrument);   
             
             int repetitions = twister.nextInt(10);
             System.out.println(String.format("Number of repetitions: %d", repetitions));
@@ -84,12 +98,24 @@ public class Piece {
                     adaptedSequence.notes.forEach(note -> {
                         note.addValue(transposeUp ? 12 : -12, instrument, false);
                     });
+                    
                     track.Sequences.add(adaptedSequence);
-                    sequenceToAdd = adaptedSequence;
+                    continue;
                 } else {
                     sequenceToAdd = sequence;
                 }
                 
+                boolean modifyNoteValues = twister.nextBoolean();
+                if (modifyNoteValues) {
+                    adaptedSequence = sequence.getCopy();
+                    adaptedSequence.notes.forEach(note -> {
+                        if (twister.nextInt(12) == 0) {
+                            note.addValue(twister.nextInt(8) - 3, instrument, true);
+                        }
+                    });
+                    sequenceToAdd = adaptedSequence;
+                }
+
                 if (twister.nextInt(7) == 0) {
                     sequenceToAdd.notes.forEach(note -> {
                         note.IsRest = true;
@@ -101,95 +127,6 @@ public class Piece {
                 
         this.Tracks.add(track);
         return track;
-    }
-
-    private Sequence getSequence(Instrument instrument) {
-        MersenneTwister twister = new MersenneTwister();
-        Sequence sequence = new Sequence();
-
-        int lengthRange = MAX_SEQUENCE_LENGTH - MIN_SEQUENCE_LENGTH;
-        int patternLength = twister.nextInt(lengthRange);
-        int targetLength = patternLength + MIN_SEQUENCE_LENGTH;
-        int baseLength = instrument.DefaultLength;
-        int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
-        int currentValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;
-        int usedBaseNote = twister.nextInt(12);
-        double maxOffset = twister.nextInt(14) + 2;
-        int changeBaseNoteRange = twister.nextInt(20) + 5;
-        
-        int i = 0;
-        int attackRange = twister.nextInt(90) + 1;
-        int restDelayRange = twister.nextInt(7) + 1;
-        int restStartRange = twister.nextInt(12) + 1;
-
-        while (i < targetLength) {
-            boolean adaptLength = twister.nextInt(8) == 0;
-            boolean switchLength = twister.nextInt(30) == 0;
-            int actualLength = baseLength;
-                        
-            if (adaptLength) {
-                double lengthDelta = twister.nextDouble() * (baseLength * 0.3); // max 30% change
-                boolean subtractDelta = twister.nextBoolean();
-                
-                if (subtractDelta) {
-                    lengthDelta *= -1;
-                }
-                baseLength += lengthDelta;
-                
-                if (baseLength < Note.MIN_LENGTH) {
-                    baseLength = Note.MIN_LENGTH;
-                } else if (baseLength > Note.MAX_LENGTH) {
-                    baseLength = Note.MAX_LENGTH - twister.nextInt(Note.MAX_LENGTH) / 2;
-                }
-            }
-            
-            if (switchLength) {
-                baseLength = twister.nextInt(Note.MAX_LENGTH) * Note.MAX_LENGTH / 2 + Note.MIN_LENGTH;
-                actualLength = baseLength;
-            }
-            
-            if (twister.nextInt(changeBaseNoteRange) == 0) {
-                usedBaseNote = twister.nextInt(12);
-            }
-            
-            double baseOffset = twister.nextInt((int)maxOffset + 1);
-            double adjustedOffset = (baseOffset - maxOffset / 2) + 1;
-            
-            Note note = new Note(currentValue);
-            note.Attack = twister.nextInt(attackRange) + 30;
-            note.BaseNote = usedBaseNote;
-            actualLength = note.SetLength(actualLength, true);
-
-            if (twister.nextInt(20) == 0) {
-                currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
-                System.out.println("Intended Accomp changed!");
-            }
-            
-            note.IntendedAccomp = currentAccomp;
-            
-            double actualGrip = instrument.VariationGrip;
-            
-            currentValue = note.addValue(adjustedOffset * actualGrip, instrument, true);
-
-            i += actualLength;
-
-            if (sequence.notes.size() > 0) {
-                if (sequence.notes.get(sequence.notes.size() - 1).IsRest) {
-                    note.IsRest = true;
-                    if (twister.nextInt(restDelayRange) == 0) {
-                        note.IsRest = false;
-                    }
-                } else {
-                    note.IsRest = twister.nextInt(restStartRange) == 0;
-                }
-            }
-            
-            sequence.addNote(note);
-        }    
-        
-        System.out.println(String.format("Sequence note num: %s", sequence.notes.size()));
-        
-        return sequence;
     }
     
     public void AddAccompTrack(Track track, Instrument instrument, int trackNum, int mirroredTrackNum) {
@@ -210,9 +147,10 @@ public class Piece {
     
     private Track getAccompanimentTrack(Track masterTrack, Instrument instrument) {
         MersenneTwister twister = new MersenneTwister();
-        Track track = new Track();
+        Track track = new Track(instrument);
         int restRange = twister.nextInt(7) + 1;
-
+        int noteDiff = -1;
+        
         for (Sequence refSequence: masterTrack.Sequences) {
             Sequence sequence = new Sequence();
     
@@ -233,20 +171,24 @@ public class Piece {
             int attackRange = twister.nextInt(90) + 1;
             int restDelayRange = twister.nextInt(7) + 2;
             int restStartRange = twister.nextInt(10) + 2;
-            int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
-            int absoluteValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;
-            absoluteValue -= absoluteValue % 12;
-            int noteDiff = absoluteValue - refSequence.notes.get(0).GetValue();
+
+            if (noteDiff == -1) {
+                noteDiff = findNoteDiff(instrument, twister, refSequence);
+            }
             
             for (int i = 0; i < refSequence.notes.size(); i++) {
                 int delayLength = twister.nextInt(15) + 5;
     
+                if (twister.nextInt(30) == 0) {
+                    noteDiff = this.findNoteDiff(instrument, twister, refSequence);
+                }
+                
                 Note refNote = refSequence.notes.get(i);
-                Note note = new Note(refNote.GetValue() + noteDiff + refNote.BaseNote);
+                Note note = new Note(refNote.GetValue() + noteDiff + refNote.ScaleOffset);
                 note.Attack = twister.nextInt(attackRange) + 30;
-                note.BaseNote = refNote.BaseNote;
+                note.ScaleOffset = refNote.ScaleOffset;
                 note.SetLength(refNote.GetLength() - delayLength, false);
-                note.IntendedAccomp = refNote.IntendedAccomp;
+                note.IntendedScaleType = refNote.IntendedScaleType;
 
                 if (delayLength > 0) {
                     Note delayPseudoNote = new Note(70);
@@ -261,7 +203,7 @@ public class Piece {
                     note.Attack = 15;
                 }
 
-                ArrayList<Integer> offsets = refNote.IntendedAccomp.GetItemOffsets();
+                ArrayList<Integer> offsets = refNote.IntendedScaleType.GetItemOffsets();
 
                 int valueIndex = twister.nextInt(offsets.size());
                 int valueToAdd = offsets.get(valueIndex);
@@ -301,4 +243,13 @@ public class Piece {
         
         return track;
     }    
+
+    private int findNoteDiff(Instrument instrument, MersenneTwister twister, Sequence refSequence) throws IllegalArgumentException {
+        int noteDiff;
+        int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
+        int absoluteValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;
+        absoluteValue -= absoluteValue % 12;
+        noteDiff = absoluteValue - refSequence.notes.get(0).GetValue();
+        return noteDiff;
+    }
 }
