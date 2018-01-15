@@ -90,7 +90,7 @@ public final class Track {
                 }
             }
                         
-            if (twister.nextInt(twister.nextInt(25)) == 0) {
+            if (twister.nextInt(25) == 0) {
                 this.findScale();
             }
             
@@ -102,8 +102,9 @@ public final class Track {
             note.ScaleOffset = scaleOffset;
             actualLength = note.SetLength(actualLength, true);
 
-            if (twister.nextInt(15) == 0) {
+            if (twister.nextInt(10) == 0) {
                 this.currentAccomp.SetNewOffset();
+                System.out.println("New Offset set!");
             }
             
             if (twister.nextInt(30) == 0) {

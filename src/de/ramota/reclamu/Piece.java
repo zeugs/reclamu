@@ -184,7 +184,7 @@ public class Piece {
                 }
                 
                 Note refNote = refSequence.notes.get(i);
-                Note note = new Note(refNote.GetValue() + noteDiff + refNote.ScaleOffset);
+                Note note = new Note(refNote.GetValue() - (refNote.GetValue() - refNote.ScaleOffset) % 12 + noteDiff + refNote.ScaleOffset);
                 note.Attack = twister.nextInt(attackRange) + 30;
                 note.ScaleOffset = refNote.ScaleOffset;
                 note.SetLength(refNote.GetLength() - delayLength, false);
