@@ -21,7 +21,7 @@ public final class Track {
         this.instrument = instrument;
         this.intendedAccomps = intendedAccompaniments;
         this.findNoteValue();
-        this.findScaleType();
+        this.findAccompaniment();
         this.findScale();
     }
 
@@ -37,6 +37,7 @@ public final class Track {
     
     public void findScale() {
         scaleOffset = twister.nextInt(12);        
+        System.out.println(String.format("Scale changed to %d", scaleOffset));
     }
     
     public int GetCurrentValue() {
@@ -103,12 +104,7 @@ public final class Track {
             actualLength = note.SetLength(actualLength, true);
 
             if (twister.nextInt(10) == 0) {
-                this.currentAccomp.SetNewOffset();
-                System.out.println("New Offset set!");
-            }
-            
-            if (twister.nextInt(30) == 0) {
-                this.findScaleType();
+                this.findAccompaniment();
             }
             
             note.IntendedScaleType = currentAccomp;
@@ -159,8 +155,9 @@ public final class Track {
         return mirrorTrack;
     }
 
-    private void findScaleType() {
+    private void findAccompaniment() {
         currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
-        System.out.println("Intended Accomp changed!");
+        currentAccomp.SetNewOffset();
+        System.out.println(String.format("Intended Accomp changed to %s!", currentAccomp.toString()));
     }
 }

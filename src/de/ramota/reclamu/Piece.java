@@ -31,6 +31,7 @@ public class Piece {
         minorChordsAccomp.Items.add(accompItem);
         intendedScaleItems.add(minorChordsAccomp);*/
 
+        // contains I, IV, V, VI
         MajorScaleAccompaniment simpleAccomp = new MajorScaleAccompaniment();
         accompItem = new AccompanimentItem();
         accompItem.Offsets = new ArrayList<>();
@@ -50,26 +51,42 @@ public class Piece {
         accompItem.Offsets.add(11);
         accompItem.Offsets.add(14);
         simpleAccomp.Items.add(accompItem);
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(9);
+        accompItem.Offsets.add(13);
+        accompItem.Offsets.add(16);
+        simpleAccomp.Items.add(accompItem);
         intendedScaleItems.add(simpleAccomp);
 
+        // contains i, iv, v, vi, ii
         MinorScaleAccompaniment simpleAccomp2 = new MinorScaleAccompaniment();
         accompItem = new AccompanimentItem();
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(0);
-        accompItem.Offsets.add(4);
+        accompItem.Offsets.add(3);
         accompItem.Offsets.add(7);
         simpleAccomp2.Items.add(accompItem);
         accompItem = new AccompanimentItem();
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(5);
-        accompItem.Offsets.add(9);
+        accompItem.Offsets.add(8);
         accompItem.Offsets.add(12);
         simpleAccomp2.Items.add(accompItem);
         accompItem = new AccompanimentItem();
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(7);
-        accompItem.Offsets.add(11);
+        accompItem.Offsets.add(10);
         accompItem.Offsets.add(14);
+        simpleAccomp2.Items.add(accompItem);
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(8);
+        accompItem.Offsets.add(12);
+        accompItem.Offsets.add(16);
+        simpleAccomp2.Items.add(accompItem);
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(2);
+        accompItem.Offsets.add(5);
+        accompItem.Offsets.add(9);
         simpleAccomp2.Items.add(accompItem);
         intendedScaleItems.add(simpleAccomp2);
     }
@@ -184,7 +201,9 @@ public class Piece {
                 }
                 
                 Note refNote = refSequence.notes.get(i);
-                Note note = new Note(refNote.GetValue() - (refNote.GetValue() - refNote.ScaleOffset) % 12 + noteDiff + refNote.ScaleOffset);
+                
+                int noteVal = (refNote.GetValue() - refNote.GetValue() % 12) - (noteDiff - noteDiff % 12) + refNote.ScaleOffset;
+                Note note = new Note(noteVal);
                 note.Attack = twister.nextInt(attackRange) + 30;
                 note.ScaleOffset = refNote.ScaleOffset;
                 note.SetLength(refNote.GetLength() - delayLength, false);
@@ -208,7 +227,7 @@ public class Piece {
                 int valueIndex = twister.nextInt(offsets.size());
                 int valueToAdd = offsets.get(valueIndex);
 
-                note.addValue(valueToAdd, instrument, true);
+                note.addValue(valueToAdd, instrument, false);
 
                 if (sequence.notes.size() > 0) {
                     if (sequence.notes.get(sequence.notes.size() - 1).IsRest) {
