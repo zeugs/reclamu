@@ -10,7 +10,7 @@ public class Note {
     public ScaleItem IntendedScaleType;
     public static int MAX_LENGTH = 1000;
     public static int MIN_LENGTH = 100;
-    public int Attack;
+    private int Attack;
         
     public void SetValue(int value) {
         if (value < 0) {
@@ -22,6 +22,16 @@ public class Note {
         this.Value = value;        
     }
     
+    public void SetAttack(int value) {
+        if (value < 10) {
+            value = 10;
+        } else if (value > 120) {
+            value = 120;
+        }
+        
+        this.Attack = value;        
+    }
+
     public int SetLength(int length, boolean limit) {
         
         if (limit) {
@@ -40,6 +50,10 @@ public class Note {
         return this.Length;
     }
     
+    public int GetAttack() {
+        return this.Attack;
+    }
+
     public int GetValue() {
         return this.Value;
     }

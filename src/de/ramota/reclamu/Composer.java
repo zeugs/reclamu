@@ -165,6 +165,18 @@ public class Composer {
         bells.Name = "Bells";
         bells.VariationGrip = 0.7;
 
+        Instrument drums = new Instrument();
+        drums.MinNoteIndex = 24;
+        drums.MaxNoteIndex = 53;
+        drums.Name = "Drums";
+        drums.VariationGrip = 0.9;
+
+        Instrument drums2 = new Instrument();
+        drums2.MinNoteIndex = 24;
+        drums2.MaxNoteIndex = 53;
+        drums2.Name = "Drums";
+        drums2.VariationGrip = 0.9;
+
         Piece piece = new Piece();
 
         Track track1 = piece.getTrack(piano);
@@ -187,6 +199,9 @@ public class Composer {
         AddPlayGroup(harp, track1);
         AddPlayGroup(bells, track1);
 
+        /*AddPlayGroup(drums, track1);
+        AddPlayGroup(drums2, track1);*/
+
         SetSilencedInstrumentsInSequences(track1);
 
         piece.AddAccompTrack(track1, piano_sec, 1, 0);
@@ -208,6 +223,9 @@ public class Composer {
         piece.AddAccompTrack(track1, tuba, 2, 1);        
         piece.AddAccompTrack(track1, harp, 2, 0);
         piece.AddAccompTrack(track1, bells, 1, 0);
+
+        /*piece.AddAccompTrack(track1, drums, 1, 0);
+        piece.AddAccompTrack(track1, drums2, 1, 0);*/
 
         return piece;
     }

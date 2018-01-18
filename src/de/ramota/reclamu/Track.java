@@ -66,7 +66,6 @@ public final class Track {
         double maxOffset = twister.nextInt(14) + 2;
         
         int i = 0;
-        int attackRange = twister.nextInt(90) + 1;
         int restDelayRange = twister.nextInt(7) + 1;
         int restStartRange = twister.nextInt(12) + 1;
 
@@ -99,11 +98,10 @@ public final class Track {
             double adjustedOffset = (baseOffset - maxOffset / 2) + 1;
             
             Note note = new Note(currentValue);
-            note.Attack = twister.nextInt(attackRange) + 30;
             note.ScaleOffset = scaleOffset;
             actualLength = note.SetLength(actualLength, true);
 
-            if (twister.nextInt(10) == 0) {
+            if (twister.nextInt(6) == 0) {
                 this.findAccompaniment();
             }
             

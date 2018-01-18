@@ -51,11 +51,11 @@ public class Piece {
         accompItem.Offsets.add(11);
         accompItem.Offsets.add(14);
         simpleAccomp.Items.add(accompItem);
-        accompItem.Offsets = new ArrayList<>();
+        /*accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(9);
         accompItem.Offsets.add(13);
         accompItem.Offsets.add(16);
-        simpleAccomp.Items.add(accompItem);
+        simpleAccomp.Items.add(accompItem);*/
         intendedScaleItems.add(simpleAccomp);
 
         // contains i, iv, v, vi, ii
@@ -78,7 +78,7 @@ public class Piece {
         accompItem.Offsets.add(10);
         accompItem.Offsets.add(14);
         simpleAccomp2.Items.add(accompItem);
-        accompItem.Offsets = new ArrayList<>();
+        /*accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(8);
         accompItem.Offsets.add(12);
         accompItem.Offsets.add(16);
@@ -87,7 +87,7 @@ public class Piece {
         accompItem.Offsets.add(2);
         accompItem.Offsets.add(5);
         accompItem.Offsets.add(9);
-        simpleAccomp2.Items.add(accompItem);
+        simpleAccomp2.Items.add(accompItem);*/
         intendedScaleItems.add(simpleAccomp2);
     }
     
@@ -99,12 +99,20 @@ public class Piece {
         MersenneTwister twister = new MersenneTwister();
         
         Track track = new Track(instrument, intendedScaleItems);
-        int numberOfSequences = twister.nextInt(20);
+        int numberOfSequences = twister.nextInt(20) + 10;
         
         Sequence adaptedSequence;
         Sequence sequenceToAdd;
         for (int i = 0; i < numberOfSequences; i++) {
-            Sequence sequence = track.getSequence(instrument);   
+            
+            Sequence sequence;
+            if (i > 5 && twister.nextInt(3) == 0) {
+                int itemToCopy = twister.nextInt(track.Sequences.size());
+                sequence = track.Sequences.get(itemToCopy).getCopy();
+                System.out.println(String.format("Just copied sequence %d", itemToCopy));
+            } else {
+                sequence = track.getSequence(instrument);   
+            }
             
             int repetitions = twister.nextInt(10);
             System.out.println(String.format("Number of repetitions: %d", repetitions));
@@ -141,7 +149,24 @@ public class Piece {
                 track.Sequences.add(sequenceToAdd);
             }
         }
+
+        int currentAttack = twister.nextInt(80) + 40;
+        
+        for (Sequence sequence: track.Sequences) {
+            for (Note note: sequence.notes) {
+                if (twister.nextInt(150) == 0) {
+                    currentAttack = twister.nextInt(80) + 40;
+                }
+                note.SetAttack(currentAttack);
+                currentAttack += twister.nextInt(36) - 18;
                 
+                if (currentAttack < 40) {
+                    currentAttack = 41;
+                } else if (currentAttack > 120) {
+                    currentAttack = 119;
+                }
+            }
+        }
         this.Tracks.add(track);
         return track;
     }
@@ -185,7 +210,6 @@ public class Piece {
                 continue;
             }                
             
-            int attackRange = twister.nextInt(90) + 1;
             int restDelayRange = twister.nextInt(7) + 2;
             int restStartRange = twister.nextInt(10) + 2;
 
@@ -204,7 +228,7 @@ public class Piece {
                 
                 int noteVal = (refNote.GetValue() - refNote.GetValue() % 12) - (noteDiff - noteDiff % 12) + refNote.ScaleOffset;
                 Note note = new Note(noteVal);
-                note.Attack = twister.nextInt(attackRange) + 30;
+                note.SetAttack(refNote.GetAttack() + twister.nextInt(40) - 20);
                 note.ScaleOffset = refNote.ScaleOffset;
                 note.SetLength(refNote.GetLength() - delayLength, false);
                 note.IntendedScaleType = refNote.IntendedScaleType;
@@ -214,12 +238,6 @@ public class Piece {
                     delayPseudoNote.IsRest = true;
                     delayPseudoNote.SetLength(delayLength, false);
                     sequence.addNote(delayPseudoNote);     
-                }
-                
-                if (note.Attack > 127) {
-                    note.Attack = 115;
-                } else if (note.Attack < 0) {
-                    note.Attack = 15;
                 }
 
                 ArrayList<Integer> offsets = refNote.IntendedScaleType.GetItemOffsets();
