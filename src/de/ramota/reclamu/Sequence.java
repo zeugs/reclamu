@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Sequence {
-    public List<Note> notes = new ArrayList<>();
+    private final List<Note> notes = new ArrayList<>();
     public List<PlayGroup> SilencedGroups = new ArrayList<>();
+    
+    public List<Note> getNotes() {
+        return notes;
+    }
     
     public void addNote(Note note) {
         notes.add(note);

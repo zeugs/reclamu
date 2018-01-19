@@ -1,6 +1,7 @@
 package de.ramota.reclamu;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class Note {
     private int Value;
@@ -8,8 +9,8 @@ public class Note {
     public boolean IsRest;
     public int ScaleOffset;
     public ScaleItem IntendedScaleType;
-    public static int MAX_LENGTH = 1000;
-    public static int MIN_LENGTH = 100;
+    public static int MAX_LENGTH = 1500;
+    public static int MIN_LENGTH = 200;
     private int Attack;
         
     public void SetValue(int value) {
@@ -35,6 +36,8 @@ public class Note {
     public int SetLength(int length, boolean limit) {
         
         if (limit) {
+            length -= length % Note.MIN_LENGTH;
+            
             if (length < Note.MIN_LENGTH) {
                 length = Note.MIN_LENGTH;
             } else if (length > Note.MAX_LENGTH) {
@@ -103,7 +106,7 @@ public class Note {
     public String toString() {
         String convertedString = "";
         try {
-            double outputLength = Length / (Note.MAX_LENGTH * 1.0);
+            String outputLength = String.format(Locale.US, "%.3f", this.Length / (Note.MAX_LENGTH * 1.0));
             
             if (IsRest) {
                 convertedString = "R/" + outputLength;
@@ -116,7 +119,7 @@ public class Note {
         return convertedString;
     }
 
-    Note getCopy() {
+    public Note getCopy() {
         Note note = new Note(this.Value);
         note.Attack = this.Attack;
         note.ScaleOffset = this.ScaleOffset;

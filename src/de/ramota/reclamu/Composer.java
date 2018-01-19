@@ -1,5 +1,8 @@
 package de.ramota.reclamu;
 
+import de.ramota.reclamu.composers.PlainAccompanimentComposer;
+import de.ramota.reclamu.composers.FreeFormTrackComposer;
+import de.ramota.reclamu.composers.PlainTrackComposer;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
@@ -10,7 +13,7 @@ import java.util.*;
 
 public class Composer {
     public static int MIN_SEQUENCE_LENGTH =  100;
-    public static int MAX_SEQUENCE_LENGTH = 20000;
+    public static int MAX_SEQUENCE_LENGTH = 10000;
     public static double MAX_OFFSET = 4;
 
     public Composer() {
@@ -177,9 +180,72 @@ public class Composer {
         drums2.Name = "Drums";
         drums2.VariationGrip = 0.9;
 
+        List<ScaleItem> intendedScaleItems = new ArrayList<>();
+        AccompanimentItem accompItem;
+
+        // contains I, IV, V, VI
+        MajorScaleAccompaniment simpleAccomp = new MajorScaleAccompaniment();
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(4);
+        accompItem.Offsets.add(7);
+        simpleAccomp.Items.add(accompItem);
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(5);
+        accompItem.Offsets.add(9);
+        accompItem.Offsets.add(12);
+        simpleAccomp.Items.add(accompItem);
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(7);
+        accompItem.Offsets.add(11);
+        accompItem.Offsets.add(14);
+        simpleAccomp.Items.add(accompItem);
+        /*accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(9);
+        accompItem.Offsets.add(13);
+        accompItem.Offsets.add(16);
+        simpleAccomp.Items.add(accompItem);*/
+        intendedScaleItems.add(simpleAccomp);
+
+        // contains i, iv, v, vi, ii
+        MinorScaleAccompaniment simpleAccomp2 = new MinorScaleAccompaniment();
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(3);
+        accompItem.Offsets.add(7);
+        simpleAccomp2.Items.add(accompItem);
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(5);
+        accompItem.Offsets.add(8);
+        accompItem.Offsets.add(12);
+        simpleAccomp2.Items.add(accompItem);
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(7);
+        accompItem.Offsets.add(10);
+        accompItem.Offsets.add(14);
+        simpleAccomp2.Items.add(accompItem);
+        /*accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(8);
+        accompItem.Offsets.add(12);
+        accompItem.Offsets.add(16);
+        simpleAccomp2.Items.add(accompItem);
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(2);
+        accompItem.Offsets.add(5);
+        accompItem.Offsets.add(9);
+        simpleAccomp2.Items.add(accompItem);*/
+        intendedScaleItems.add(simpleAccomp2);
+        
         Piece piece = new Piece();
 
-        Track track1 = piece.getTrack(piano);
+        //Track track1 = this.getFreeFormTrack(piece, piano, intendedScaleItems);
+        Track track1 = this.getPlainTrack(piece, piano, intendedScaleItems);
 
         AddPlayGroup(viola, track1);
         AddPlayGroup(cello, track1);
@@ -204,25 +270,27 @@ public class Composer {
 
         SetSilencedInstrumentsInSequences(track1);
 
-        piece.AddAccompTrack(track1, piano_sec, 1, 0);
-
-        piece.AddAccompTrack(track1, viola, 12, 6);
-        piece.AddAccompTrack(track1, cello, 10, 5);
-        piece.AddAccompTrack(track1, violin, 16, 8);
-        piece.AddAccompTrack(track1, violin, 14, 7);
-        piece.AddAccompTrack(track1, contrabass, 8, 4);
+        PlainAccompanimentComposer plainComposer = new PlainAccompanimentComposer(piece);
         
-        piece.AddAccompTrack(track1, flute, 3, 2);
-        piece.AddAccompTrack(track1, clarinet, 3, 1);
-        piece.AddAccompTrack(track1, oboe, 3, 1);
-        piece.AddAccompTrack(track1, bassoon, 3, 1);
-        piece.AddAccompTrack(track1, frenchHorn, 6, 3);
+        plainComposer.GenerateTrack(track1, piano_sec, 1, 0);
 
-        piece.AddAccompTrack(track1, trumpet, 5, 2);
-        piece.AddAccompTrack(track1, trombone, 5, 2);
-        piece.AddAccompTrack(track1, tuba, 2, 1);        
-        piece.AddAccompTrack(track1, harp, 2, 0);
-        piece.AddAccompTrack(track1, bells, 1, 0);
+        plainComposer.GenerateTrack(track1, viola, 12, 6);
+        plainComposer.GenerateTrack(track1, cello, 10, 5);
+        plainComposer.GenerateTrack(track1, violin, 16, 8);
+        plainComposer.GenerateTrack(track1, violin, 14, 7);
+        plainComposer.GenerateTrack(track1, contrabass, 8, 4);
+        
+        plainComposer.GenerateTrack(track1, flute, 3, 2);
+        plainComposer.GenerateTrack(track1, clarinet, 3, 1);
+        plainComposer.GenerateTrack(track1, oboe, 3, 1);
+        plainComposer.GenerateTrack(track1, bassoon, 3, 1);
+        plainComposer.GenerateTrack(track1, frenchHorn, 6, 3);
+
+        plainComposer.GenerateTrack(track1, trumpet, 5, 2);
+        plainComposer.GenerateTrack(track1, trombone, 5, 2);
+        plainComposer.GenerateTrack(track1, tuba, 2, 1);        
+        plainComposer.GenerateTrack(track1, harp, 2, 0);
+        plainComposer.GenerateTrack(track1, bells, 1, 0);
 
         /*piece.AddAccompTrack(track1, drums, 1, 0);
         piece.AddAccompTrack(track1, drums2, 1, 0);*/
@@ -230,6 +298,28 @@ public class Composer {
         return piece;
     }
 
+    public Track getFreeFormTrack(Piece piece, Instrument instrument, List<ScaleItem> intendedScaleItems) {
+        MersenneTwister twister = new MersenneTwister();
+        
+        FreeFormTrackComposer trackComposer = new FreeFormTrackComposer(instrument, intendedScaleItems);
+        int numberOfSequences = twister.nextInt(40) + 20;
+        Track track = trackComposer.generateTrack(numberOfSequences);
+        piece.Tracks.add(track);
+        
+        return track;
+    }
+    
+    public Track getPlainTrack(Piece piece, Instrument instrument, List<ScaleItem> intendedScaleItems) {
+        MersenneTwister twister = new MersenneTwister();
+        
+        PlainTrackComposer trackComposer = new PlainTrackComposer(instrument, intendedScaleItems);
+        int numberOfSequences = twister.nextInt(40) + 20;
+        Track track = trackComposer.generateTrack(numberOfSequences);
+        piece.Tracks.add(track);
+        
+        return track;
+    }    
+    
     private void AddPlayGroup(Instrument viola, Track track1) {
         PlayGroup playGroup = new PlayGroup();
         playGroup.AddInstrument(viola);
