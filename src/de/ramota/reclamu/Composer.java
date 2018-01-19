@@ -1,7 +1,8 @@
 package de.ramota.reclamu;
 
-import de.ramota.reclamu.composers.PlainAccompanimentComposer;
+import de.ramota.reclamu.composers.MaeanderAccompanimentComposer;
 import de.ramota.reclamu.composers.FreeFormTrackComposer;
+import de.ramota.reclamu.composers.PlainAccompanimentComposer;
 import de.ramota.reclamu.composers.PlainTrackComposer;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.jfugue.midi.MidiFileManager;
@@ -270,27 +271,27 @@ public class Composer {
 
         SetSilencedInstrumentsInSequences(track1);
 
-        PlainAccompanimentComposer plainComposer = new PlainAccompanimentComposer(piece);
-        
-        plainComposer.GenerateTrack(track1, piano_sec, 1, 0);
+        PlainAccompanimentComposer composer = new PlainAccompanimentComposer(piece);
 
-        plainComposer.GenerateTrack(track1, viola, 12, 6);
-        plainComposer.GenerateTrack(track1, cello, 10, 5);
-        plainComposer.GenerateTrack(track1, violin, 16, 8);
-        plainComposer.GenerateTrack(track1, violin, 14, 7);
-        plainComposer.GenerateTrack(track1, contrabass, 8, 4);
-        
-        plainComposer.GenerateTrack(track1, flute, 3, 2);
-        plainComposer.GenerateTrack(track1, clarinet, 3, 1);
-        plainComposer.GenerateTrack(track1, oboe, 3, 1);
-        plainComposer.GenerateTrack(track1, bassoon, 3, 1);
-        plainComposer.GenerateTrack(track1, frenchHorn, 6, 3);
+        composer.generateTrack(track1, piano_sec, 1, 0);
 
-        plainComposer.GenerateTrack(track1, trumpet, 5, 2);
-        plainComposer.GenerateTrack(track1, trombone, 5, 2);
-        plainComposer.GenerateTrack(track1, tuba, 2, 1);        
-        plainComposer.GenerateTrack(track1, harp, 2, 0);
-        plainComposer.GenerateTrack(track1, bells, 1, 0);
+        composer.generateTrack(track1, viola, 12, 6);
+        composer.generateTrack(track1, cello, 10, 5);
+        composer.generateTrack(track1, violin, 16, 8);
+        composer.generateTrack(track1, violin, 14, 7);
+        composer.generateTrack(track1, contrabass, 8, 4);
+        
+        composer.generateTrack(track1, flute, 3, 2);
+        composer.generateTrack(track1, clarinet, 3, 1);
+        composer.generateTrack(track1, oboe, 3, 1);
+        composer.generateTrack(track1, bassoon, 3, 1);
+        composer.generateTrack(track1, frenchHorn, 6, 3);
+
+        composer.generateTrack(track1, trumpet, 5, 2);
+        composer.generateTrack(track1, trombone, 5, 2);
+        composer.generateTrack(track1, tuba, 2, 1);        
+        composer.generateTrack(track1, harp, 2, 0);
+        composer.generateTrack(track1, bells, 1, 0);
 
         /*piece.AddAccompTrack(track1, drums, 1, 0);
         piece.AddAccompTrack(track1, drums2, 1, 0);*/
@@ -302,6 +303,7 @@ public class Composer {
         MersenneTwister twister = new MersenneTwister();
         
         FreeFormTrackComposer trackComposer = new FreeFormTrackComposer(instrument, intendedScaleItems);
+        trackComposer.initialize();
         int numberOfSequences = twister.nextInt(40) + 20;
         Track track = trackComposer.generateTrack(numberOfSequences);
         piece.Tracks.add(track);
@@ -313,7 +315,8 @@ public class Composer {
         MersenneTwister twister = new MersenneTwister();
         
         PlainTrackComposer trackComposer = new PlainTrackComposer(instrument, intendedScaleItems);
-        int numberOfSequences = twister.nextInt(40) + 20;
+        trackComposer.initialize();
+        int numberOfSequences = twister.nextInt(40) + 10;
         Track track = trackComposer.generateTrack(numberOfSequences);
         piece.Tracks.add(track);
         

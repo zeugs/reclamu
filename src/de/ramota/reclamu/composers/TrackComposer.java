@@ -15,6 +15,10 @@ public class TrackComposer {
     protected final List<ScaleItem> intendedAccomps;
     protected final MersenneTwister twister;
     protected final Instrument instrument;
+    protected int scaleOffset;
+    protected ScaleItem currentAccomp;
+    protected int instrumentRange;
+    protected int currentValue;
 
     public TrackComposer(Instrument instrument, List<ScaleItem> intendedAccomps) {
         this.twister = new MersenneTwister();
@@ -22,6 +26,12 @@ public class TrackComposer {
         this.intendedAccomps = intendedAccomps;
     }
     
+    public void initialize() {
+        this.findNoteValue();
+        this.findAccompaniment();
+        this.findScale();        
+    }
+
     public Sequence getSequence(Instrument instrument) {
         return null;
     }
@@ -29,4 +39,20 @@ public class TrackComposer {
     public Track generateTrack(int sequenceNum) {
         return null;
     }
+    
+    public void findNoteValue() {
+        instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
+        currentValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;        
+    }
+    
+    public void findScale() {
+        scaleOffset = twister.nextInt(12);        
+        System.out.println(String.format("Scale changed to %d", scaleOffset));
+    }
+    
+    public void findAccompaniment() {
+        currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
+        currentAccomp.SetNewOffset();
+        System.out.println(String.format("Intended Accomp changed to %s!", currentAccomp.toString()));
+    }    
 }

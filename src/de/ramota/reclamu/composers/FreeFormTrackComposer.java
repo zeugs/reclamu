@@ -5,46 +5,20 @@ import de.ramota.reclamu.Note;
 import de.ramota.reclamu.ScaleItem;
 import de.ramota.reclamu.Sequence;
 import de.ramota.reclamu.Track;
-import de.ramota.reclamu.composers.TrackComposer;
 import static de.ramota.reclamu.Composer.MAX_SEQUENCE_LENGTH;
 import static de.ramota.reclamu.Composer.MIN_SEQUENCE_LENGTH;
 import java.util.List;
-import org.apache.commons.math3.random.MersenneTwister;
 
 /**
  *
  * @author Mathies Gräske
  */
 public class FreeFormTrackComposer extends TrackComposer {
-    private int instrumentRange;
-    private int currentValue;
-    private int scaleOffset;
-    private ScaleItem currentAccomp;
 
     public FreeFormTrackComposer(Instrument instrument, List<ScaleItem> intendedAccomps) {
-        super(instrument, intendedAccomps);
-        
-        this.findNoteValue();
-        this.findAccompaniment();
-        this.findScale();
+        super(instrument, intendedAccomps);        
     }
-    
-    private void findNoteValue() {
-        instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
-        currentValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;        
-    }
-    
-    private void findScale() {
-        scaleOffset = twister.nextInt(12);        
-        System.out.println(String.format("Scale changed to %d", scaleOffset));
-    }
-    
-    private void findAccompaniment() {
-        currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
-        currentAccomp.SetNewOffset();
-        System.out.println(String.format("Intended Accomp changed to %s!", currentAccomp.toString()));
-    }
-    
+            
     @Override
     public Sequence getSequence(Instrument instrument) {
         Sequence sequence = new Sequence();
