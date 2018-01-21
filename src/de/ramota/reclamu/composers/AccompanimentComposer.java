@@ -1,7 +1,9 @@
 package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.Instrument;
+import de.ramota.reclamu.Note;
 import de.ramota.reclamu.Piece;
+import de.ramota.reclamu.Sequence;
 import de.ramota.reclamu.Track;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +15,14 @@ import org.apache.commons.math3.random.MersenneTwister;
  */
 public class AccompanimentComposer {
     protected final Piece piece;
-    
+    protected MersenneTwister twister = new MersenneTwister();
+
     public AccompanimentComposer(Piece piece) {
         this.piece = piece;
     }
 
     public void generateTrack(Track track, Instrument instrument, int trackNum, int mirroredTrackNum) {
         List<Track> newTracks = new ArrayList<>();
-        MersenneTwister twister = new MersenneTwister();
         
         for (int i = 0; i < trackNum - mirroredTrackNum; i++) {
             Track accompTrack = this.getAccompanimentTrack(track, instrument);
@@ -36,5 +38,25 @@ public class AccompanimentComposer {
     
     protected Track getAccompanimentTrack(Track masterTrack, Instrument instrument) {
         return null;
+    }   
+    
+    protected void silenceSequence(Sequence refSequence, Sequence sequence, Track track) {
+        for (int j = 0; j < refSequence.getNotes().size(); j++) {
+            Note noteCopy = refSequence.getNotes().get(j).getCopy();
+            noteCopy.IsRest = true;
+            sequence.getNotes().add(noteCopy);
+        }
+        track.Sequences.add(sequence);
+    }
+    
+    protected int findNoteDiff(Instrument instrument, Sequence refSequence) {
+        int noteDiff = 0;
+        int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
+        int absoluteValue = twister.nextInt(instrumentRange) + instrument.MinNoteIndex;
+        absoluteValue -= absoluteValue % 12;
+        if (refSequence.getNotes().size() > 0) {
+            noteDiff = absoluteValue - refSequence.getNotes().get(0).GetValue();
+        }
+        return -noteDiff;
     }    
 }

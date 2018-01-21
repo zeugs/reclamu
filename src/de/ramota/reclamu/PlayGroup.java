@@ -8,10 +8,20 @@ import java.util.ArrayList;
  */
 public class PlayGroup {
     private ArrayList<Instrument> Instruments = new ArrayList<>();
-    public boolean IsSilenced;
+    public boolean isSilenced;
     
     public void AddInstrument(Instrument instrument) {
         Instruments.add(instrument);
         instrument.Group = this;
+    }
+
+    PlayGroup getCopy() {
+        PlayGroup group = new PlayGroup();
+        group.isSilenced = isSilenced;
+        for (Instrument instrument: Instruments) {
+            group.Instruments.add(instrument.getCopy());
+        }
+        
+        return group;
     }
 }

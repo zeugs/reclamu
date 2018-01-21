@@ -20,9 +20,11 @@ public class FreeFormTrackComposer extends TrackComposer {
     }
             
     @Override
-    public Sequence getSequence(Instrument instrument) {
+    public Sequence getSequence(Instrument instrument, double tempo) {
         Sequence sequence = new Sequence();
 
+        sequence.setTempo(1);
+        
         int lengthRange = MAX_SEQUENCE_LENGTH - MIN_SEQUENCE_LENGTH;
         int patternLength = twister.nextInt(lengthRange);
         int targetLength = patternLength + MIN_SEQUENCE_LENGTH;
@@ -74,7 +76,9 @@ public class FreeFormTrackComposer extends TrackComposer {
             
             double actualGrip = instrument.VariationGrip;
             
-            currentValue = note.addValue(adjustedOffset * actualGrip, instrument, true);
+            note.addValue(adjustedOffset * actualGrip, instrument);
+            note.setValueInRange();
+            currentValue = note.GetValue();
 
             i += actualLength;
 
@@ -110,17 +114,17 @@ public class FreeFormTrackComposer extends TrackComposer {
                 sequence = track.Sequences.get(itemToCopy).getCopy();
                 System.out.println(String.format("Just copied sequence %d", itemToCopy));
             } else {
-                sequence = this.getSequence(instrument);   
+                sequence = this.getSequence(instrument, 1);   
             }
             
-            int repetitions = twister.nextInt(10);
+            int repetitions = twister.nextInt(6);
             System.out.println(String.format("Number of repetitions: %d", repetitions));
             for (int j = 0; j < repetitions; j++) {
                 if (twister.nextInt(5) == 0) {
                     adaptedSequence = sequence.getCopy();
                     boolean transposeUp = twister.nextBoolean();
                     adaptedSequence.getNotes().forEach(note -> {
-                        note.addValue(transposeUp ? 12 : -12, instrument, false);
+                        note.addValue(transposeUp ? 12 : -12, instrument);
                     });
                     
                     track.Sequences.add(adaptedSequence);
@@ -134,7 +138,8 @@ public class FreeFormTrackComposer extends TrackComposer {
                     adaptedSequence = sequence.getCopy();
                     adaptedSequence.getNotes().forEach(note -> {
                         if (twister.nextInt(12) == 0) {
-                            note.addValue(twister.nextInt(8) - 3, instrument, true);
+                            note.addValue(twister.nextInt(8) - 3, instrument);
+                            note.setValueInRange();
                         }
                     });
                     sequenceToAdd = adaptedSequence;
@@ -156,7 +161,7 @@ public class FreeFormTrackComposer extends TrackComposer {
                 if (twister.nextInt(150) == 0) {
                     currentAttack = twister.nextInt(80) + 40;
                 }
-                note.SetAttack(currentAttack);
+                note.setAttack(currentAttack);
                 currentAttack += twister.nextInt(36) - 18;
                 
                 if (currentAttack < 40) {

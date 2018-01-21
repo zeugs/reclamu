@@ -23,13 +23,14 @@ public class MajorScaleAccompaniment extends ScaleItem {
         majorChordOffsets.add(9);
         majorChordOffsets.add(11);
 
-        majorChordOffsets.add(12);                
-        majorChordOffsets.add(14);                
-        majorChordOffsets.add(16);                
-        majorChordOffsets.add(17);                
-        majorChordOffsets.add(19);                
-        majorChordOffsets.add(21);                
-        majorChordOffsets.add(23);                
+        int secondffset = 12;
+        majorChordOffsets.add(secondffset + 0);
+        majorChordOffsets.add(secondffset + 2);
+        majorChordOffsets.add(secondffset + 4);
+        majorChordOffsets.add(secondffset + 5);
+        majorChordOffsets.add(secondffset + 7);
+        majorChordOffsets.add(secondffset + 9);
+        majorChordOffsets.add(secondffset + 11);
     }
     
     @Override

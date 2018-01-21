@@ -12,6 +12,17 @@ public class Instrument {
     
     public Instrument() {
         MersenneTwister twister = new MersenneTwister();
-        this.DefaultLength = twister.nextInt(Note.MAX_LENGTH - Note.MIN_LENGTH) + Note.MIN_LENGTH;
+        this.DefaultLength = 800;
+    }
+
+    Instrument getCopy() {
+        Instrument instrument = new Instrument();
+        instrument.MinNoteIndex = MinNoteIndex;
+        instrument.MaxNoteIndex = MaxNoteIndex;
+        instrument.VariationGrip = VariationGrip;
+        instrument.Name = Name;
+        instrument.DefaultLength = DefaultLength;
+        instrument.Group = Group;
+        return instrument;
     }
 }

@@ -71,7 +71,7 @@ public class Composer {
         piano.MinNoteIndex = 24;
         piano.MaxNoteIndex = 108;
         piano.Name = "Piano";
-        piano.VariationGrip = 0.7;
+        piano.VariationGrip = 0.8;
         
         Instrument piano_sec = new Instrument();
         piano_sec.MinNoteIndex = 24;
@@ -204,11 +204,11 @@ public class Composer {
         accompItem.Offsets.add(11);
         accompItem.Offsets.add(14);
         simpleAccomp.Items.add(accompItem);
-        /*accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(9);
         accompItem.Offsets.add(13);
         accompItem.Offsets.add(16);
-        simpleAccomp.Items.add(accompItem);*/
+        simpleAccomp.Items.add(accompItem);
         intendedScaleItems.add(simpleAccomp);
 
         // contains i, iv, v, vi, ii
@@ -231,7 +231,7 @@ public class Composer {
         accompItem.Offsets.add(10);
         accompItem.Offsets.add(14);
         simpleAccomp2.Items.add(accompItem);
-        /*accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(8);
         accompItem.Offsets.add(12);
         accompItem.Offsets.add(16);
@@ -240,7 +240,7 @@ public class Composer {
         accompItem.Offsets.add(2);
         accompItem.Offsets.add(5);
         accompItem.Offsets.add(9);
-        simpleAccomp2.Items.add(accompItem);*/
+        simpleAccomp2.Items.add(accompItem);
         intendedScaleItems.add(simpleAccomp2);
         
         Piece piece = new Piece();
@@ -272,6 +272,7 @@ public class Composer {
         SetSilencedInstrumentsInSequences(track1);
 
         PlainAccompanimentComposer composer = new PlainAccompanimentComposer(piece);
+        //MaeanderAccompanimentComposer composer = new MaeanderAccompanimentComposer(piece);
 
         composer.generateTrack(track1, piano_sec, 1, 0);
 
@@ -333,9 +334,9 @@ public class Composer {
         MersenneTwister twister = new MersenneTwister();
         track1.Sequences.forEach((sequence) -> {
             track1.PlayGroups.forEach((group) -> {
-                boolean insertSilence = twister.nextInt(7) == 0;
+                boolean insertSilence = twister.nextInt(3) == 0;
                 if (insertSilence) {
-                    sequence.SilencedGroups.add(group);
+                    sequence.silencedGroups.add(group);
                 }
             });
         });

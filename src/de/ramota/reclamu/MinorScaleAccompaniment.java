@@ -23,13 +23,14 @@ public class MinorScaleAccompaniment extends ScaleItem {
         minorChordOffset.add(8);
         minorChordOffset.add(10);
         
-        minorChordOffset.add(12);        
-        minorChordOffset.add(14);        
-        minorChordOffset.add(15);        
-        minorChordOffset.add(17);        
-        minorChordOffset.add(19);        
-        minorChordOffset.add(21);        
-        minorChordOffset.add(23);        
+        int secondffset = 12;
+        minorChordOffset.add(secondffset + 0);
+        minorChordOffset.add(secondffset + 2);
+        minorChordOffset.add(secondffset + 3);
+        minorChordOffset.add(secondffset + 5);
+        minorChordOffset.add(secondffset + 7);
+        minorChordOffset.add(secondffset + 8);
+        minorChordOffset.add(secondffset + 10);
     }
     
     @Override

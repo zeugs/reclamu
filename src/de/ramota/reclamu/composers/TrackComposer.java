@@ -32,7 +32,7 @@ public class TrackComposer {
         this.findScale();        
     }
 
-    public Sequence getSequence(Instrument instrument) {
+    public Sequence getSequence(Instrument instrument, double tempo) {
         return null;
     }
     

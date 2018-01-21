@@ -23,7 +23,7 @@ public class Note {
         this.Value = value;        
     }
     
-    public void SetAttack(int value) {
+    public void setAttack(int value) {
         if (value < 10) {
             value = 10;
         } else if (value > 120) {
@@ -65,7 +65,8 @@ public class Note {
         this.Value = value;
     }
     
-    private void setValueInRange(ArrayList<Integer> offsets) {
+    public void setValueInRange() {
+        ArrayList<Integer> offsets = IntendedScaleType.GetMapping();
         int relativeValue = (Value - ScaleOffset) % 12;
         
         int distance = 1000;
@@ -82,7 +83,7 @@ public class Note {
         Value = valueToUse;
     }
 
-    public int addValue(double valueToAdd, Instrument instrument, boolean adapt) {
+    public int addValue(double valueToAdd, Instrument instrument) {
         Value = (int)(Value + valueToAdd);
         
         while (Value < instrument.MinNoteIndex) {
@@ -93,20 +94,18 @@ public class Note {
             Value -= 12;
         }
         
-        ArrayList<Integer> mappings = IntendedScaleType.GetMapping();
-        
-        if (adapt) {
-            setValueInRange(mappings);
-        }
-        
         return Value;
+    }
+    
+    public void adaptNote() {
+        
     }
 
     @Override
     public String toString() {
         String convertedString = "";
         try {
-            String outputLength = String.format(Locale.US, "%.3f", this.Length / (Note.MAX_LENGTH * 1.0));
+            String outputLength = String.format(Locale.US, "%.4f", this.Length / (Note.MAX_LENGTH * 1.0));
             
             if (IsRest) {
                 convertedString = "R/" + outputLength;
