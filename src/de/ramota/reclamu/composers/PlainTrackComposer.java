@@ -27,30 +27,39 @@ public class PlainTrackComposer extends TrackComposer {
         int sequenceLength = twister.nextInt(15) + 6;
         sequenceLength -= sequenceLength % 4 + 4;
         
-        int subNoteCount = twister.nextInt(3);
-        switch (subNoteCount) {
-            case 0: subNoteCount = 1; break;
-            case 1: subNoteCount = 2; break;
-            case 2: subNoteCount = 4; break;
-            case 3: subNoteCount = 8; break;
+        int subNoteCountIndex = twister.nextInt(3);
+        int currentSubNoteCount = 0;
+        
+        switch (subNoteCountIndex) {
+            case 0: currentSubNoteCount = 1; break;
+            case 1: currentSubNoteCount = 2; break;
+            case 2: currentSubNoteCount = 4; break;
+            case 3: currentSubNoteCount = 8; break;
         }
  
         for (int i = 0; i < sequenceLength; i++) {
             if (twister.nextInt(5) == 0) {
-                subNoteCount = (twister.nextInt(3));
-                switch (subNoteCount) {
-                    case 0: subNoteCount = 1; break;
-                    case 1: subNoteCount = 2; break;
-                    case 2: subNoteCount = 4; break;
-                    case 3: subNoteCount = 8; break;
+                int subNoteDelta = (twister.nextInt(3) - 1);
+                subNoteCountIndex += subNoteDelta;
+                if (subNoteCountIndex < 0) {
+                    subNoteCountIndex = 0;
+                } else if (subNoteCountIndex > 3) {
+                    subNoteCountIndex = 3;
+                }
+                
+                switch (subNoteCountIndex) {
+                    case 0: currentSubNoteCount = 1; break;
+                    case 1: currentSubNoteCount = 2; break;
+                    case 2: currentSubNoteCount = 4; break;
+                    case 3: currentSubNoteCount = 8; break;
                 }
             }
             
-            for (int j = 0; j < subNoteCount; j++) {
+            for (int j = 0; j < currentSubNoteCount; j++) {
                 Note note = new Note(currentVal);
                 
                 note.setAttack(twister.nextInt(80) + 30);
-                note.SetLength((int)(instrument.DefaultLength / subNoteCount / sequence.getTempo()), true);
+                note.SetLength((int)(instrument.DefaultLength / currentSubNoteCount / sequence.getTempo()), true);
                 note.IntendedScaleType = currentAccomp;
 
                 if (sequence.getNotes().size() > 0) {
@@ -97,6 +106,7 @@ public class PlainTrackComposer extends TrackComposer {
             if (i > 5 && twister.nextInt(3) == 0) {
                 int itemToCopy = twister.nextInt(track.Sequences.size());
                 sequence = track.Sequences.get(itemToCopy).getCopy();
+                                
                 System.out.println(String.format("Just copied sequence %d", itemToCopy));
             } else {
                 sequence = this.getSequence(instrument, currentTempo);   
@@ -105,7 +115,13 @@ public class PlainTrackComposer extends TrackComposer {
             
             int repetitions = twister.nextInt(6);
             for (int j = 0; j < repetitions; j++) {
-                track.addSequence(sequence.getCopy());
+                Sequence adaptedSequence = sequence.getCopy();
+                boolean transposeUp = twister.nextBoolean();
+                sequence.getNotes().forEach(note -> {
+                    note.addValue(transposeUp ? 12 : -12, instrument);
+                });
+                
+                track.addSequence(adaptedSequence);
             }
         }
         

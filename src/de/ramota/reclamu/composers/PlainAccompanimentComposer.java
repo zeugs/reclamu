@@ -37,7 +37,7 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
             }                
             
             int restDelayRange = twister.nextInt(2) + 1;
-            int restStartRange = twister.nextInt(30) + 2;
+            int restStartRange = twister.nextInt(20) + 2;
 
             if (noteDiff == -1) {
                 noteDiff = findNoteDiff(instrument, refSequence);
@@ -86,7 +86,7 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                 
                 List<Note> refNotes = refSequence.getNotes();
 
-                if (twister.nextInt(12) == 0) {
+                if (twister.nextInt(8) == 0) {
                     int skip = twister.nextInt(5);
                     int startPos = i + 1;
 
