@@ -184,31 +184,109 @@ public class Composer {
         List<ScaleItem> intendedScaleItems = new ArrayList<>();
         AccompanimentItem accompItem;
 
-        // contains I, IV, V, VI
         MajorScaleAccompaniment simpleAccomp = new MajorScaleAccompaniment();
+        // I
         accompItem = new AccompanimentItem();
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(0);
         accompItem.Offsets.add(4);
         accompItem.Offsets.add(7);
-        simpleAccomp.Items.add(accompItem);
+        accompItem.Weight = 25;
+        simpleAccomp.addAccompanimentItem(accompItem);
+        // augmented
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(4);
+        accompItem.Offsets.add(8);
+        accompItem.Weight = 5;
+        simpleAccomp.addAccompanimentItem(accompItem);
+        // diminished
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(3);
+        accompItem.Offsets.add(6);
+        accompItem.Weight = 5;
+        simpleAccomp.addAccompanimentItem(accompItem);
+        // diminished7
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(3);
+        accompItem.Offsets.add(6);
+        accompItem.Offsets.add(9);
+        accompItem.Weight = 5;
+        simpleAccomp.addAccompanimentItem(accompItem);
+        // augmented7
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(4);
+        accompItem.Offsets.add(8);
+        accompItem.Offsets.add(10);
+        accompItem.Weight = 5;
+        simpleAccomp.addAccompanimentItem(accompItem);
+        // dom7
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(4);
+        accompItem.Offsets.add(7);
+        accompItem.Offsets.add(10);
+        accompItem.Weight = 20;
+        simpleAccomp.addAccompanimentItem(accompItem);
+        // maj6
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(4);
+        accompItem.Offsets.add(7);
+        accompItem.Offsets.add(9);
+        accompItem.Weight = 10;
+        simpleAccomp.addAccompanimentItem(accompItem);
+        // maj7
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(4);
+        accompItem.Offsets.add(7);
+        accompItem.Offsets.add(11);
+        accompItem.Weight = 10;
+        simpleAccomp.addAccompanimentItem(accompItem);
+        // maj9
+        accompItem = new AccompanimentItem();
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(0);
+        accompItem.Offsets.add(4);
+        accompItem.Offsets.add(7);
+        accompItem.Offsets.add(11);
+        accompItem.Offsets.add(14);
+        accompItem.Weight = 10;
+        simpleAccomp.addAccompanimentItem(accompItem);
+        // IV
         accompItem = new AccompanimentItem();
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(5);
         accompItem.Offsets.add(9);
         accompItem.Offsets.add(12);
-        simpleAccomp.Items.add(accompItem);
+        accompItem.Weight = 30;
+        simpleAccomp.addAccompanimentItem(accompItem);
+        // V
         accompItem = new AccompanimentItem();
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(7);
         accompItem.Offsets.add(11);
         accompItem.Offsets.add(14);
-        simpleAccomp.Items.add(accompItem);
+        accompItem.Weight = 30;
+        simpleAccomp.addAccompanimentItem(accompItem);
+        // VI
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(9);
         accompItem.Offsets.add(13);
         accompItem.Offsets.add(16);
-        simpleAccomp.Items.add(accompItem);
+        accompItem.Weight = 10;
+        simpleAccomp.addAccompanimentItem(accompItem);
         intendedScaleItems.add(simpleAccomp);
 
         // contains i, iv, v, vi, ii
@@ -218,29 +296,34 @@ public class Composer {
         accompItem.Offsets.add(0);
         accompItem.Offsets.add(3);
         accompItem.Offsets.add(7);
-        simpleAccomp2.Items.add(accompItem);
+        accompItem.Weight = 10;
+        simpleAccomp2.addAccompanimentItem(accompItem);
         accompItem = new AccompanimentItem();
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(5);
         accompItem.Offsets.add(8);
         accompItem.Offsets.add(12);
-        simpleAccomp2.Items.add(accompItem);
+        accompItem.Weight = 20;
+        simpleAccomp2.addAccompanimentItem(accompItem);
         accompItem = new AccompanimentItem();
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(7);
         accompItem.Offsets.add(10);
         accompItem.Offsets.add(14);
-        simpleAccomp2.Items.add(accompItem);
+        accompItem.Weight = 10;
+        simpleAccomp2.addAccompanimentItem(accompItem);
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(8);
         accompItem.Offsets.add(12);
         accompItem.Offsets.add(16);
-        simpleAccomp2.Items.add(accompItem);
+        accompItem.Weight = 30;
+        simpleAccomp2.addAccompanimentItem(accompItem);
         accompItem.Offsets = new ArrayList<>();
         accompItem.Offsets.add(2);
         accompItem.Offsets.add(5);
         accompItem.Offsets.add(9);
-        simpleAccomp2.Items.add(accompItem);
+        accompItem.Weight = 30;
+        simpleAccomp2.addAccompanimentItem(accompItem);
         intendedScaleItems.add(simpleAccomp2);
         
         Piece piece = new Piece();

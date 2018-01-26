@@ -8,6 +8,6 @@ import java.util.ArrayList;
  */
 public class AccompanimentItem {
     public int OrderId;
-    public int Probability;
+    public int Weight;
     public ArrayList<Integer> Offsets;
 }

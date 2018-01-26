@@ -113,7 +113,7 @@ public class PlainTrackComposer extends TrackComposer {
             }
             track.addSequence(sequence);
             
-            int repetitions = twister.nextInt(6);
+            int repetitions = twister.nextInt(10);
             for (int j = 0; j < repetitions; j++) {
                 Sequence adaptedSequence = sequence.getCopy();
                 boolean transposeUp = twister.nextBoolean();
@@ -137,7 +137,7 @@ public class PlainTrackComposer extends TrackComposer {
                     this.findAccompaniment();
                 }
 
-                if (twister.nextInt(48) == 0) {
+                if (twister.nextInt(200) == 0) {
                     this.findScale();
                 }
 
