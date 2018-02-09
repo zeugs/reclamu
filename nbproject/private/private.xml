@@ -4,7 +4,6 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/composers/PlainTrackComposer.java</file>
-            <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/composers/MaeanderAccompanimentComposer.java</file>
             <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/Composer.java</file>
             <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/Instrument.java</file>
             <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/composers/PlainAccompanimentComposer.java</file>
@@ -13,10 +12,9 @@
             <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/composers/TrackComposer.java</file>
             <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/Piece.java</file>
             <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/ScaleItem.java</file>
-            <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/composers/FreeFormTrackComposer.java</file>
+            <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/ChromaticScaleAccompaniment.java</file>
             <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/PlayGroup.java</file>
             <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/Sequence.java</file>
-            <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/Note.java</file>
             <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/MajorScaleAccompaniment.java</file>
             <file>file:/D:/prj/2018/ReClaMu/src/de/ramota/reclamu/composers/AccompanimentComposer.java</file>
         </group>

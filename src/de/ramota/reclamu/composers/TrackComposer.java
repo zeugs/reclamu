@@ -52,7 +52,7 @@ public class TrackComposer {
     
     public void findAccompaniment() {
         currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
-        currentAccomp.SetNewOffset();
+        currentAccomp.findNewOffset();
         System.out.println(String.format("Intended Accomp changed to %s!", currentAccomp.toString()));
     }    
 }

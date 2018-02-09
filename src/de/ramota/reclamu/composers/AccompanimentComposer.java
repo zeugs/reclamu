@@ -36,6 +36,19 @@ public class AccompanimentComposer {
         }
     }
     
+    protected int addNoteHumanized(Sequence sequence) {
+        int delayLength = twister.nextInt(15) + 5;
+
+        if (delayLength > 0) {
+            Note delayPseudoNote = new Note(70);
+            delayPseudoNote.IsRest = true;
+            delayPseudoNote.SetLength(delayLength, false);
+            sequence.addNote(delayPseudoNote);
+        }
+        
+        return delayLength;
+    }
+    
     protected Track getAccompanimentTrack(Track masterTrack, Instrument instrument) {
         return null;
     }   

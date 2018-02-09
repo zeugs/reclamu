@@ -28,7 +28,7 @@ public class ScaleItem {
         });
     }
     
-    public void SetNewOffset() {
+    public void findNewOffset() {
         if (items.size() > 0) {
             int val = twister.nextInt(fullWeight);
             int counter = 0;
@@ -45,8 +45,20 @@ public class ScaleItem {
         }
     }
     
+    public void setNewOffset(int offset) {
+        currentOffset = offset;
+    }
+    
     public ArrayList<Integer> GetItemOffsets() {
         ArrayList<Integer> offsets = items.get(currentOffset).Offsets;
         return offsets;
+    }
+
+    public int setOffset() {
+        return currentOffset;
+    }
+    
+    public int getOffset() {
+        return currentOffset;
     }
 }

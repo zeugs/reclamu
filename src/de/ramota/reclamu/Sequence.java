@@ -6,7 +6,6 @@ import java.util.List;
 public class Sequence {
     private final List<Note> notes = new ArrayList<>();
     private double tempo;
-    public List<PlayGroup> silencedGroups = new ArrayList<>();
     
     public List<Note> getNotes() {
         return notes;
@@ -37,11 +36,6 @@ public class Sequence {
 
     public Sequence getCopy() {
         Sequence sequence = new Sequence();
-        
-        sequence.silencedGroups = new ArrayList<>();
-        silencedGroups.forEach((group) -> {
-            sequence.silencedGroups.add(group.getCopy());
-        });
         
         sequence.setTempo(this.tempo);
         

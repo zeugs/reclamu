@@ -22,14 +22,15 @@ public class MaeanderAccompanimentComposer extends AccompanimentComposer {
     protected Track getAccompanimentTrack(Track masterTrack, Instrument instrument) {
         Track track = new Track();
         int noteDiff = -1;
-        
+        int audibleMin = twister.nextInt(60) + 35;
+        System.out.println(String.format("Track loudness: %d", audibleMin));
+
         for (Sequence refSequence: masterTrack.Sequences) {
             Sequence sequence = new Sequence();
     
             boolean addRest = (twister.nextInt(7) == 0);
-            boolean silence = refSequence.silencedGroups.contains(instrument.Group);
             
-            if (addRest || silence) {
+            if (addRest) {
                 silenceSequence(refSequence, sequence, track);
                 
                 continue;
@@ -49,21 +50,14 @@ public class MaeanderAccompanimentComposer extends AccompanimentComposer {
                 }
                 
                 Note refNote = refSequence.getNotes().get(i);
-                
-                int delayLength = twister.nextInt(15) + 5;
+
+                int delayLength = this.addNoteHumanized(sequence);
                 int noteVal = (refNote.GetValue() - refNote.GetValue() % 12) - (noteDiff - noteDiff % 12) + refNote.ScaleOffset;
                 Note note = new Note(noteVal);
-                note.setAttack(refNote.GetAttack() + twister.nextInt(40) - 20);
+                note.setAttack(refNote.getAttack() + twister.nextInt(40) - 20);
                 note.ScaleOffset = refNote.ScaleOffset;
                 note.SetLength(refNote.GetLength() - delayLength, false);
                 note.IntendedScaleType = refNote.IntendedScaleType;
-
-                if (delayLength > 0) {
-                    Note delayPseudoNote = new Note(70);
-                    delayPseudoNote.IsRest = true;
-                    delayPseudoNote.SetLength(delayLength, false);
-                    sequence.addNote(delayPseudoNote);     
-                }
 
                 ArrayList<Integer> offsets = refNote.IntendedScaleType.GetItemOffsets();
 
@@ -73,23 +67,26 @@ public class MaeanderAccompanimentComposer extends AccompanimentComposer {
                 note.addValue(valueToAdd, instrument);
 
                 List<Note> notes = sequence.getNotes();
+                List<Note> refNotes = refSequence.getNotes();
                 
-                if (notes.size() > 0 && sequence.getNotes().get(sequence.getNotes().size() - 1).IsRest) {
-                    note.IsRest = true;
-                    if (twister.nextInt(restDelayRange) == 0) {
-                        note.IsRest = false;
+                if (refNotes.get(i).getAttack() >= audibleMin) {
+                    if (notes.size() > 0 && sequence.getNotes().get(sequence.getNotes().size() - 1).IsRest) {
+                        note.IsRest = true;
+                        if (twister.nextInt(restDelayRange) == 0) {
+                            note.IsRest = false;
+                        }
+                    } else {
+                        note.IsRest = twister.nextInt(restStartRange) == 0;
+                    }                    
+
+                    if (twister.nextInt(12) == 0) {
+                        int skip = twister.nextInt(5);
+                        int startPos = i + 1;
+
+                        i = lengthenNotes(startPos, skip, refNotes, note, i);
                     }
                 } else {
-                    note.IsRest = twister.nextInt(restStartRange) == 0;
-                }                    
-
-                List<Note> refNotes = refSequence.getNotes();
-
-                if (twister.nextInt(12) == 0) {
-                    int skip = twister.nextInt(5);
-                    int startPos = i + 1;
-
-                    i = lengthenNotes(startPos, skip, refNotes, note, i);
+                    note.IsRest = true;
                 }
                 
                 sequence.addNote(note);                

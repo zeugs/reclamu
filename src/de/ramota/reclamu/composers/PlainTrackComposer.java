@@ -130,15 +130,35 @@ public class PlainTrackComposer extends TrackComposer {
         this.findAccompaniment();
         this.findScale();
         
+        int sequenceCount = 0;
         for (Sequence sequence: track.Sequences) {
                         
-            for (Note note: sequence.getNotes()) {
-                if (twister.nextInt(24) == 0) {
-                    this.findAccompaniment();
-                }
+            if (twister.nextInt(3) == 0) {
+                this.findScale();
+            }
 
-                if (twister.nextInt(200) == 0) {
-                    this.findScale();
+            int noteCount = 0;
+            boolean terminate = twister.nextInt(4) == 0 || sequenceCount == track.Sequences.size() - 1;
+            int terminateIntro = twister.nextBoolean() ? 4 : 5;
+            ScaleItem oldAccomp = this.currentAccomp;
+            int oldOffset = currentAccomp.setOffset();
+            
+            for (Note note: sequence.getNotes()) {
+                
+                if (terminate && noteCount > sequence.getNotes().size() * 0.9) {
+                    this.currentAccomp = intendedAccomps.get(0);
+                    this.currentAccomp.setNewOffset(0);                    
+                    System.out.println("!!!-!");
+                } else if (terminate && noteCount > sequence.getNotes().size() * 0.8) {
+                    oldAccomp = this.currentAccomp;
+                    oldOffset = currentAccomp.setOffset();
+                    this.currentAccomp = intendedAccomps.get(0);
+                    this.currentAccomp.setNewOffset(terminateIntro);
+                    System.out.println("!-!");
+                } else if (twister.nextInt(9) == 0) {
+                    this.findAccompaniment();
+                    oldAccomp = this.currentAccomp;
+                    oldOffset = this.currentAccomp.getOffset();
                 }
 
                 if (twister.nextInt(150) == 0) {
@@ -155,8 +175,15 @@ public class PlainTrackComposer extends TrackComposer {
                 } else if (currentAttack > 120) {
                     currentAttack = 119;
                 }
+                
+                noteCount++;
             }
+            
+            this.currentAccomp = oldAccomp;
+            this.currentAccomp.setNewOffset(oldOffset);
         }
+        
+        sequenceCount++;
         
         return track;
     }    

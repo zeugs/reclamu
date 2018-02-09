@@ -193,49 +193,6 @@ public class Composer {
         accompItem.Offsets.add(7);
         accompItem.Weight = 25;
         simpleAccomp.addAccompanimentItem(accompItem);
-        // augmented
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(0);
-        accompItem.Offsets.add(4);
-        accompItem.Offsets.add(8);
-        accompItem.Weight = 5;
-        simpleAccomp.addAccompanimentItem(accompItem);
-        // diminished
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(0);
-        accompItem.Offsets.add(3);
-        accompItem.Offsets.add(6);
-        accompItem.Weight = 5;
-        simpleAccomp.addAccompanimentItem(accompItem);
-        // diminished7
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(0);
-        accompItem.Offsets.add(3);
-        accompItem.Offsets.add(6);
-        accompItem.Offsets.add(9);
-        accompItem.Weight = 5;
-        simpleAccomp.addAccompanimentItem(accompItem);
-        // augmented7
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(0);
-        accompItem.Offsets.add(4);
-        accompItem.Offsets.add(8);
-        accompItem.Offsets.add(10);
-        accompItem.Weight = 5;
-        simpleAccomp.addAccompanimentItem(accompItem);
-        // dom7
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(0);
-        accompItem.Offsets.add(4);
-        accompItem.Offsets.add(7);
-        accompItem.Offsets.add(10);
-        accompItem.Weight = 20;
-        simpleAccomp.addAccompanimentItem(accompItem);
         // maj6
         accompItem = new AccompanimentItem();
         accompItem.Offsets = new ArrayList<>();
@@ -287,6 +244,17 @@ public class Composer {
         accompItem.Offsets.add(16);
         accompItem.Weight = 10;
         simpleAccomp.addAccompanimentItem(accompItem);
+
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(4);
+        accompItem.Weight = 8;
+        simpleAccomp.addAccompanimentItem(accompItem);
+
+        accompItem.Offsets = new ArrayList<>();
+        accompItem.Offsets.add(7);
+        accompItem.Weight = 8;
+        simpleAccomp.addAccompanimentItem(accompItem);
+
         intendedScaleItems.add(simpleAccomp);
 
         // contains i, iv, v, vi, ii
@@ -352,8 +320,6 @@ public class Composer {
         /*AddPlayGroup(drums, track1);
         AddPlayGroup(drums2, track1);*/
 
-        SetSilencedInstrumentsInSequences(track1);
-
         PlainAccompanimentComposer composer = new PlainAccompanimentComposer(piece);
         //MaeanderAccompanimentComposer composer = new MaeanderAccompanimentComposer(piece);
 
@@ -365,7 +331,7 @@ public class Composer {
         composer.generateTrack(track1, violin, 14, 7);
         composer.generateTrack(track1, contrabass, 8, 4);
         
-        composer.generateTrack(track1, flute, 3, 2);
+        composer.generateTrack(track1, flute, 3, 1);
         composer.generateTrack(track1, clarinet, 3, 1);
         composer.generateTrack(track1, oboe, 3, 1);
         composer.generateTrack(track1, bassoon, 3, 1);
@@ -412,15 +378,4 @@ public class Composer {
         playGroup.AddInstrument(viola);
         track1.PlayGroups.add(playGroup);
     }
-
-    private void SetSilencedInstrumentsInSequences(Track track1) {
-        MersenneTwister twister = new MersenneTwister();
-        track1.Sequences.forEach((sequence) -> {
-            track1.PlayGroups.forEach((group) -> {
-                boolean insertSilence = twister.nextInt(3) == 0;
-                if (insertSilence) {
-                    sequence.silencedGroups.add(group);
-                }
-            });
-        });
-    }}
+}

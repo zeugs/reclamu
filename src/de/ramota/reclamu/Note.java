@@ -53,7 +53,7 @@ public class Note {
         return this.Length;
     }
     
-    public int GetAttack() {
+    public int getAttack() {
         return this.Attack;
     }
 
