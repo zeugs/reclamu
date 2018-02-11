@@ -1,5 +1,6 @@
 package de.ramota.reclamu;
 
+import de.ramota.reclamu.composers.MidiDataEnhancer;
 import de.ramota.reclamu.composers.MaeanderAccompanimentComposer;
 import de.ramota.reclamu.composers.FreeFormTrackComposer;
 import de.ramota.reclamu.composers.PlainAccompanimentComposer;
@@ -22,10 +23,10 @@ public class Composer {
     }
 
     private void compose() {
-        List<Track> tracks = getPatterns().Tracks;
+        List<AbstractTrack> tracks = getPatterns().Tracks;
         int counter = 0;
 
-        for (Track track : tracks) {
+        for (AbstractTrack track : tracks) {
             Pattern p1 = new Pattern(track.toString());
             System.out.println(track);
 
@@ -37,6 +38,70 @@ public class Composer {
     }
 
     private Piece getPatterns() {
+        Piece piece = GenerateFullOrchestraPiece();
+        //Piece piece = GenerateChamberOrchestra();
+        
+        return piece;
+    }
+
+    private Piece GenerateChamberOrchestra() {
+        Instrument piano = new Instrument(24, 108, "Piano", 0.8);
+        Instrument piano_sec = new Instrument(24, 108, "Piano_Sec", 0.8);
+        Instrument viola = new Instrument(36, 76, "Viola", 0.7);
+        Instrument cello = new Instrument(24, 96, "Cello", 0.8);
+        Instrument violin = new Instrument(45, 96, "Violin", 0.8);
+        Instrument contrabass = new Instrument(24, 60, "Contrabass", 0.7);
+        Instrument flute = new Instrument(48, 86, "Flute", 0.8);
+        Instrument clarinet = new Instrument(40, 84, "Clarinet", 0.7);
+        Instrument bassoon = new Instrument(22, 64, "Bassoon", 0.7);
+        Instrument oboe = new Instrument(46, 81, "Oboe", 0.7);
+        //Instrument englishHorn = new Instrument(47, 79, "English Horn", 0.7);
+        Instrument frenchHorn = new Instrument(29, 72, "French Horn", 0.7);
+        Instrument trumpet = new Instrument(42, 74, "Trumpet", 0.7);
+        Instrument trombone = new Instrument(33, 67, "Oboe", 0.6);
+        Instrument tuba = new Instrument(14, 53, "Tuba", 0.6);
+        Instrument harp = new Instrument(22, 90, "Harp", 0.8);
+        Instrument bells = new Instrument(43, 72, "Bells", 0.7);
+        //Instrument drums = new Instrument(24, 53, "Drums", 0.9);
+        //Instrument drums2 = new Instrument(24, 53, "Drums2", 0.9);
+
+        List<ScaleItem> intendedScaleItems = GetStandardAccompItems();
+        
+        Piece piece = new Piece();
+
+        AbstractTrack track1 = this.getFreeFormTrack(piece, piano, intendedScaleItems);
+
+        /*AddPlayGroup(drums, track1);
+        AddPlayGroup(drums2, track1);*/
+
+        PlainAccompanimentComposer composer = new PlainAccompanimentComposer(piece);
+        //MaeanderAccompanimentComposer composer = new MaeanderAccompanimentComposer(piece);
+
+        composer.generateTrack(track1, piano_sec, 1, 0);
+
+        composer.generateTrack(track1, viola, 4, 2);
+        composer.generateTrack(track1, cello, 4, 2);
+        composer.generateTrack(track1, violin, 4, 2);
+        composer.generateTrack(track1, violin, 4, 2);
+        composer.generateTrack(track1, contrabass, 6, 3);
+        
+        composer.generateTrack(track1, flute, 2, 1);
+        composer.generateTrack(track1, clarinet, 2, 1);
+        composer.generateTrack(track1, oboe, 2, 1);
+        composer.generateTrack(track1, bassoon, 2, 1);
+        composer.generateTrack(track1, frenchHorn, 3, 1);
+
+        composer.generateTrack(track1, trumpet, 3, 1);
+        composer.generateTrack(track1, trombone, 3, 1);
+        composer.generateTrack(track1, tuba, 2, 1);        
+
+        /*piece.AddAccompTrack(track1, drums, 1, 0);
+        piece.AddAccompTrack(track1, drums2, 1, 0);*/
+
+        return piece;                
+    }
+    
+    private Piece GenerateFullOrchestraPiece() {
         /* https://en.wikipedia.org/wiki/Orchestra#Expanded_instrumentation
         
             Woodwinds
@@ -67,123 +132,70 @@ public class Composer {
                 8 double basses
                 1–2 harps 
         */
-        Instrument piano = new Instrument();
-        piano.MinNoteIndex = 24;
-        piano.MaxNoteIndex = 108;
-        piano.Name = "Piano";
-        piano.VariationGrip = 0.8;
+        Instrument piano = new Instrument(24, 108, "Piano", 0.8);
+        Instrument piano_sec = new Instrument(24, 108, "Piano_Sec", 0.8);
+        Instrument viola = new Instrument(36, 76, "Viola", 0.7);
+        Instrument cello = new Instrument(24, 96, "Cello", 0.8);
+        Instrument violin = new Instrument(45, 96, "Violin", 0.8);
+        Instrument contrabass = new Instrument(24, 60, "Contrabass", 0.7);
+        Instrument flute = new Instrument(48, 86, "Flute", 0.8);
+        Instrument clarinet = new Instrument(40, 84, "Clarinet", 0.7);
+        Instrument bassoon = new Instrument(22, 64, "Bassoon", 0.7);
+        Instrument oboe = new Instrument(46, 81, "Oboe", 0.7);
+        //Instrument englishHorn = new Instrument(47, 79, "English Horn", 0.7);
+        Instrument frenchHorn = new Instrument(29, 72, "French Horn", 0.7);
+        Instrument trumpet = new Instrument(42, 74, "Trumpet", 0.7);
+        Instrument trombone = new Instrument(33, 67, "Oboe", 0.6);
+        Instrument tuba = new Instrument(14, 53, "Tuba", 0.6);
+        Instrument harp = new Instrument(22, 90, "Harp", 0.8);
+        Instrument bells = new Instrument(43, 72, "Bells", 0.7);
+        //Instrument drums = new Instrument(24, 53, "Drums", 0.9);
+        //Instrument drums2 = new Instrument(24, 53, "Drums2", 0.9);
+
+        List<ScaleItem> intendedScaleItems = GetStandardAccompItems();
         
-        Instrument piano_sec = new Instrument();
-        piano_sec.MinNoteIndex = 24;
-        piano_sec.MaxNoteIndex = 108;
-        piano_sec.Name = "Piano_Sec";
-        piano_sec.VariationGrip = 0.8;
+        Piece piece = new Piece();
 
-        Instrument viola = new Instrument();
-        viola.MinNoteIndex = 36;
-        viola.MaxNoteIndex = 76;
-        viola.Name = "Viola";
-        viola.VariationGrip = 0.7;
+        //Track track1 = this.getPlainTrack(piece, piano, intendedScaleItems);
+        //Track track1 = this.getFreeFormTrack(piece, piano, intendedScaleItems);
+        AbstractTrack track1 = this.getTrackFromFile(piece, piano, intendedScaleItems, "jingle_bells.mid", 2);
 
-        Instrument cello = new Instrument();
-        cello.MinNoteIndex = 24;
-        cello.MaxNoteIndex = 96;
-        cello.Name = "Cello";
-        cello.VariationGrip = 0.8;
+        /*AddPlayGroup(drums, track1);
+        AddPlayGroup(drums2, track1);*/
 
-        Instrument violin = new Instrument();
-        violin.MinNoteIndex = 45;
-        violin.MaxNoteIndex = 96;
-        violin.Name = "Violin";
-        violin.VariationGrip = 0.8;
+        PlainAccompanimentComposer composer = new PlainAccompanimentComposer(piece);
+        //MaeanderAccompanimentComposer composer = new MaeanderAccompanimentComposer(piece);
 
-        Instrument contrabass = new Instrument();
-        contrabass.MinNoteIndex = 24;
-        contrabass.MaxNoteIndex = 60;
-        contrabass.Name = "Contrabass";
-        contrabass.VariationGrip = 0.7;
+        composer.generateTrack(track1, piano_sec, 1, 0);
 
-        Instrument flute = new Instrument();
-        flute.MinNoteIndex = 48;
-        flute.MaxNoteIndex = 86;
-        flute.Name = "Flute";
-        flute.VariationGrip = 0.8;
+        composer.generateTrack(track1, viola, 12, 6);
+        composer.generateTrack(track1, cello, 10, 5);
+        composer.generateTrack(track1, violin, 16, 8);
+        composer.generateTrack(track1, violin, 14, 7);
+        composer.generateTrack(track1, contrabass, 8, 4);
+        
+        composer.generateTrack(track1, flute, 3, 1);
+        composer.generateTrack(track1, clarinet, 3, 1);
+        composer.generateTrack(track1, oboe, 3, 1);
+        composer.generateTrack(track1, bassoon, 3, 1);
+        composer.generateTrack(track1, frenchHorn, 6, 3);
 
-        Instrument clarinet = new Instrument();
-        clarinet.MinNoteIndex = 40;
-        clarinet.MaxNoteIndex = 84;
-        clarinet.Name = "Clarinet";
-        clarinet.VariationGrip = 0.7;
+        composer.generateTrack(track1, trumpet, 5, 2);
+        composer.generateTrack(track1, trombone, 5, 2);
+        composer.generateTrack(track1, tuba, 2, 1);        
+        composer.generateTrack(track1, harp, 2, 0);
+        composer.generateTrack(track1, bells, 1, 0);
 
-        Instrument bassoon = new Instrument();
-        bassoon.MinNoteIndex = 22;
-        bassoon.MaxNoteIndex = 64;
-        bassoon.Name = "Bassoon";
-        bassoon.VariationGrip = 0.7;
+        /*piece.AddAccompTrack(track1, drums, 1, 0);
+        piece.AddAccompTrack(track1, drums2, 1, 0);*/
 
-        Instrument oboe = new Instrument();
-        oboe.MinNoteIndex = 46;
-        oboe.MaxNoteIndex = 81;
-        oboe.Name = "Oboe";
-        oboe.VariationGrip = 0.7;
-
-        Instrument englishHorn = new Instrument();
-        englishHorn.MinNoteIndex = 47;
-        englishHorn.MaxNoteIndex = 79;
-        englishHorn.Name = "English Horn";
-        englishHorn.VariationGrip = 0.7;
-
-        Instrument frenchHorn = new Instrument();
-        frenchHorn.MinNoteIndex = 29;
-        frenchHorn.MaxNoteIndex = 72;
-        frenchHorn.Name = "French Horn";
-        frenchHorn.VariationGrip = 0.7;
-
-        Instrument trumpet = new Instrument();
-        trumpet.MinNoteIndex = 42;
-        trumpet.MaxNoteIndex = 74;
-        trumpet.Name = "Trumpet";
-        trumpet.VariationGrip = 0.7;
-
-        Instrument trombone = new Instrument();
-        trombone.MinNoteIndex = 33;
-        trombone.MaxNoteIndex = 67;
-        trombone.Name = "Oboe";
-        trombone.VariationGrip = 0.6;
-
-        Instrument tuba = new Instrument();
-        tuba.MinNoteIndex = 14;
-        tuba.MaxNoteIndex = 53;
-        tuba.Name = "Tuba";
-        tuba.VariationGrip = 0.6;
-
-        Instrument harp = new Instrument();
-        harp.MinNoteIndex = 22;
-        harp.MaxNoteIndex = 90;
-        harp.Name = "Harp";
-        harp.VariationGrip = 0.8;
-
-        Instrument bells = new Instrument();
-        bells.MinNoteIndex = 43;
-        bells.MaxNoteIndex = 72;
-        bells.Name = "Bells";
-        bells.VariationGrip = 0.7;
-
-        Instrument drums = new Instrument();
-        drums.MinNoteIndex = 24;
-        drums.MaxNoteIndex = 53;
-        drums.Name = "Drums";
-        drums.VariationGrip = 0.9;
-
-        Instrument drums2 = new Instrument();
-        drums2.MinNoteIndex = 24;
-        drums2.MaxNoteIndex = 53;
-        drums2.Name = "Drums";
-        drums2.VariationGrip = 0.9;
-
+        return piece;        
+    }
+    
+    protected List<ScaleItem> GetStandardAccompItems() {
         List<ScaleItem> intendedScaleItems = new ArrayList<>();
+        
         AccompanimentItem accompItem;
-
         MajorScaleAccompaniment simpleAccomp = new MajorScaleAccompaniment();
         // I
         accompItem = new AccompanimentItem();
@@ -243,20 +255,7 @@ public class Composer {
         accompItem.Offsets.add(13);
         accompItem.Offsets.add(16);
         accompItem.Weight = 10;
-        simpleAccomp.addAccompanimentItem(accompItem);
-
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(4);
-        accompItem.Weight = 8;
-        simpleAccomp.addAccompanimentItem(accompItem);
-
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(7);
-        accompItem.Weight = 8;
-        simpleAccomp.addAccompanimentItem(accompItem);
-
         intendedScaleItems.add(simpleAccomp);
-
         // contains i, iv, v, vi, ii
         MinorScaleAccompaniment simpleAccomp2 = new MinorScaleAccompaniment();
         accompItem = new AccompanimentItem();
@@ -294,88 +293,41 @@ public class Composer {
         simpleAccomp2.addAccompanimentItem(accompItem);
         intendedScaleItems.add(simpleAccomp2);
         
-        Piece piece = new Piece();
-
-        //Track track1 = this.getFreeFormTrack(piece, piano, intendedScaleItems);
-        Track track1 = this.getPlainTrack(piece, piano, intendedScaleItems);
-
-        AddPlayGroup(viola, track1);
-        AddPlayGroup(cello, track1);
-        AddPlayGroup(violin, track1);
-        AddPlayGroup(contrabass, track1);
-        
-        AddPlayGroup(flute, track1);
-        AddPlayGroup(clarinet, track1);
-        AddPlayGroup(oboe, track1);
-        AddPlayGroup(bassoon, track1);
-        AddPlayGroup(frenchHorn, track1);
-        
-        AddPlayGroup(trumpet, track1);
-        AddPlayGroup(trombone, track1);
-        AddPlayGroup(tuba, track1);
-        
-        AddPlayGroup(harp, track1);
-        AddPlayGroup(bells, track1);
-
-        /*AddPlayGroup(drums, track1);
-        AddPlayGroup(drums2, track1);*/
-
-        PlainAccompanimentComposer composer = new PlainAccompanimentComposer(piece);
-        //MaeanderAccompanimentComposer composer = new MaeanderAccompanimentComposer(piece);
-
-        composer.generateTrack(track1, piano_sec, 1, 0);
-
-        composer.generateTrack(track1, viola, 12, 6);
-        composer.generateTrack(track1, cello, 10, 5);
-        composer.generateTrack(track1, violin, 16, 8);
-        composer.generateTrack(track1, violin, 14, 7);
-        composer.generateTrack(track1, contrabass, 8, 4);
-        
-        composer.generateTrack(track1, flute, 3, 1);
-        composer.generateTrack(track1, clarinet, 3, 1);
-        composer.generateTrack(track1, oboe, 3, 1);
-        composer.generateTrack(track1, bassoon, 3, 1);
-        composer.generateTrack(track1, frenchHorn, 6, 3);
-
-        composer.generateTrack(track1, trumpet, 5, 2);
-        composer.generateTrack(track1, trombone, 5, 2);
-        composer.generateTrack(track1, tuba, 2, 1);        
-        composer.generateTrack(track1, harp, 2, 0);
-        composer.generateTrack(track1, bells, 1, 0);
-
-        /*piece.AddAccompTrack(track1, drums, 1, 0);
-        piece.AddAccompTrack(track1, drums2, 1, 0);*/
-
-        return piece;
+        return intendedScaleItems;
     }
 
-    public Track getFreeFormTrack(Piece piece, Instrument instrument, List<ScaleItem> intendedScaleItems) {
+    public AbstractTrack getFreeFormTrack(Piece piece, Instrument instrument, List<ScaleItem> intendedScaleItems) {
         MersenneTwister twister = new MersenneTwister();
         
         FreeFormTrackComposer trackComposer = new FreeFormTrackComposer(instrument, intendedScaleItems);
         trackComposer.initialize();
-        int numberOfSequences = twister.nextInt(40) + 20;
-        Track track = trackComposer.generateTrack(numberOfSequences);
+        int numberOfSequences = twister.nextInt(240) + 150;
+        AbstractTrack track = trackComposer.generateTrack(numberOfSequences);
         piece.Tracks.add(track);
         
         return track;
     }
     
-    public Track getPlainTrack(Piece piece, Instrument instrument, List<ScaleItem> intendedScaleItems) {
+    public AbstractTrack getPlainTrack(Piece piece, Instrument instrument, List<ScaleItem> intendedScaleItems) {
         MersenneTwister twister = new MersenneTwister();
         
         PlainTrackComposer trackComposer = new PlainTrackComposer(instrument, intendedScaleItems);
         trackComposer.initialize();
-        int numberOfSequences = twister.nextInt(40) + 10;
-        Track track = trackComposer.generateTrack(numberOfSequences);
+        int numberOfSequences = twister.nextInt(10) + 10;
+        AbstractTrack track = trackComposer.generateTrack(numberOfSequences);
         piece.Tracks.add(track);
         
         return track;
     }    
-    
-    private void AddPlayGroup(Instrument viola, Track track1) {
-        PlayGroup playGroup = new PlayGroup();
-        playGroup.AddInstrument(viola);
-        track1.PlayGroups.add(playGroup);
+
+    private AbstractTrack getTrackFromFile(Piece piece, Instrument instrument, List<ScaleItem> intendedScaleItems, String fileName, int midiTrack) {
+        
+        MidiDataEnhancer enhancer = new MidiDataEnhancer(instrument, intendedScaleItems);
+        enhancer.setFileName(fileName);
+        enhancer.setMidiTrack(midiTrack);
+        AbstractTrack track = enhancer.generateTrack(1);
+        piece.Tracks.add(track);
+        
+        return track;
     }
 }

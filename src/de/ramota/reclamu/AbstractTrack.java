@@ -3,11 +3,10 @@ package de.ramota.reclamu;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Track {
-    public List<Sequence> Sequences = new ArrayList<>();
-    public List<PlayGroup> PlayGroups = new ArrayList<>();
+public final class AbstractTrack {
+    public List<AbstractSequence> Sequences = new ArrayList<>();
 
-    public void addSequence(Sequence sequence) {
+    public void addSequence(AbstractSequence sequence) {
         Sequences.add(sequence);
     }
         
@@ -15,15 +14,15 @@ public final class Track {
     public String toString() {
         String sequenceInfo = "";
 
-        for (Sequence sequence : Sequences) {
+        for (AbstractSequence sequence : Sequences) {
             sequenceInfo += sequence.toString();
         }
 
         return sequenceInfo;
     }
 
-    public Track getCopy() {
-        Track mirrorTrack = new Track();
+    public AbstractTrack getCopy() {
+        AbstractTrack mirrorTrack = new AbstractTrack();
         
         Sequences.forEach((sequence) -> {
             mirrorTrack.Sequences.add(sequence.getCopy());

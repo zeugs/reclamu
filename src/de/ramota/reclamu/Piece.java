@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Piece {
-    public List<Track> Tracks = new ArrayList<>();
-    public List<PlayGroup> Groups = new ArrayList<>();
+    public List<AbstractTrack> Tracks = new ArrayList<>();
     
-    public void addTrack(Track track) {
+    public void addTrack(AbstractTrack track) {
         Tracks.add(track);
     }
 }

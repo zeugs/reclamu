@@ -1,10 +1,10 @@
 package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.Instrument;
-import de.ramota.reclamu.Note;
+import de.ramota.reclamu.AbstractNote;
 import de.ramota.reclamu.ScaleItem;
-import de.ramota.reclamu.Sequence;
-import de.ramota.reclamu.Track;
+import de.ramota.reclamu.AbstractSequence;
+import de.ramota.reclamu.AbstractTrack;
 import static de.ramota.reclamu.Composer.MAX_SEQUENCE_LENGTH;
 import static de.ramota.reclamu.Composer.MIN_SEQUENCE_LENGTH;
 import java.util.List;
@@ -20,8 +20,8 @@ public class FreeFormTrackComposer extends TrackComposer {
     }
             
     @Override
-    public Sequence getSequence(Instrument instrument, double tempo) {
-        Sequence sequence = new Sequence();
+    public AbstractSequence getSequence(Instrument instrument, double tempo) {
+        AbstractSequence sequence = new AbstractSequence();
 
         sequence.setTempo(1);
         
@@ -50,10 +50,10 @@ public class FreeFormTrackComposer extends TrackComposer {
 
                 baseLength += lengthDelta;
                 
-                if (baseLength < Note.MIN_LENGTH) {
-                    baseLength = Note.MIN_LENGTH;
-                } else if (baseLength > Note.MAX_LENGTH) {
-                    baseLength = Note.MAX_LENGTH;
+                if (baseLength < AbstractNote.MIN_LENGTH) {
+                    baseLength = AbstractNote.MIN_LENGTH;
+                } else if (baseLength > AbstractNote.MAX_LENGTH) {
+                    baseLength = AbstractNote.MAX_LENGTH;
                 }
             }
                         
@@ -64,9 +64,9 @@ public class FreeFormTrackComposer extends TrackComposer {
             double baseOffset = twister.nextInt((int)maxOffset + 1);
             double adjustedOffset = (baseOffset - maxOffset / 2) + 1;
             
-            Note note = new Note(currentValue);
+            AbstractNote note = new AbstractNote(currentValue);
             note.ScaleOffset = scaleOffset;
-            actualLength = note.SetLength(actualLength, true);
+            actualLength = note.setLength(actualLength, true);
 
             if (twister.nextInt(2) == 0) {
                 this.findAccompaniment();
@@ -78,11 +78,11 @@ public class FreeFormTrackComposer extends TrackComposer {
             
             note.addValue(adjustedOffset * actualGrip, instrument);
             note.setValueInRange();
-            currentValue = note.GetValue();
+            currentValue = note.getValue();
 
             i += actualLength;
 
-            List<Note> notes = sequence.getNotes();
+            List<AbstractNote> notes = sequence.getNotes();
             if (notes.size() > 0 && notes.get(notes.size() - 1).IsRest) {
                 note.IsRest = true;
                 if (twister.nextInt(restDelayRange) == 0) {
@@ -101,14 +101,14 @@ public class FreeFormTrackComposer extends TrackComposer {
     }    
 
     @Override
-    public Track generateTrack(int sequenceNum) {
-        Track track = new Track();
-        Sequence adaptedSequence;
-        Sequence sequenceToAdd;
+    public AbstractTrack generateTrack(int sequenceNum) {
+        AbstractTrack track = new AbstractTrack();
+        AbstractSequence adaptedSequence;
+        AbstractSequence sequenceToAdd;
         
         for (int i = 0; i < sequenceNum; i++) {
 
-            Sequence sequence;
+            AbstractSequence sequence;
             if (i > 5 && twister.nextInt(3) == 0) {
                 int itemToCopy = twister.nextInt(track.Sequences.size());
                 sequence = track.Sequences.get(itemToCopy).getCopy();
@@ -154,23 +154,7 @@ public class FreeFormTrackComposer extends TrackComposer {
             }
         }
 
-        int currentAttack = twister.nextInt(80) + 40;
-        
-        for (Sequence sequence: track.Sequences) {
-            for (Note note: sequence.getNotes()) {
-                if (twister.nextInt(150) == 0) {
-                    currentAttack = twister.nextInt(80) + 40;
-                }
-                note.setAttack(currentAttack);
-                currentAttack += twister.nextInt(36) - 18;
-                
-                if (currentAttack < 40) {
-                    currentAttack = 41;
-                } else if (currentAttack > 120) {
-                    currentAttack = 119;
-                }
-            }
-        }
+        findAttackValues(track);
         
         return track;
     }

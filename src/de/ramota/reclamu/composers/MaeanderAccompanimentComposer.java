@@ -1,10 +1,10 @@
 package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.Instrument;
-import de.ramota.reclamu.Note;
+import de.ramota.reclamu.AbstractNote;
 import de.ramota.reclamu.Piece;
-import de.ramota.reclamu.Sequence;
-import de.ramota.reclamu.Track;
+import de.ramota.reclamu.AbstractSequence;
+import de.ramota.reclamu.AbstractTrack;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,14 +19,14 @@ public class MaeanderAccompanimentComposer extends AccompanimentComposer {
     }
             
     @Override
-    protected Track getAccompanimentTrack(Track masterTrack, Instrument instrument) {
-        Track track = new Track();
+    protected AbstractTrack getAccompanimentTrack(AbstractTrack masterTrack, Instrument instrument) {
+        AbstractTrack track = new AbstractTrack();
         int noteDiff = -1;
         int audibleMin = twister.nextInt(60) + 35;
         System.out.println(String.format("Track loudness: %d", audibleMin));
 
-        for (Sequence refSequence: masterTrack.Sequences) {
-            Sequence sequence = new Sequence();
+        for (AbstractSequence refSequence: masterTrack.Sequences) {
+            AbstractSequence sequence = new AbstractSequence();
     
             boolean addRest = (twister.nextInt(7) == 0);
             
@@ -49,14 +49,14 @@ public class MaeanderAccompanimentComposer extends AccompanimentComposer {
                     noteDiff = this.findNoteDiff(instrument, refSequence);
                 }
                 
-                Note refNote = refSequence.getNotes().get(i);
+                AbstractNote refNote = refSequence.getNotes().get(i);
 
                 int delayLength = this.addNoteHumanized(sequence);
-                int noteVal = (refNote.GetValue() - refNote.GetValue() % 12) - (noteDiff - noteDiff % 12) + refNote.ScaleOffset;
-                Note note = new Note(noteVal);
+                int noteVal = (refNote.getValue() - refNote.getValue() % 12) - (noteDiff - noteDiff % 12) + refNote.ScaleOffset;
+                AbstractNote note = new AbstractNote(noteVal);
                 note.setAttack(refNote.getAttack() + twister.nextInt(40) - 20);
                 note.ScaleOffset = refNote.ScaleOffset;
-                note.SetLength(refNote.GetLength() - delayLength, false);
+                note.setLength(refNote.getLength() - delayLength, false);
                 note.IntendedScaleType = refNote.IntendedScaleType;
 
                 ArrayList<Integer> offsets = refNote.IntendedScaleType.GetItemOffsets();
@@ -66,8 +66,8 @@ public class MaeanderAccompanimentComposer extends AccompanimentComposer {
 
                 note.addValue(valueToAdd, instrument);
 
-                List<Note> notes = sequence.getNotes();
-                List<Note> refNotes = refSequence.getNotes();
+                List<AbstractNote> notes = sequence.getNotes();
+                List<AbstractNote> refNotes = refSequence.getNotes();
                 
                 if (refNotes.get(i).getAttack() >= audibleMin) {
                     if (notes.size() > 0 && sequence.getNotes().get(sequence.getNotes().size() - 1).IsRest) {
@@ -98,10 +98,10 @@ public class MaeanderAccompanimentComposer extends AccompanimentComposer {
         return track;
     }        
 
-    private int lengthenNotes(int startPos, int skip, List<Note> refNotes, Note note, int i) {
+    private int lengthenNotes(int startPos, int skip, List<AbstractNote> refNotes, AbstractNote note, int i) {
         for (int j = startPos; j < startPos + skip; j++) {
             if (j < refNotes.size()) {
-                note.SetLength(note.GetLength() + refNotes.get(j).GetLength(), false);
+                note.setLength(note.getLength() + refNotes.get(j).getLength(), false);
                 i++;
             } else {
                 break;

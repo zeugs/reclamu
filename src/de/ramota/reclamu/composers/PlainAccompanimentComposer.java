@@ -1,10 +1,11 @@
 package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.Instrument;
-import de.ramota.reclamu.Note;
+import de.ramota.reclamu.AbstractNote;
 import de.ramota.reclamu.Piece;
-import de.ramota.reclamu.Sequence;
-import de.ramota.reclamu.Track;
+import de.ramota.reclamu.ScaleItem;
+import de.ramota.reclamu.AbstractSequence;
+import de.ramota.reclamu.AbstractTrack;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,27 +20,20 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
     }
     
     @Override
-    protected Track getAccompanimentTrack(Track masterTrack, Instrument instrument) {
-        Track track = new Track();
+    protected AbstractTrack getAccompanimentTrack(AbstractTrack masterTrack, Instrument instrument) {
+        AbstractTrack track = new AbstractTrack();
         int noteDiff = -1;
-        int audibleMin = twister.nextInt(60) + 35;
+        int audibleMin = twister.nextInt(60) + 25;
         System.out.println(String.format("Track loudness: %d", audibleMin));
 
-        for (Sequence refSequence: masterTrack.Sequences) {
-            Sequence sequence = new Sequence();
+        for (AbstractSequence refSequence: masterTrack.Sequences) {
+            AbstractSequence sequence = new AbstractSequence();
             sequence.setTempo(refSequence.getTempo());
             
             boolean mirrorsMaster = (twister.nextInt(3) == 0);
-            boolean addRest = (twister.nextInt(2) == 0);
-            
-            if (addRest) {
-                silenceSequence(refSequence, sequence, track);
-                
-                continue;
-            }                
             
             int restDelayRange = twister.nextInt(2) + 1;
-            int restStartRange = twister.nextInt(20) + 2;
+            int restStartRange = twister.nextInt(5) + 2;
 
             if (noteDiff == -1) {
                 noteDiff = findNoteDiff(instrument, refSequence);
@@ -51,21 +45,21 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                     noteDiff = this.findNoteDiff(instrument, refSequence);
                 }
                 
-                Note refNote = refSequence.getNotes().get(i);
+                AbstractNote refNote = refSequence.getNotes().get(i);
                 
                 int delayLength = this.addNoteHumanized(sequence);
                 int noteVal;
                 
                 if (!mirrorsMaster) {
-                    noteVal = (refNote.GetValue() - refNote.GetValue() % 12) - (noteDiff - noteDiff % 12) + refNote.ScaleOffset;
+                    noteVal = (refNote.getValue() - refNote.getValue() % 12) - (noteDiff - noteDiff % 12) + refNote.ScaleOffset;
                 } else {
-                    noteVal = refNote.GetValue() - (noteDiff - noteDiff % 12);
+                    noteVal = refNote.getValue() - (noteDiff - noteDiff % 12);
                 }
                 
-                Note note = new Note(noteVal);
+                AbstractNote note = new AbstractNote(noteVal);
                 note.setAttack(refNote.getAttack() + twister.nextInt(40) - 20);
                 note.ScaleOffset = refNote.ScaleOffset;
-                note.SetLength(refNote.GetLength() - delayLength, false);
+                note.setLength(refNote.getLength() - delayLength, false);
                 note.IntendedScaleType = refNote.IntendedScaleType;
 
                 if (!mirrorsMaster) {
@@ -79,20 +73,20 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                     note.addValue(0, instrument);
                 }
 
-                List<Note> notes = sequence.getNotes();
-                List<Note> refNotes = refSequence.getNotes();
+                List<AbstractNote> notes = sequence.getNotes();
+                List<AbstractNote> refNotes = refSequence.getNotes();
 
-                if (refNotes.get(i).getAttack() >= audibleMin) {
+                if (refNotes.get(i).getAttack() >= audibleMin && !refNotes.get(i).IsRest) {
                     if (notes.size() > 0 && sequence.getNotes().get(sequence.getNotes().size() - 1).IsRest) {
                         note.IsRest = true;
                         if (twister.nextInt(restDelayRange) == 0) {
                             note.IsRest = false;
                         }
                     } else {
-                        note.IsRest = twister.nextInt(restStartRange) == 0;
+                        note.IsRest = !(twister.nextInt(restStartRange) == 0);
                     }                    
 
-                    if (twister.nextInt(8) == 0) {
+                    if (twister.nextInt(10) == 0) {
                         int skip = twister.nextInt(5);
                         int startPos = i + 1;
 
@@ -111,10 +105,16 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
         return track;
     }     
     
-    private int lengthenNotes(int startPos, int skip, List<Note> refNotes, Note note, int i) {
+    private int lengthenNotes(int startPos, int skip, List<AbstractNote> refNotes, AbstractNote note, int i) {
+        if (startPos >= refNotes.size() - 1) {
+            return i;
+        }
+
+        ScaleItem item = refNotes.get(startPos).IntendedScaleType;
+        
         for (int j = startPos; j < startPos + skip; j++) {
-            if (j < refNotes.size()) {
-                note.SetLength(note.GetLength() + refNotes.get(j).GetLength(), false);
+            if (j < refNotes.size() && item == refNotes.get(j).IntendedScaleType) {
+                note.setLength(note.getLength() + refNotes.get(j).getLength(), false);
                 i++;
             } else {
                 break;

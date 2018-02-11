@@ -1,10 +1,10 @@
 package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.Instrument;
-import de.ramota.reclamu.Note;
+import de.ramota.reclamu.AbstractNote;
 import de.ramota.reclamu.ScaleItem;
-import de.ramota.reclamu.Sequence;
-import de.ramota.reclamu.Track;
+import de.ramota.reclamu.AbstractSequence;
+import de.ramota.reclamu.AbstractTrack;
 import java.util.List;
 
 /**
@@ -18,8 +18,8 @@ public class PlainTrackComposer extends TrackComposer {
     }
 
     @Override
-    public Sequence getSequence(Instrument instrument, double tempo) {
-        Sequence sequence = new Sequence();
+    public AbstractSequence getSequence(Instrument instrument, double tempo) {
+        AbstractSequence sequence = new AbstractSequence();
         
         sequence.setTempo(tempo);
         
@@ -56,10 +56,10 @@ public class PlainTrackComposer extends TrackComposer {
             }
             
             for (int j = 0; j < currentSubNoteCount; j++) {
-                Note note = new Note(currentVal);
+                AbstractNote note = new AbstractNote(currentVal);
                 
                 note.setAttack(twister.nextInt(80) + 30);
-                note.SetLength((int)(instrument.DefaultLength / currentSubNoteCount / sequence.getTempo()), true);
+                note.setLength((int)(instrument.DefaultLength / currentSubNoteCount / sequence.getTempo()), true);
                 note.IntendedScaleType = currentAccomp;
 
                 if (sequence.getNotes().size() > 0) {
@@ -85,8 +85,8 @@ public class PlainTrackComposer extends TrackComposer {
     }    
     
     @Override
-    public Track generateTrack(int sequenceNum) {
-        Track track = new Track();
+    public AbstractTrack generateTrack(int sequenceNum) {
+        AbstractTrack track = new AbstractTrack();
         
         double currentTempo = twister.nextDouble() * 2 + 0.1;
 
@@ -102,7 +102,7 @@ public class PlainTrackComposer extends TrackComposer {
                 System.out.println(String.format("Tempo: %d", (int)(currentTempo * 100)));
             }
             
-            Sequence sequence;
+            AbstractSequence sequence;
             if (i > 5 && twister.nextInt(3) == 0) {
                 int itemToCopy = twister.nextInt(track.Sequences.size());
                 sequence = track.Sequences.get(itemToCopy).getCopy();
@@ -115,7 +115,7 @@ public class PlainTrackComposer extends TrackComposer {
             
             int repetitions = twister.nextInt(10);
             for (int j = 0; j < repetitions; j++) {
-                Sequence adaptedSequence = sequence.getCopy();
+                AbstractSequence adaptedSequence = sequence.getCopy();
                 boolean transposeUp = twister.nextBoolean();
                 sequence.getNotes().forEach(note -> {
                     note.addValue(transposeUp ? 12 : -12, instrument);
@@ -131,7 +131,7 @@ public class PlainTrackComposer extends TrackComposer {
         this.findScale();
         
         int sequenceCount = 0;
-        for (Sequence sequence: track.Sequences) {
+        for (AbstractSequence sequence: track.Sequences) {
                         
             if (twister.nextInt(3) == 0) {
                 this.findScale();
@@ -143,7 +143,7 @@ public class PlainTrackComposer extends TrackComposer {
             ScaleItem oldAccomp = this.currentAccomp;
             int oldOffset = currentAccomp.setOffset();
             
-            for (Note note: sequence.getNotes()) {
+            for (AbstractNote note: sequence.getNotes()) {
                 
                 if (terminate && noteCount > sequence.getNotes().size() * 0.9) {
                     this.currentAccomp = intendedAccomps.get(0);

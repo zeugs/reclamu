@@ -3,7 +3,7 @@ package de.ramota.reclamu;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class Note {
+public class AbstractNote {
     private int Value;
     private int Length;
     public boolean IsRest;
@@ -11,9 +11,9 @@ public class Note {
     public ScaleItem IntendedScaleType;
     public static int MAX_LENGTH = 1500;
     public static int MIN_LENGTH = 200;
-    private int Attack;
-        
-    public void SetValue(int value) {
+    private int attack;
+
+    public void setValue(int value) {
         if (value < 0) {
             value = 0;
         } else if (value > 127) {
@@ -30,18 +30,18 @@ public class Note {
             value = 120;
         }
         
-        this.Attack = value;        
+        this.attack = value;        
     }
 
-    public int SetLength(int length, boolean limit) {
+    public int setLength(int length, boolean limit) {
         
         if (limit) {
-            length -= length % Note.MIN_LENGTH;
+            length -= length % AbstractNote.MIN_LENGTH;
             
-            if (length < Note.MIN_LENGTH) {
-                length = Note.MIN_LENGTH;
-            } else if (length > Note.MAX_LENGTH) {
-                length = Note.MAX_LENGTH;
+            if (length < AbstractNote.MIN_LENGTH) {
+                length = AbstractNote.MIN_LENGTH;
+            } else if (length > AbstractNote.MAX_LENGTH) {
+                length = AbstractNote.MAX_LENGTH;
             }
         }
         
@@ -49,19 +49,19 @@ public class Note {
         return this.Length;
     }
 
-    public int GetLength() {
+    public int getLength() {
         return this.Length;
     }
     
     public int getAttack() {
-        return this.Attack;
+        return this.attack;
     }
 
-    public int GetValue() {
+    public int getValue() {
         return this.Value;
     }
     
-    public Note(int value) {
+    public AbstractNote(int value) {
         this.Value = value;
     }
     
@@ -96,21 +96,23 @@ public class Note {
         
         return Value;
     }
-    
-    public void adaptNote() {
-        
-    }
 
     @Override
     public String toString() {
         String convertedString = "";
         try {
-            String outputLength = String.format(Locale.US, "%.4f", this.Length / (Note.MAX_LENGTH * 1.0));
+            String outputLength = String.format(Locale.US, "%.4f", this.Length / (AbstractNote.MAX_LENGTH * 1.0));
             
             if (IsRest) {
                 convertedString = "R/" + outputLength;
             } else {
-                convertedString = (this.Value + 12) + String.valueOf("/" + outputLength + "a" + Attack);
+                convertedString = (this.Value + 12) + String.valueOf("/" + outputLength + "a" + attack);
+                
+                if (linkedNotes.size() > 0) {
+                    for (AbstractNote n: linkedNotes) {
+                        convertedString += "+" + n.toString();
+                    }
+                }
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -118,14 +120,19 @@ public class Note {
         return convertedString;
     }
 
-    public Note getCopy() {
-        Note note = new Note(this.Value);
-        note.Attack = this.Attack;
+    public AbstractNote getCopy() {
+        AbstractNote note = new AbstractNote(this.Value);
+        note.attack = this.attack;
         note.ScaleOffset = this.ScaleOffset;
         note.Length = this.Length;
         note.IntendedScaleType = this.IntendedScaleType;
         note.IsRest = this.IsRest;
- 
+        note.linkedNotes = new ArrayList<>();
+        
+        this.linkedNotes.forEach((linkedNote) -> {
+            note.linkedNotes.add(linkedNote.getCopy());
+        });
+        
         return note;
     }
 }

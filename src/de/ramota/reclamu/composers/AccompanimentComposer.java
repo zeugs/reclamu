@@ -1,10 +1,10 @@
 package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.Instrument;
-import de.ramota.reclamu.Note;
+import de.ramota.reclamu.AbstractNote;
 import de.ramota.reclamu.Piece;
-import de.ramota.reclamu.Sequence;
-import de.ramota.reclamu.Track;
+import de.ramota.reclamu.AbstractSequence;
+import de.ramota.reclamu.AbstractTrack;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.math3.random.MersenneTwister;
@@ -21,54 +21,54 @@ public class AccompanimentComposer {
         this.piece = piece;
     }
 
-    public void generateTrack(Track track, Instrument instrument, int trackNum, int mirroredTrackNum) {
-        List<Track> newTracks = new ArrayList<>();
+    public void generateTrack(AbstractTrack track, Instrument instrument, int trackNum, int mirroredTrackNum) {
+        List<AbstractTrack> newTracks = new ArrayList<>();
         
         for (int i = 0; i < trackNum - mirroredTrackNum; i++) {
-            Track accompTrack = this.getAccompanimentTrack(track, instrument);
+            AbstractTrack accompTrack = this.getAccompanimentTrack(track, instrument);
             piece.addTrack(accompTrack);
             newTracks.add(accompTrack);
         }
         for (int i = 0; i < mirroredTrackNum; i++) {
-            Track accompTrack = newTracks.get(twister.nextInt(newTracks.size()));
-            Track mirrorTrack = accompTrack.getCopy();
+            AbstractTrack accompTrack = newTracks.get(twister.nextInt(newTracks.size()));
+            AbstractTrack mirrorTrack = accompTrack.getCopy();
             piece.addTrack(mirrorTrack);
         }
     }
     
-    protected int addNoteHumanized(Sequence sequence) {
+    protected int addNoteHumanized(AbstractSequence sequence) {
         int delayLength = twister.nextInt(15) + 5;
 
         if (delayLength > 0) {
-            Note delayPseudoNote = new Note(70);
+            AbstractNote delayPseudoNote = new AbstractNote(70);
             delayPseudoNote.IsRest = true;
-            delayPseudoNote.SetLength(delayLength, false);
+            delayPseudoNote.setLength(delayLength, false);
             sequence.addNote(delayPseudoNote);
         }
         
         return delayLength;
     }
     
-    protected Track getAccompanimentTrack(Track masterTrack, Instrument instrument) {
+    protected AbstractTrack getAccompanimentTrack(AbstractTrack masterTrack, Instrument instrument) {
         return null;
     }   
     
-    protected void silenceSequence(Sequence refSequence, Sequence sequence, Track track) {
+    protected void silenceSequence(AbstractSequence refSequence, AbstractSequence sequence, AbstractTrack track) {
         for (int j = 0; j < refSequence.getNotes().size(); j++) {
-            Note noteCopy = refSequence.getNotes().get(j).getCopy();
+            AbstractNote noteCopy = refSequence.getNotes().get(j).getCopy();
             noteCopy.IsRest = true;
             sequence.getNotes().add(noteCopy);
         }
         track.Sequences.add(sequence);
     }
     
-    protected int findNoteDiff(Instrument instrument, Sequence refSequence) {
+    protected int findNoteDiff(Instrument instrument, AbstractSequence refSequence) {
         int noteDiff = 0;
         int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
         int absoluteValue = twister.nextInt(instrumentRange) + instrument.MinNoteIndex;
         absoluteValue -= absoluteValue % 12;
         if (refSequence.getNotes().size() > 0) {
-            noteDiff = absoluteValue - refSequence.getNotes().get(0).GetValue();
+            noteDiff = absoluteValue - refSequence.getNotes().get(0).getValue();
         }
         return -noteDiff;
     }    
