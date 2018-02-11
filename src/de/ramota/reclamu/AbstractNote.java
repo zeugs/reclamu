@@ -106,13 +106,7 @@ public class AbstractNote {
             if (IsRest) {
                 convertedString = "R/" + outputLength;
             } else {
-                convertedString = (this.Value + 12) + String.valueOf("/" + outputLength + "a" + attack);
-                
-                if (linkedNotes.size() > 0) {
-                    for (AbstractNote n: linkedNotes) {
-                        convertedString += "+" + n.toString();
-                    }
-                }
+                convertedString = (this.Value + 12) + String.valueOf("/" + outputLength + "a" + attack);                
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -127,11 +121,6 @@ public class AbstractNote {
         note.Length = this.Length;
         note.IntendedScaleType = this.IntendedScaleType;
         note.IsRest = this.IsRest;
-        note.linkedNotes = new ArrayList<>();
-        
-        this.linkedNotes.forEach((linkedNote) -> {
-            note.linkedNotes.add(linkedNote.getCopy());
-        });
         
         return note;
     }
