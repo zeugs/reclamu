@@ -54,8 +54,8 @@ public class ScaleItem {
         return offsets;
     }
 
-    public int setOffset() {
-        return currentOffset;
+    public void setOffset(int offset) {
+        currentOffset = offset;
     }
     
     public int getOffset() {

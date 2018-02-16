@@ -2,11 +2,11 @@ package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.Instrument;
 import de.ramota.reclamu.AbstractNote;
-import de.ramota.reclamu.ScaleItem;
 import de.ramota.reclamu.AbstractSequence;
 import de.ramota.reclamu.AbstractTrack;
 import static de.ramota.reclamu.Composer.MAX_SEQUENCE_LENGTH;
 import static de.ramota.reclamu.Composer.MIN_SEQUENCE_LENGTH;
+import de.ramota.reclamu.ScaleItem;
 import java.util.List;
 
 /**
@@ -16,7 +16,8 @@ import java.util.List;
 public class FreeFormTrackComposer extends TrackComposer {
 
     public FreeFormTrackComposer(Instrument instrument, List<ScaleItem> intendedAccomps) {
-        super(instrument, intendedAccomps);        
+        super(instrument);        
+        this.intendedAccomps = intendedAccomps;
     }
             
     @Override
@@ -69,7 +70,7 @@ public class FreeFormTrackComposer extends TrackComposer {
             actualLength = note.setLength(actualLength, true);
 
             if (twister.nextInt(2) == 0) {
-                this.findAccompaniment();
+                this.findAccompaniment(intendedAccomps);
             }
             
             note.IntendedScaleType = currentAccomp;

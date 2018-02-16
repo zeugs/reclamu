@@ -1,6 +1,5 @@
 package de.ramota.reclamu;
 
-import java.util.List;
 import org.jfugue.parser.ParserListenerAdapter;
 import org.jfugue.theory.Note;
 
@@ -14,11 +13,11 @@ public class MidiParserListener extends ParserListenerAdapter {
     boolean ignore = true;
     AbstractNote currentNote;
     
-    List<ScaleItem> intendedAccomps;
+    ScaleItem intendedAccomp;
     
-    public MidiParserListener(List<ScaleItem> intendedAccomps, int midiTrack) {
+    public MidiParserListener(ScaleItem intendedAccomp, int midiTrack) {
         sequence = new AbstractSequence();
-        this.intendedAccomps = intendedAccomps;
+        this.intendedAccomp = intendedAccomp;
         this.midiTrack = midiTrack;
     }
 
@@ -43,16 +42,14 @@ public class MidiParserListener extends ParserListenerAdapter {
         }
     }
     
-    
-    
     @Override
     public void onNoteParsed(Note note) {
         super.onNoteParsed(note);
         if (!ignore) {
-            AbstractNote abstractNote = new AbstractNote(note.getValue());
+            AbstractNote abstractNote = new AbstractNote(note.getValue() - 12);
             abstractNote.IsRest = note.isRest();
             abstractNote.setLength((int)(note.getDuration() * 2000), false);
-            abstractNote.IntendedScaleType = intendedAccomps.get(0);
+            abstractNote.IntendedScaleType = intendedAccomp;
             abstractNote.setAttack(note.getOnVelocity());
             
             sequence.addNote(abstractNote);
@@ -61,5 +58,4 @@ public class MidiParserListener extends ParserListenerAdapter {
         }
     }
     
-
 }

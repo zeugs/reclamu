@@ -30,7 +30,7 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
             AbstractSequence sequence = new AbstractSequence();
             sequence.setTempo(refSequence.getTempo());
             
-            boolean mirrorsMaster = (twister.nextInt(3) == 0);
+            boolean mirrorsMaster = (twister.nextInt(2) == 0);
             
             int restDelayRange = twister.nextInt(2) + 1;
             int restStartRange = twister.nextInt(5) + 2;
@@ -86,7 +86,7 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                         note.IsRest = !(twister.nextInt(restStartRange) == 0);
                     }                    
 
-                    if (twister.nextInt(10) == 0) {
+                    if (twister.nextInt(15) == 0) {
                         int skip = twister.nextInt(5);
                         int startPos = i + 1;
 

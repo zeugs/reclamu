@@ -12,6 +12,7 @@ public class AbstractNote {
     public static int MAX_LENGTH = 1500;
     public static int MIN_LENGTH = 200;
     private int attack;
+    public int RelativeOffset = 0;
 
     public void setValue(int value) {
         if (value < 0) {
@@ -80,7 +81,7 @@ public class AbstractNote {
             }
         }
         
-        Value = valueToUse;
+        Value = valueToUse + RelativeOffset;
     }
 
     public int addValue(double valueToAdd, Instrument instrument) {
@@ -123,5 +124,24 @@ public class AbstractNote {
         note.IsRest = this.IsRest;
         
         return note;
+    }
+
+    public void detectOffset() {
+        ArrayList<Integer> offsets = IntendedScaleType.GetMapping();
+        int relativeValue = (Value - ScaleOffset) % 12;
+        int distOffset = 0;
+        int distance = 1000;
+        
+        for (int offset : offsets) {
+            int currentDist = Math.abs(relativeValue - offset);
+            if (currentDist < distance) {
+                distance = currentDist;
+                distOffset = relativeValue - offset;
+            }
+        }
+        
+        if (distance > 0) {
+            this.RelativeOffset = distOffset;
+        }
     }
 }

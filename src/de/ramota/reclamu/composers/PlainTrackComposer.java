@@ -12,9 +12,10 @@ import java.util.List;
  * @author Mathies Gräske
  */
 public class PlainTrackComposer extends TrackComposer {
-
+    
     public PlainTrackComposer(Instrument instrument, List<ScaleItem> intendedAccomps) {
-        super(instrument, intendedAccomps);        
+        super(instrument);        
+        this.intendedAccomps = intendedAccomps;
     }
 
     @Override
@@ -127,7 +128,7 @@ public class PlainTrackComposer extends TrackComposer {
         
         int currentAttack = twister.nextInt(80) + 40;
         
-        this.findAccompaniment();
+        this.findAccompaniment(intendedAccomps);
         this.findScale();
         
         int sequenceCount = 0;
@@ -141,7 +142,7 @@ public class PlainTrackComposer extends TrackComposer {
             boolean terminate = twister.nextInt(4) == 0 || sequenceCount == track.Sequences.size() - 1;
             int terminateIntro = twister.nextBoolean() ? 4 : 5;
             ScaleItem oldAccomp = this.currentAccomp;
-            int oldOffset = currentAccomp.setOffset();
+            int oldOffset = currentAccomp.getOffset();
             
             for (AbstractNote note: sequence.getNotes()) {
                 
@@ -151,12 +152,12 @@ public class PlainTrackComposer extends TrackComposer {
                     System.out.println("!!!-!");
                 } else if (terminate && noteCount > sequence.getNotes().size() * 0.8) {
                     oldAccomp = this.currentAccomp;
-                    oldOffset = currentAccomp.setOffset();
+                    oldOffset = currentAccomp.getOffset();
                     this.currentAccomp = intendedAccomps.get(0);
                     this.currentAccomp.setNewOffset(terminateIntro);
                     System.out.println("!-!");
                 } else if (twister.nextInt(9) == 0) {
-                    this.findAccompaniment();
+                    this.findAccompaniment(intendedAccomps);
                     oldAccomp = this.currentAccomp;
                     oldOffset = this.currentAccomp.getOffset();
                 }
