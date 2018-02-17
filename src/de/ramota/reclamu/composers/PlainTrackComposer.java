@@ -25,7 +25,7 @@ public class PlainTrackComposer extends TrackComposer {
         sequence.setTempo(tempo);
         
         int currentVal = twister.nextInt(instrument.MaxNoteIndex - instrument.MinNoteIndex) + instrument.MinNoteIndex;
-        int sequenceLength = twister.nextInt(15) + 6;
+        int sequenceLength = twister.nextInt(5) + 6;
         sequenceLength -= sequenceLength % 4 + 4;
         
         int subNoteCountIndex = twister.nextInt(3);

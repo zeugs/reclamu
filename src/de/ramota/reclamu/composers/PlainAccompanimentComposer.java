@@ -86,7 +86,7 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                         note.IsRest = !(twister.nextInt(restStartRange) == 0);
                     }                    
 
-                    if (twister.nextInt(15) == 0) {
+                    if (twister.nextInt(10) == 0) {
                         int skip = twister.nextInt(5);
                         int startPos = i + 1;
 

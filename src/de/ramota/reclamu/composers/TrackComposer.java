@@ -51,7 +51,11 @@ public class TrackComposer {
     }
     
     public void findAccompaniment(List<ScaleItem> intendedAccomps) {
-        currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
+        int index = 0;
+        if (twister.nextInt(3) == 0) {
+            index = 1;
+        }
+        currentAccomp = intendedAccomps.get(index);
         currentAccomp.findNewOffset();
         System.out.println(String.format("Intended Accomp changed to %s!", currentAccomp.toString()));
     }  

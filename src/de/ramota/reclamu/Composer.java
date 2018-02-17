@@ -445,7 +445,7 @@ public class Composer {
         
         PlainTrackComposer trackComposer = new PlainTrackComposer(instrument, intendedScaleItems);
         trackComposer.initialize(intendedScaleItems);
-        int numberOfSequences = twister.nextInt(10) + 10;
+        int numberOfSequences = twister.nextInt(20) + 10;
         AbstractTrack track = trackComposer.generateTrack(numberOfSequences);
         piece.Tracks.add(track);
         

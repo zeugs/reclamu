@@ -52,7 +52,7 @@ public class MaeanderAccompanimentComposer extends AccompanimentComposer {
                 AbstractNote refNote = refSequence.getNotes().get(i);
 
                 int delayLength = this.addNoteHumanized(sequence);
-                int noteVal = (refNote.getValue() - refNote.getValue() % 12) - (noteDiff - noteDiff % 12) + refNote.ScaleOffset;
+                int noteVal = refNote.getValue() - (noteDiff - noteDiff % 12);
                 AbstractNote note = new AbstractNote(noteVal);
                 note.setAttack(refNote.getAttack() + twister.nextInt(40) - 20);
                 note.ScaleOffset = refNote.ScaleOffset;
