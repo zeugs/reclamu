@@ -12,20 +12,19 @@ import java.util.List;
  * @author Mathies Gräske
  */
 public class PlainTrackComposer extends TrackComposer {
-    
-    public PlainTrackComposer(Instrument instrument, List<ScaleItem> intendedAccomps) {
-        super(instrument);        
-        this.intendedAccomps = intendedAccomps;
-    }
 
+    public PlainTrackComposer(String name) {
+        super(name);
+    }
+        
     @Override
-    public AbstractSequence getSequence(Instrument instrument, double tempo) {
+    public AbstractSequence getSequence(double tempo) {
         AbstractSequence sequence = new AbstractSequence();
         
         sequence.setTempo(tempo);
         
-        int currentVal = twister.nextInt(instrument.MaxNoteIndex - instrument.MinNoteIndex) + instrument.MinNoteIndex;
-        int sequenceLength = twister.nextInt(5) + 6;
+        int currentVal = twister.nextInt((int) ((instrument.MaxNoteIndex - instrument.MinNoteIndex) * 0.75)) + instrument.MinNoteIndex;
+        int sequenceLength = twister.nextInt(2) + 12;
         sequenceLength -= sequenceLength % 4 + 4;
         
         int subNoteCountIndex = twister.nextInt(3);
@@ -110,11 +109,11 @@ public class PlainTrackComposer extends TrackComposer {
                                 
                 System.out.println(String.format("Just copied sequence %d", itemToCopy));
             } else {
-                sequence = this.getSequence(instrument, currentTempo);   
+                sequence = this.getSequence(currentTempo);   
             }
             track.addSequence(sequence);
             
-            int repetitions = twister.nextInt(10);
+            int repetitions = twister.nextInt(20);
             for (int j = 0; j < repetitions; j++) {
                 AbstractSequence adaptedSequence = sequence.getCopy();
                 boolean transposeUp = twister.nextBoolean();
@@ -128,7 +127,7 @@ public class PlainTrackComposer extends TrackComposer {
         
         int currentAttack = twister.nextInt(80) + 40;
         
-        this.findAccompaniment(intendedAccomps);
+        this.findAccompaniment();
         this.findScale();
         
         int sequenceCount = 0;
@@ -157,7 +156,7 @@ public class PlainTrackComposer extends TrackComposer {
                     this.currentAccomp.setNewOffset(terminateIntro);
                     System.out.println("!-!");
                 } else if (twister.nextInt(9) == 0) {
-                    this.findAccompaniment(intendedAccomps);
+                    this.findAccompaniment();
                     oldAccomp = this.currentAccomp;
                     oldOffset = this.currentAccomp.getOffset();
                 }

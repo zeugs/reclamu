@@ -76,7 +76,7 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                 List<AbstractNote> notes = sequence.getNotes();
                 List<AbstractNote> refNotes = refSequence.getNotes();
 
-                if (refNotes.get(i).getAttack() >= audibleMin && !refNotes.get(i).IsRest) {
+                if (refNotes.get(i).getAttack() >= audibleMin && (!refNotes.get(i).IsRest || twister.nextInt(5) == 0)) {
                     if (notes.size() > 0 && sequence.getNotes().get(sequence.getNotes().size() - 1).IsRest) {
                         note.IsRest = true;
                         if (twister.nextInt(restDelayRange) == 0) {

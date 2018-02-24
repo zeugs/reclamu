@@ -19,9 +19,8 @@ public class MidiDataEnhancer extends TrackComposer {
     private String fileName;
     private int midiTrack;
     
-    public MidiDataEnhancer(Instrument instrument, ScaleItem accomp) {
-        super(instrument);
-        currentAccomp = accomp;
+    public MidiDataEnhancer(String name) {
+        super(name);
     }
 
     @Override

@@ -14,25 +14,28 @@ import org.apache.commons.math3.random.MersenneTwister;
  */
 public class TrackComposer {
     protected final MersenneTwister twister;
-    protected final Instrument instrument;
+    protected Instrument instrument;
     protected int scaleOffset;
     protected List<ScaleItem> intendedAccomps = null;
     protected ScaleItem currentAccomp;
     protected int instrumentRange;
     protected int currentValue;
+    public String Name;
 
-    public TrackComposer(Instrument instrument) {
+    public TrackComposer(String name) {
         this.twister = new MersenneTwister();
-        this.instrument = instrument;
     }
     
-    public void initialize(List<ScaleItem> intendedAccomps) {
+    public void initialize(Instrument instrument, List<ScaleItem> intendedAccomps) {
+        this.instrument = instrument;
+        this.intendedAccomps = intendedAccomps;
+        
         this.findNoteValue();
-        this.findAccompaniment(intendedAccomps);
+        this.findAccompaniment();
         this.findScale();        
     }
 
-    public AbstractSequence getSequence(Instrument instrument, double tempo) {
+    public AbstractSequence getSequence(double tempo) {
         return null;
     }
     
@@ -50,7 +53,7 @@ public class TrackComposer {
         System.out.println(String.format("Scale changed to %d", scaleOffset));
     }
     
-    public void findAccompaniment(List<ScaleItem> intendedAccomps) {
+    public void findAccompaniment() {
         int index = 0;
         if (twister.nextInt(3) == 0) {
             index = 1;

@@ -15,13 +15,12 @@ import java.util.List;
  */
 public class FreeFormTrackComposer extends TrackComposer {
 
-    public FreeFormTrackComposer(Instrument instrument, List<ScaleItem> intendedAccomps) {
-        super(instrument);        
-        this.intendedAccomps = intendedAccomps;
+    public FreeFormTrackComposer(String name) {
+        super(name);
     }
-            
+
     @Override
-    public AbstractSequence getSequence(Instrument instrument, double tempo) {
+    public AbstractSequence getSequence(double tempo) {
         AbstractSequence sequence = new AbstractSequence();
 
         sequence.setTempo(1);
@@ -70,7 +69,7 @@ public class FreeFormTrackComposer extends TrackComposer {
             actualLength = note.setLength(actualLength, true);
 
             if (twister.nextInt(2) == 0) {
-                this.findAccompaniment(intendedAccomps);
+                this.findAccompaniment();
             }
             
             note.IntendedScaleType = currentAccomp;
@@ -115,7 +114,7 @@ public class FreeFormTrackComposer extends TrackComposer {
                 sequence = track.Sequences.get(itemToCopy).getCopy();
                 System.out.println(String.format("Just copied sequence %d", itemToCopy));
             } else {
-                sequence = this.getSequence(instrument, 1);   
+                sequence = this.getSequence(1);   
             }
             
             int repetitions = twister.nextInt(6);

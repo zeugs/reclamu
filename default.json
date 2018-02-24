@@ -1,0 +1,44 @@
+{
+	"instruments": [ 
+		{ "name" : "piano", "min_note": "24", "max_note" : "108", "variation_grip" : "0.8" },
+		{ "name" : "piano_Sec", "min_note": "24", "max_note" : "108", "variation_grip" : "0.8" },
+		{ "name" : "viola", "min_note": "36", "max_note" : "76", "variation_grip" : "0.7" },
+		{ "name" : "cello", "min_note": "24", "max_note" : "96", "variation_grip" : "0.8" },
+		{ "name" : "violin", "min_note": "45", "max_note" : "96", "variation_grip" : "0.8" },
+		{ "name" : "contrabass", "min_note": "24", "max_note" : "60", "variation_grip" : "0.7" },
+		{ "name" : "flute", "min_note": "48", "max_note" : "86", "variation_grip" : "0.8" },
+		{ "name" : "clarinet", "min_note": "40", "max_note" : "84", "variation_grip" : "0.7" },
+		{ "name" : "bassoon", "min_note": "22", "max_note" : "64", "variation_grip" : "0.7" },
+		{ "name" : "oboe", "min_note": "46", "max_note" : "81", "variation_grip" : "0.7" },
+		{ "name" : "french_horn", "min_note": "29", "max_note" : "72", "variation_grip" : "0.7" },
+		{ "name" : "trumpet", "min_note": "42", "max_note" : "74", "variation_grip" : "0.7" },
+		{ "name" : "trombone", "min_note": "33", "max_note" : "67", "variation_grip" : "0.6" },
+		{ "name" : "tuba", "min_note": "14", "max_note" : "53", "variation_grip" : "0.6" },
+		{ "name" : "harp", "min_note": "22", "max_note" : "90", "variation_grip" : "0.8" },
+		{ "name" : "bells", "min_note": "43", "max_note" : "72", "variation_grip" : "0.7" }
+	],
+	"composers": [
+		{ "name" : "plain_composer", "type" : "PlainTrackComposer" }
+	],
+	"accompaniments": [
+		{ "name" : "plain_accomp", "type" : "PlainAccompanimentComposer" }
+	],
+	"tracks": [
+		{ "name" : "master", "instrument" : "piano", "type" : "plain_composer", "input" : "generated" },
+		{ "name" : "viola", "type" : "plain_accomp", "tracks_num" : "12", "mirrored_tracks_num" : "6", "input" : "master" },
+		{ "name" : "cello", "type" : "plain_accomp", "tracks_num" : "10", "mirrored_tracks_num" : "5", "input" : "master" },
+		{ "name" : "violin", "type" : "plain_accomp", "tracks_num" : "16", "mirrored_tracks_num" : "8", "input" : "master" },
+		{ "name" : "violin", "type" : "plain_accomp", "tracks_num" : "14", "mirrored_tracks_num" : "7", "input" : "master" },
+		{ "name" : "contrabass", "type" : "plain_accomp", "tracks_num" : "8", "mirrored_tracks_num" : "4", "input" : "master" },
+		{ "name" : "flute", "type" : "plain_accomp", "tracks_num" : "3", "mirrored_tracks_num" : "1", "input" : "master" },
+		{ "name" : "clarinet", "type" : "plain_accomp", "tracks_num" : "3", "mirrored_tracks_num" : "1", "input" : "master" },
+		{ "name" : "bassoon", "type" : "plain_accomp", "tracks_num" : "3", "mirrored_tracks_num" : "1", "input" : "master" },
+		{ "name" : "oboe", "type" : "plain_accomp", "tracks_num" : "3", "mirrored_tracks_num" : "1", "input" : "master" },
+		{ "name" : "french_horn", "type" : "plain_accomp", "tracks_num" : "6", "mirrored_tracks_num" : "3", "input" : "master" },
+		{ "name" : "trumpet", "type" : "plain_accomp", "tracks_num" : "5", "mirrored_tracks_num" : "2", "input" : "master" },
+		{ "name" : "trombone", "type" : "plain_accomp", "tracks_num" : "5", "mirrored_tracks_num" : "2", "input" : "master" },
+		{ "name" : "tuba", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master" },
+		{ "name" : "harp", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master" },
+		{ "name" : "bells", "type" : "plain_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" },
+	]
+}
