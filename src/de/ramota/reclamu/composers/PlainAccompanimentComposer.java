@@ -38,6 +38,8 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                 noteDiff = findNoteDiff(instrument, refSequence);
             }
             
+            int valueIndex = -1;
+            
             for (int i = 0; i < refSequence.getNotes().size(); i++) {
     
                 if (twister.nextInt(15) == 0) {
@@ -64,7 +66,17 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                 if (!mirrorsMaster) {
                     ArrayList<Integer> offsets = refNote.IntendedScaleType.GetItemOffsets();
                 
-                    int valueIndex = twister.nextInt(offsets.size());
+                    if (valueIndex == -1) {
+                        valueIndex = twister.nextInt(offsets.size());
+                    } else if (twister.nextInt(5) == 0) {
+                        valueIndex += twister.nextInt(3) - 1;
+                        if (valueIndex > offsets.size() - 1) {
+                            valueIndex = offsets.size() - 1;
+                        } else if (valueIndex < 0) {
+                            valueIndex = 0;
+                        }
+                    }
+                    
                     int valueToAdd = offsets.get(valueIndex);
 
                     note.addValue(valueToAdd, instrument);

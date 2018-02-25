@@ -9,3 +9,5 @@
 - use monophonic voice midi as input for accomp, then add actual acapella music
 - make a riddle on YT, let a song play with so many changes that it becomes difficult to find out, what was used
 
+- notes to image feature
+- java => groovy
