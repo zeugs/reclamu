@@ -5,7 +5,12 @@ import java.util.List;
 
 public final class AbstractTrack {
     public List<AbstractSequence> Sequences = new ArrayList<>();
-
+    public String Name;
+    
+    public AbstractTrack(String name) {
+        this.Name = name;
+    }
+    
     public void addSequence(AbstractSequence sequence) {
         Sequences.add(sequence);
     }
@@ -22,7 +27,7 @@ public final class AbstractTrack {
     }
 
     public AbstractTrack getCopy() {
-        AbstractTrack mirrorTrack = new AbstractTrack();
+        AbstractTrack mirrorTrack = new AbstractTrack(this.Name);
         
         Sequences.forEach((sequence) -> {
             mirrorTrack.Sequences.add(sequence.getCopy());

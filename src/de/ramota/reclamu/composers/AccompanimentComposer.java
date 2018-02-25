@@ -2,7 +2,6 @@ package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.Instrument;
 import de.ramota.reclamu.AbstractNote;
-import de.ramota.reclamu.Piece;
 import de.ramota.reclamu.AbstractSequence;
 import de.ramota.reclamu.AbstractTrack;
 import java.util.ArrayList;
@@ -14,26 +13,30 @@ import org.apache.commons.math3.random.MersenneTwister;
  * @author Mathies Gräske
  */
 public class AccompanimentComposer {
-    protected final Piece piece;
     protected MersenneTwister twister = new MersenneTwister();
-
-    public AccompanimentComposer(Piece piece) {
-        this.piece = piece;
+    public String Name;
+    
+    public AccompanimentComposer(String name) {
+        this.Name = name;
     }
-
-    public void generateTrack(AbstractTrack track, Instrument instrument, int trackNum, int mirroredTrackNum) {
+    
+    public List<AbstractTrack> generateTracks(String name, AbstractTrack masterTrack, Instrument instrument, int trackNum, int mirroredTrackNum) {
         List<AbstractTrack> newTracks = new ArrayList<>();
+        List<AbstractTrack> mirroredTracks = new ArrayList<>();
         
         for (int i = 0; i < trackNum - mirroredTrackNum; i++) {
-            AbstractTrack accompTrack = this.getAccompanimentTrack(track, instrument);
-            piece.addTrack(accompTrack);
+            AbstractTrack accompTrack = this.getAccompanimentTrack(name, masterTrack, instrument);
             newTracks.add(accompTrack);
         }
         for (int i = 0; i < mirroredTrackNum; i++) {
             AbstractTrack accompTrack = newTracks.get(twister.nextInt(newTracks.size()));
             AbstractTrack mirrorTrack = accompTrack.getCopy();
-            piece.addTrack(mirrorTrack);
+            mirroredTracks.add(mirrorTrack);
         }
+        
+        newTracks.addAll(mirroredTracks);
+        
+        return newTracks;
     }
     
     protected int addNoteHumanized(AbstractSequence sequence) {
@@ -49,7 +52,7 @@ public class AccompanimentComposer {
         return delayLength;
     }
     
-    protected AbstractTrack getAccompanimentTrack(AbstractTrack masterTrack, Instrument instrument) {
+    protected AbstractTrack getAccompanimentTrack(String name, AbstractTrack masterTrack, Instrument instrument) {
         return null;
     }   
     

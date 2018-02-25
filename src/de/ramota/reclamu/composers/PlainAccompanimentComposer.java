@@ -2,7 +2,6 @@ package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.Instrument;
 import de.ramota.reclamu.AbstractNote;
-import de.ramota.reclamu.Piece;
 import de.ramota.reclamu.ScaleItem;
 import de.ramota.reclamu.AbstractSequence;
 import de.ramota.reclamu.AbstractTrack;
@@ -15,13 +14,13 @@ import java.util.List;
  */
 public class PlainAccompanimentComposer extends AccompanimentComposer {
 
-    public PlainAccompanimentComposer(Piece piece) {
-        super(piece);
+    public PlainAccompanimentComposer(String name) {
+        super(name);
     }
     
     @Override
-    protected AbstractTrack getAccompanimentTrack(AbstractTrack masterTrack, Instrument instrument) {
-        AbstractTrack track = new AbstractTrack();
+    protected AbstractTrack getAccompanimentTrack(String name, AbstractTrack masterTrack, Instrument instrument) {
+        AbstractTrack track = new AbstractTrack(name);
         int noteDiff = -1;
         int audibleMin = twister.nextInt(60) + 25;
         System.out.println(String.format("Track loudness: %d", audibleMin));

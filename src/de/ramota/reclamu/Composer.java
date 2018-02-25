@@ -1,5 +1,6 @@
 package de.ramota.reclamu;
 
+import de.ramota.reclamu.composers.AccompanimentComposer;
 import de.ramota.reclamu.composers.MidiDataEnhancer;
 import de.ramota.reclamu.composers.MaeanderAccompanimentComposer;
 import de.ramota.reclamu.composers.FreeFormTrackComposer;
@@ -27,13 +28,15 @@ public class Composer {
     }
 
     private void compose() {
-        this.fetchInstruments();
+        List<Instrument> instruments = this.fetchInstruments();
         List<TrackComposer> composers = this.fetchComposers();
-        this.fetchTracks(composers);
+        List<AccompanimentComposer> accompComposers = this.fetchAccompaniments();
+        List<AbstractTrack> tracks = this.fetchTracks(composers, accompComposers, instruments, GetStandardAccompItems());
+        Piece piece = new Piece();
+        piece.Tracks = tracks;
         
-        /*List<AbstractTrack> tracks = getPatterns().Tracks;
         int counter = 0;
-
+        
         for (AbstractTrack track : tracks) {
             Pattern p1 = new Pattern(track.toString());
             System.out.println(track);
@@ -42,7 +45,7 @@ public class Composer {
                 MidiFileManager.savePatternToMidi(p1, new File("test" + String.valueOf(counter++) + ".mid"));
             } catch (IOException e) {
             }
-        }*/
+        }
     }
            
     protected List<ScaleItem> GetStandardAccompItems() {
@@ -221,20 +224,79 @@ public class Composer {
         return composers;
     }
 
-    private List<AbstractTrack> fetchTracks(List<TrackComposer> composers) {
+    private List<AccompanimentComposer> fetchAccompaniments() {
+        List<AccompanimentComposer> composers = new ArrayList<>();
+        JSONArray composerData = PieceConfiguration.getInstance().getAccompaniments();
+        for (Iterator it = composerData.iterator(); it.hasNext();) {
+            JSONObject instrumentObject = (JSONObject)it.next();
+            String name = instrumentObject.get("name").toString();
+            String type = instrumentObject.get("type").toString();
+            switch (type) {
+                case "PlainAccompanimentComposer" : 
+                    PlainAccompanimentComposer composer = new PlainAccompanimentComposer(name);
+                    composers.add(composer); 
+                    break;
+                default: 
+                    break;
+            }
+        }
+        
+        return composers;
+    }
+
+    private List<AbstractTrack> fetchTracks(List<TrackComposer> composers, List<AccompanimentComposer> accompComposers, List<Instrument> instruments, List<ScaleItem> intendedAccomps) {
         List<AbstractTrack> tracks = new ArrayList<>();
+        List<AbstractTrack> refTracks = new ArrayList<>();
         JSONArray trackData = PieceConfiguration.getInstance().getTracks();
         for (Iterator it = trackData.iterator(); it.hasNext();) {
             JSONObject instrumentObject = (JSONObject)it.next();
             String name = instrumentObject.get("name").toString();
             String type = instrumentObject.get("type").toString();
+            String instr = instrumentObject.get("instrument").toString();
             int trackNum = Integer.parseInt(instrumentObject.get("tracks_num").toString());
             int mirroredTrackNum = Integer.parseInt(instrumentObject.get("mirrored_tracks_num").toString());
-            String input = instrumentObject.get("type").toString();
-            AbstractTrack track = new AbstractTrack();
-            tracks.add(track);
+            String input = instrumentObject.get("input").toString();
+            
+            for (TrackComposer composer : composers) {
+                if (composer.Name.equals(type)) {
+                    Instrument refInstrument = getInstrumentByName(instruments, instr);
+                    composer.initialize(refInstrument, intendedAccomps);
+                    AbstractTrack track = composer.generateTrack(refInstrument, name, 10);
+                    tracks.add(track);
+                    refTracks.add(track);
+                }
+            }
+
+            for (AccompanimentComposer composer : accompComposers) {
+                if (composer.Name.equals(type)) {
+                    AbstractTrack refTrack = getTrackByName(refTracks, input);
+                    Instrument refInstrument = getInstrumentByName(instruments, instr);
+                    List<AbstractTrack> accompTracks = composer.generateTracks(name, refTrack, refInstrument, trackNum, mirroredTrackNum);
+                    tracks.addAll(accompTracks);
+                }
+            }
         }
         
         return tracks;
+    }
+    
+    private Instrument getInstrumentByName(List<Instrument> instruments, String name) {
+        for (Instrument instrument : instruments) {
+            if (instrument.Name.equals(name)) {
+                return instrument;
+            }
+        }
+        
+        return null;
+    }
+
+    private AbstractTrack getTrackByName(List<AbstractTrack> tracks, String name) {
+        for (AbstractTrack track : tracks) {
+            if (track.Name.equals(name)) {
+                return track;
+            }
+        }
+        
+        return null;
     }
 }

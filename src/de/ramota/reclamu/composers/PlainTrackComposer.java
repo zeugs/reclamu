@@ -18,7 +18,7 @@ public class PlainTrackComposer extends TrackComposer {
     }
         
     @Override
-    public AbstractSequence getSequence(double tempo) {
+    public AbstractSequence getSequence(Instrument instrument, double tempo) {
         AbstractSequence sequence = new AbstractSequence();
         
         sequence.setTempo(tempo);
@@ -85,8 +85,8 @@ public class PlainTrackComposer extends TrackComposer {
     }    
     
     @Override
-    public AbstractTrack generateTrack(int sequenceNum) {
-        AbstractTrack track = new AbstractTrack();
+    public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
+        AbstractTrack track = new AbstractTrack(name);
         
         double currentTempo = twister.nextDouble() * 2 + 0.1;
 
@@ -109,7 +109,7 @@ public class PlainTrackComposer extends TrackComposer {
                                 
                 System.out.println(String.format("Just copied sequence %d", itemToCopy));
             } else {
-                sequence = this.getSequence(currentTempo);   
+                sequence = this.getSequence(instrument, currentTempo);   
             }
             track.addSequence(sequence);
             

@@ -24,7 +24,7 @@ public class MidiDataEnhancer extends TrackComposer {
     }
 
     @Override
-    public AbstractTrack generateTrack(int sequenceNum) {
+    public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
         MidiParser parser = new MidiParser(); 
         MidiParserListener listener = new MidiParserListener(currentAccomp, midiTrack);
 
@@ -35,7 +35,7 @@ public class MidiDataEnhancer extends TrackComposer {
             
         }
         
-        AbstractTrack track = listener.getMidiTrack();
+        AbstractTrack track = listener.getMidiTrack(name);
                 
         for (AbstractNote n: track.Sequences.get(0).getNotes()) {
             if (twister.nextInt(6) == 0) {

@@ -14,7 +14,6 @@ import org.apache.commons.math3.random.MersenneTwister;
  */
 public class TrackComposer {
     protected final MersenneTwister twister;
-    protected Instrument instrument;
     protected int scaleOffset;
     protected List<ScaleItem> intendedAccomps = null;
     protected ScaleItem currentAccomp;
@@ -23,27 +22,27 @@ public class TrackComposer {
     public String Name;
 
     public TrackComposer(String name) {
+        this.Name = name;
         this.twister = new MersenneTwister();
     }
     
     public void initialize(Instrument instrument, List<ScaleItem> intendedAccomps) {
-        this.instrument = instrument;
         this.intendedAccomps = intendedAccomps;
         
-        this.findNoteValue();
+        this.findNoteValue(instrument);
         this.findAccompaniment();
         this.findScale();        
     }
 
-    public AbstractSequence getSequence(double tempo) {
+    public AbstractSequence getSequence(Instrument instrument, double tempo) {
         return null;
     }
     
-    public AbstractTrack generateTrack(int sequenceNum) {
+    public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
         return null;
     }
     
-    public void findNoteValue() {
+    public void findNoteValue(Instrument instrument) {
         instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
         currentValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;        
     }

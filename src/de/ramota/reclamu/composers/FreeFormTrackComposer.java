@@ -1,12 +1,11 @@
 package de.ramota.reclamu.composers;
 
-import de.ramota.reclamu.Instrument;
 import de.ramota.reclamu.AbstractNote;
 import de.ramota.reclamu.AbstractSequence;
 import de.ramota.reclamu.AbstractTrack;
 import static de.ramota.reclamu.Composer.MAX_SEQUENCE_LENGTH;
 import static de.ramota.reclamu.Composer.MIN_SEQUENCE_LENGTH;
-import de.ramota.reclamu.ScaleItem;
+import de.ramota.reclamu.Instrument;
 import java.util.List;
 
 /**
@@ -20,7 +19,7 @@ public class FreeFormTrackComposer extends TrackComposer {
     }
 
     @Override
-    public AbstractSequence getSequence(double tempo) {
+    public AbstractSequence getSequence(Instrument instrument, double tempo) {
         AbstractSequence sequence = new AbstractSequence();
 
         sequence.setTempo(1);
@@ -101,8 +100,8 @@ public class FreeFormTrackComposer extends TrackComposer {
     }    
 
     @Override
-    public AbstractTrack generateTrack(int sequenceNum) {
-        AbstractTrack track = new AbstractTrack();
+    public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
+        AbstractTrack track = new AbstractTrack(name);
         AbstractSequence adaptedSequence;
         AbstractSequence sequenceToAdd;
         
@@ -114,7 +113,7 @@ public class FreeFormTrackComposer extends TrackComposer {
                 sequence = track.Sequences.get(itemToCopy).getCopy();
                 System.out.println(String.format("Just copied sequence %d", itemToCopy));
             } else {
-                sequence = this.getSequence(1);   
+                sequence = this.getSequence(instrument, 1);   
             }
             
             int repetitions = twister.nextInt(6);
