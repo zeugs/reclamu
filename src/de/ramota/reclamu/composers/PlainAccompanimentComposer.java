@@ -5,6 +5,7 @@ import de.ramota.reclamu.AbstractNote;
 import de.ramota.reclamu.ScaleItem;
 import de.ramota.reclamu.AbstractSequence;
 import de.ramota.reclamu.AbstractTrack;
+import de.ramota.reclamu.configuration.PieceConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,18 +22,28 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
     @Override
     protected AbstractTrack getAccompanimentTrack(String name, AbstractTrack masterTrack, Instrument instrument) {
         AbstractTrack track = new AbstractTrack(name);
+        PieceConfiguration conf = PieceConfiguration.getInstance();
+        
+        int audibleMinFloor = conf.getValueAsInt("Audible Min Floor");
+        int audibleMinAdded = conf.getValueAsInt("Audible Min Added");
+        int noteDiffCalcMax = conf.getValueAsInt("Max Note Difference Calculation Delta");
+        int restUsageDelta = conf.getValueAsInt("Max Rest Usage Delta");
+        int maxNoteSkipDelta = conf.getValueAsInt("Max Skip Delta");
+        int maxNoteSkip = conf.getValueAsInt("Max Note Skip");
+        int maxNoMirrorSequenceDelta = conf.getValueAsInt("Max No Mirror Delta");
+        
         int noteDiff = -1;
-        int audibleMin = twister.nextInt(60) + 25;
+        int audibleMin = twister.nextInt(audibleMinAdded) + audibleMinFloor;
         System.out.println(String.format("Track loudness: %d", audibleMin));
 
         for (AbstractSequence refSequence: masterTrack.Sequences) {
             AbstractSequence sequence = new AbstractSequence();
             sequence.setTempo(refSequence.getTempo());
             
-            boolean mirrorsMaster = (twister.nextInt(2) == 0);
+            boolean mirrorsMaster = (twister.nextInt(maxNoMirrorSequenceDelta) == 0);
             
-            int restDelayRange = twister.nextInt(2) + 1;
-            int restStartRange = twister.nextInt(5) + 2;
+            int maxRestDelayRange = conf.getValueAsInt("Max Rest Delay Range");
+            int maxRestStartRange = conf.getValueAsInt("Max Rest Delay Start");
 
             if (noteDiff == -1) {
                 noteDiff = findNoteDiff(instrument, refSequence);
@@ -42,7 +53,7 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
             
             for (int i = 0; i < refSequence.getNotes().size(); i++) {
     
-                if (twister.nextInt(15) == 0) {
+                if (twister.nextInt(noteDiffCalcMax) == 0) {
                     noteDiff = this.findNoteDiff(instrument, refSequence);
                 }
                 
@@ -87,18 +98,18 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                 List<AbstractNote> notes = sequence.getNotes();
                 List<AbstractNote> refNotes = refSequence.getNotes();
 
-                if (refNotes.get(i).getAttack() >= audibleMin && (!refNotes.get(i).IsRest || twister.nextInt(5) == 0)) {
+                if (refNotes.get(i).getAttack() >= audibleMin && (!refNotes.get(i).IsRest || twister.nextInt(restUsageDelta) == 0)) {
                     if (notes.size() > 0 && sequence.getNotes().get(sequence.getNotes().size() - 1).IsRest) {
                         note.IsRest = true;
-                        if (twister.nextInt(restDelayRange) == 0) {
+                        if (twister.nextInt(maxRestDelayRange) == 0) {
                             note.IsRest = false;
                         }
                     } else {
-                        note.IsRest = !(twister.nextInt(restStartRange) == 0);
+                        note.IsRest = !(twister.nextInt(maxRestStartRange) == 0);
                     }                    
 
-                    if (twister.nextInt(10) == 0) {
-                        int skip = twister.nextInt(5);
+                    if (twister.nextInt(maxNoteSkipDelta) == 0) {
+                        int skip = twister.nextInt(maxNoteSkip);
                         int startPos = i + 1;
 
                         i = lengthenNotes(startPos, skip, refNotes, note, i);

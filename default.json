@@ -40,5 +40,19 @@
 		{ "name" : "tubas", "instrument" : "tuba", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master" },
 		{ "name" : "harps", "instrument" : "harp", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master" },
 		{ "name" : "bells", "instrument" : "bells", "type" : "plain_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" }
+	],
+	"values": [
+		{ "key" : "Min Humanization", "value" : "5" },
+		{ "key" : "Humanization Scope", "value" : "15" },
+		{ "key" : "Audible Min Floor", "value" : "25" },
+		{ "key" : "Audible Min Added", "value" : "60"},
+		{ "key" : "Max Note Difference Calculation Delta", "value" : "15", "description" : "Maximum note count until accompaniment note difference to main track is calculated" },
+		{ "key" : "Max Rest Usage Delta", "value" : "5" },
+		{ "key" : "Max Rest Delay Range", "value" : "3" },
+		{ "key" : "Max Rest Delay Start", "value" : "7" },
+		{ "key" : "Max Skip Delta", "value" : "10" },
+		{ "key" : "Max Note Skip", "value" : "5" },
+		{ "key" : "Max No Mirror Delta", "value" : "2" }
+
 	]
 }

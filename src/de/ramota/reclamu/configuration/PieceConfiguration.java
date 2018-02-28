@@ -1,6 +1,8 @@
 package de.ramota.reclamu.configuration;
 
+import java.util.Iterator;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -38,5 +40,37 @@ public class PieceConfiguration {
 
     public JSONArray getAccompaniments() {
         return reader.getArrayForItem("accompaniments");
+    }
+    
+    public String getValue(String key) {
+        JSONArray values = reader.getArrayForItem("values");
+        
+        for (Iterator it = values.iterator(); it.hasNext();) {
+            JSONObject valueObject = (JSONObject)it.next();
+            String currentKey = valueObject.get("key").toString();
+            String currentValue = valueObject.get("value").toString();
+            
+            if (currentKey.equals(key)) {
+                return currentValue;
+            }
+        }
+        
+        return null;
+    }
+
+    public int getValueAsInt(String key) {
+        JSONArray values = reader.getArrayForItem("values");
+        
+        for (Iterator it = values.iterator(); it.hasNext();) {
+            JSONObject valueObject = (JSONObject)it.next();
+            String currentKey = valueObject.get("key").toString();
+            int currentValue = Integer.parseInt(valueObject.get("value").toString());
+            
+            if (currentKey.equals(key)) {
+                return currentValue;
+            }
+        }
+        
+        return -1;
     }
 }
