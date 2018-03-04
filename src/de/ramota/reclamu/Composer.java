@@ -2,13 +2,10 @@ package de.ramota.reclamu;
 
 import de.ramota.reclamu.composers.AccompanimentComposer;
 import de.ramota.reclamu.composers.MidiDataEnhancer;
-import de.ramota.reclamu.composers.MaeanderAccompanimentComposer;
-import de.ramota.reclamu.composers.FreeFormTrackComposer;
 import de.ramota.reclamu.composers.PlainAccompanimentComposer;
 import de.ramota.reclamu.composers.PlainTrackComposer;
 import de.ramota.reclamu.composers.TrackComposer;
 import de.ramota.reclamu.configuration.PieceConfiguration;
-import org.apache.commons.math3.random.MersenneTwister;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 
@@ -28,10 +25,11 @@ public class Composer {
     }
 
     private void compose() {
+        List<ScaleItem> intendedAccomps = this.GetScaleData();
         List<Instrument> instruments = this.fetchInstruments();
         List<TrackComposer> composers = this.fetchComposers();
         List<AccompanimentComposer> accompComposers = this.fetchAccompaniments();
-        List<AbstractTrack> tracks = this.fetchTracks(composers, accompComposers, instruments, GetStandardAccompItems());
+        List<AbstractTrack> tracks = this.fetchTracks(composers, accompComposers, instruments, intendedAccomps);
         Piece piece = new Piece();
         piece.Tracks = tracks;
         
@@ -48,145 +46,52 @@ public class Composer {
         }
     }
            
-    protected List<ScaleItem> GetStandardAccompItems() {
+    protected List<ScaleItem> GetScaleData() {
         List<ScaleItem> intendedScaleItems = new ArrayList<>();
         
-        AccompanimentItem accompItem;
-        MajorScaleAccompaniment simpleAccomp = new MajorScaleAccompaniment();
-        // I
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(0);
-        accompItem.Offsets.add(4);
-        accompItem.Offsets.add(7);
-        accompItem.Weight = 25;
-        simpleAccomp.addAccompanimentItem(accompItem);
-        // maj6
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(0);
-        accompItem.Offsets.add(4);
-        accompItem.Offsets.add(7);
-        accompItem.Offsets.add(9);
-        accompItem.Weight = 10;
-        simpleAccomp.addAccompanimentItem(accompItem);
-        // maj7
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(0);
-        accompItem.Offsets.add(4);
-        accompItem.Offsets.add(7);
-        accompItem.Offsets.add(11);
-        accompItem.Weight = 10;
-        simpleAccomp.addAccompanimentItem(accompItem);
-        // maj9
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(0);
-        accompItem.Offsets.add(4);
-        accompItem.Offsets.add(7);
-        accompItem.Offsets.add(11);
-        accompItem.Offsets.add(14);
-        accompItem.Weight = 10;
-        simpleAccomp.addAccompanimentItem(accompItem);
-        // IV
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(5);
-        accompItem.Offsets.add(9);
-        accompItem.Offsets.add(12);
-        accompItem.Weight = 30;
-        simpleAccomp.addAccompanimentItem(accompItem);
-        // V
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(7);
-        accompItem.Offsets.add(11);
-        accompItem.Offsets.add(14);
-        accompItem.Weight = 30;
-        simpleAccomp.addAccompanimentItem(accompItem);
-        // VI
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(9);
-        accompItem.Offsets.add(13);
-        accompItem.Offsets.add(16);
-        accompItem.Weight = 10;
-        intendedScaleItems.add(simpleAccomp);
-        // contains i, iv, v, vi, ii
-        MinorScaleAccompaniment simpleAccomp2 = new MinorScaleAccompaniment();
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(0);
-        accompItem.Offsets.add(3);
-        accompItem.Offsets.add(7);
-        accompItem.Weight = 10;
-        simpleAccomp2.addAccompanimentItem(accompItem);
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(5);
-        accompItem.Offsets.add(8);
-        accompItem.Offsets.add(12);
-        accompItem.Weight = 20;
-        simpleAccomp2.addAccompanimentItem(accompItem);
-        accompItem = new AccompanimentItem();
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(7);
-        accompItem.Offsets.add(10);
-        accompItem.Offsets.add(14);
-        accompItem.Weight = 10;
-        simpleAccomp2.addAccompanimentItem(accompItem);
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(8);
-        accompItem.Offsets.add(12);
-        accompItem.Offsets.add(16);
-        accompItem.Weight = 30;
-        simpleAccomp2.addAccompanimentItem(accompItem);
-        accompItem.Offsets = new ArrayList<>();
-        accompItem.Offsets.add(2);
-        accompItem.Offsets.add(5);
-        accompItem.Offsets.add(9);
-        accompItem.Weight = 30;
-        simpleAccomp2.addAccompanimentItem(accompItem);
-        intendedScaleItems.add(simpleAccomp2);
+        JSONArray scaleData = PieceConfiguration.getInstance().getScaleItems();
+        for (Iterator it = scaleData.iterator(); it.hasNext();) {
+            JSONObject scaleObject = (JSONObject)it.next();
+            String name = scaleObject.get("name").toString();
+            String[] offsetStrings = scaleObject.get("offsets").toString().split(",");
+            
+            ScaleItem scaleItem = new ScaleItem(name);
+            ArrayList<Integer> offsets = new ArrayList<>();
+
+            for (String offset : offsetStrings) {
+                offsets.add(Integer.parseInt(offset));
+            }
+            
+            scaleItem.Offsets = offsets;
+            intendedScaleItems.add(scaleItem);
+        }
+        
+        JSONArray accompData = PieceConfiguration.getInstance().getAccompanimentItems();
+        for (Iterator it = accompData.iterator(); it.hasNext();) {
+            JSONObject scaleObject = (JSONObject)it.next();
+            String name = scaleObject.get("name").toString();
+            String scaleItemRef = scaleObject.get("scale item").toString();
+            Integer weight = Integer.parseInt(scaleObject.get("weight").toString());
+            String[] offsetStrings = scaleObject.get("offsets").toString().split(",");
+            
+            ScaleItem scaleItem = this.GetScaleItemByName(intendedScaleItems, scaleItemRef);
+            
+            if (scaleItem != null) {
+                AccompanimentItem accompItem = new AccompanimentItem(name);
+                accompItem.Weight = weight;
+                ArrayList<Integer> offsets = new ArrayList<>();
+
+                for (String offset : offsetStrings) {
+                    offsets.add(Integer.parseInt(offset));
+                }
+
+                accompItem.Offsets = offsets;
+                scaleItem.addAccompanimentItem(accompItem);
+            }
+        }
         
         return intendedScaleItems;
     }
-
-    /*public AbstractTrack getFreeFormTrack(Piece piece, Instrument instrument, List<ScaleItem> intendedScaleItems) {
-        MersenneTwister twister = new MersenneTwister();
-        
-        FreeFormTrackComposer trackComposer = new FreeFormTrackComposer();
-        trackComposer.initialize(instrument, intendedScaleItems);
-        int numberOfSequences = twister.nextInt(240) + 150;
-        AbstractTrack track = trackComposer.generateTrack(numberOfSequences);
-        piece.Tracks.add(track);
-        
-        return track;
-    }
-    
-    public AbstractTrack getPlainTrack(Piece piece, Instrument instrument, List<ScaleItem> intendedScaleItems) {
-        MersenneTwister twister = new MersenneTwister();
-        
-        PlainTrackComposer trackComposer = new PlainTrackComposer();
-        trackComposer.initialize(instrument, intendedScaleItems);
-        int numberOfSequences = twister.nextInt(20) + 10;
-        AbstractTrack track = trackComposer.generateTrack(numberOfSequences);
-        piece.Tracks.add(track);
-        
-        return track;
-    }    
-
-    private AbstractTrack getTrackFromFile(Piece piece, Instrument instrument, ScaleItem interpretationItem, String fileName, int midiTrack) {
-        
-        MidiDataEnhancer enhancer = new MidiDataEnhancer(interpretationItem);
-        enhancer.setFileName(fileName);
-        enhancer.setMidiTrack(midiTrack);
-        enhancer.setScaleItem(interpretationItem);
-        AbstractTrack track = enhancer.generateTrack(1);
-        piece.Tracks.add(track);
-        
-        return track;
-    }*/
 
     private List<Instrument> fetchInstruments() {
         List<Instrument> instruments = new ArrayList<>();
@@ -211,10 +116,18 @@ public class Composer {
             JSONObject instrumentObject = (JSONObject)it.next();
             String name = instrumentObject.get("name").toString();
             String type = instrumentObject.get("type").toString();
+            Object input = instrumentObject.get("input");
+            
             switch (type) {
                 case "PlainTrackComposer" : 
-                    PlainTrackComposer composer = new PlainTrackComposer(name);
-                    composers.add(composer); 
+                    composers.add(new PlainTrackComposer(name)); 
+                    break;
+                case "MidiDataEnhancer" : 
+                    MidiDataEnhancer enhancer = new MidiDataEnhancer(name);
+                    enhancer.setFileName(input.toString());
+                    enhancer.setMidiTrack(3);
+                    enhancer.setScale(4);                    
+                    composers.add(enhancer); 
                     break;
                 default: 
                     break;
@@ -231,10 +144,10 @@ public class Composer {
             JSONObject instrumentObject = (JSONObject)it.next();
             String name = instrumentObject.get("name").toString();
             String type = instrumentObject.get("type").toString();
+            
             switch (type) {
                 case "PlainAccompanimentComposer" : 
-                    PlainAccompanimentComposer composer = new PlainAccompanimentComposer(name);
-                    composers.add(composer); 
+                    composers.add(new PlainAccompanimentComposer(name)); 
                     break;
                 default: 
                     break;
@@ -261,7 +174,7 @@ public class Composer {
                 if (composer.Name.equals(type)) {
                     Instrument refInstrument = getInstrumentByName(instruments, instr);
                     composer.initialize(refInstrument, intendedAccomps);
-                    AbstractTrack track = composer.generateTrack(refInstrument, name, 10);
+                    AbstractTrack track = composer.generateTrack(refInstrument, name, 30);
                     tracks.add(track);
                     refTracks.add(track);
                 }
@@ -294,6 +207,16 @@ public class Composer {
         for (AbstractTrack track : tracks) {
             if (track.Name.equals(name)) {
                 return track;
+            }
+        }
+        
+        return null;
+    }
+
+    private ScaleItem GetScaleItemByName(List<ScaleItem> intendedScaleItems, String name) {
+        for (ScaleItem item: intendedScaleItems) {
+            if (item.Name.equals(name)) {
+                return item;
             }
         }
         

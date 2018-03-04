@@ -5,6 +5,8 @@ import de.ramota.reclamu.Instrument;
 import de.ramota.reclamu.ScaleItem;
 import de.ramota.reclamu.AbstractSequence;
 import de.ramota.reclamu.AbstractTrack;
+import de.ramota.reclamu.configuration.PieceConfiguration;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.math3.random.MersenneTwister;
 
@@ -13,17 +15,20 @@ import org.apache.commons.math3.random.MersenneTwister;
  * @author Mathies Gräske
  */
 public class TrackComposer {
+    public int ScaleOffset;
     protected final MersenneTwister twister;
-    protected int scaleOffset;
     protected List<ScaleItem> intendedAccomps = null;
     protected ScaleItem currentAccomp;
     protected int instrumentRange;
     protected int currentValue;
+    private final ArrayList<Integer> allowedScaleOffsets;
+    
     public String Name;
 
     public TrackComposer(String name) {
         this.Name = name;
         this.twister = new MersenneTwister();
+        this.allowedScaleOffsets = PieceConfiguration.getInstance().getAllowedScaleOffsets();
     }
     
     public void initialize(Instrument instrument, List<ScaleItem> intendedAccomps) {
@@ -48,16 +53,12 @@ public class TrackComposer {
     }
     
     public void findScale() {
-        scaleOffset = twister.nextInt(12);        
-        System.out.println(String.format("Scale changed to %d", scaleOffset));
+        ScaleOffset = twister.nextInt(allowedScaleOffsets.size());        
+        System.out.println(String.format("Scale changed to %d", ScaleOffset));
     }
     
     public void findAccompaniment() {
-        int index = 0;
-        if (twister.nextInt(3) == 0) {
-            index = 1;
-        }
-        currentAccomp = intendedAccomps.get(index);
+        currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
         currentAccomp.findNewOffset();
         System.out.println(String.format("Intended Accomp changed to %s!", currentAccomp.toString()));
     }  

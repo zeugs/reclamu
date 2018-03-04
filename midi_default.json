@@ -18,13 +18,13 @@
 		{ "name" : "bells", "min_note": "43", "max_note" : "72", "variation_grip" : "0.7" }
 	],
 	"composers": [
-		{ "name" : "plain_composer", "type" : "PlainTrackComposer" }
+		{ "name" : "midi_loader", "type" : "MidiDataEnhancer", "input" : "cd_heart.mid" }
 	],
 	"accompaniment composers": [
-		{ "name" : "plain_accomp", "type" : "PlainAccompanimentComposer" }
+		{ "name" : "plain_accomp", "type" : "PlainMidiAccompanimentComposer" }
 	],
 	"tracks": [
-		{ "name" : "master", "instrument" : "piano", "type" : "plain_composer", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "generated" },
+		{ "name" : "master", "instrument" : "piano", "type" : "midi_loader", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "generated" },
 		{ "name" : "violas", "instrument" : "viola", "type" : "plain_accomp", "tracks_num" : "12", "mirrored_tracks_num" : "6", "input" : "master" },
 		{ "name" : "cellos", "instrument" : "cello", "type" : "plain_accomp", "tracks_num" : "10", "mirrored_tracks_num" : "5", "input" : "master" },
 		{ "name" : "violins_first", "instrument" : "violin", "type" : "plain_accomp", "tracks_num" : "16", "mirrored_tracks_num" : "8", "input" : "master" },
@@ -43,7 +43,6 @@
 	],
 	"scale items": [
 		{ "name" : "major", "offsets" : "0,2,4,5,7,9,11,12,14,16,17,19,21,23" },
-		{ "name" : "minor", "offsets" : "0,2,3,5,7,8,10,12,14,15,17,19,20,22" }
 	],
 	"accompaniment items": [
 		{ "name" : "I", "offsets": "0,4,7", "weight": "25", "scale item": "major" },
@@ -51,8 +50,6 @@
 		{ "name" : "V", "offsets": "7,11,14", "weight": "30", "scale item": "major" },
 		{ "name" : "VI", "offsets": "9,13,16", "weight": "30", "scale item": "major" },
 		{ "name" : "maj6", "offsets": "0,4,7,9", "weight": "10", "scale item": "major" },
-		{ "name" : "maj7", "offsets": "0,4,7,9,11", "weight": "10", "scale item": "major" },
-		{ "name" : "maj9", "offsets": "0,4,7,11,14", "weight": "10", "scale item": "major" },
 
 		{ "name" : "i", "offsets": "0,3,7", "weight": "10", "scale item": "minor" },
 		{ "name" : "ii", "offsets": "0,2,9", "weight": "20", "scale item": "minor" },
@@ -60,5 +57,5 @@
 		{ "name" : "v", "offsets": "7,10,14", "weight": "30", "scale item": "minor" },
 		{ "name" : "vi", "offsets": "8,12,16", "weight": "10", "scale item": "minor" },
 	],
-	"allowed scale offsets": "0,1,2,7,9"
+	"allowed scale offsets": "0,1,2,3,4,5,6,7,8,9,10,11"
 }

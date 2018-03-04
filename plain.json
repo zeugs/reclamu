@@ -21,38 +21,36 @@
 		{ "name" : "plain_composer", "type" : "PlainTrackComposer" }
 	],
 	"accompaniment composers": [
-		{ "name" : "plain_accomp", "type" : "PlainAccompanimentComposer" }
+		{ "name" : "chamber_accomp", "type" : "ChamberOrchestraAccompComposer" }
 	],
 	"tracks": [
 		{ "name" : "master", "instrument" : "piano", "type" : "plain_composer", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "generated" },
-		{ "name" : "violas", "instrument" : "viola", "type" : "plain_accomp", "tracks_num" : "12", "mirrored_tracks_num" : "6", "input" : "master" },
-		{ "name" : "cellos", "instrument" : "cello", "type" : "plain_accomp", "tracks_num" : "10", "mirrored_tracks_num" : "5", "input" : "master" },
-		{ "name" : "violins_first", "instrument" : "violin", "type" : "plain_accomp", "tracks_num" : "16", "mirrored_tracks_num" : "8", "input" : "master" },
-		{ "name" : "violins_second", "instrument" : "violin", "type" : "plain_accomp", "tracks_num" : "14", "mirrored_tracks_num" : "7", "input" : "master" },
-		{ "name" : "contrabasses", "instrument" : "contrabass", "type" : "plain_accomp", "tracks_num" : "8", "mirrored_tracks_num" : "4", "input" : "master" },
-		{ "name" : "flutes", "instrument" : "flute", "type" : "plain_accomp", "tracks_num" : "3", "mirrored_tracks_num" : "1", "input" : "master" },
-		{ "name" : "clarinets", "instrument" : "clarinet", "type" : "plain_accomp", "tracks_num" : "3", "mirrored_tracks_num" : "1", "input" : "master" },
-		{ "name" : "bassoons", "instrument" : "bassoon", "type" : "plain_accomp", "tracks_num" : "3", "mirrored_tracks_num" : "1", "input" : "master" },
-		{ "name" : "oboes", "instrument" : "oboe", "type" : "plain_accomp", "tracks_num" : "3", "mirrored_tracks_num" : "1", "input" : "master" },
-		{ "name" : "french_horns", "instrument" : "french_horn", "type" : "plain_accomp", "tracks_num" : "6", "mirrored_tracks_num" : "3", "input" : "master" },
-		{ "name" : "trumpets", "instrument" : "trumpet", "type" : "plain_accomp", "tracks_num" : "5", "mirrored_tracks_num" : "2", "input" : "master" },
-		{ "name" : "trombones", "instrument" : "trombone", "type" : "plain_accomp", "tracks_num" : "5", "mirrored_tracks_num" : "2", "input" : "master" },
-		{ "name" : "tubas", "instrument" : "tuba", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master" },
-		{ "name" : "harps", "instrument" : "harp", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master" },
-		{ "name" : "bells", "instrument" : "bells", "type" : "plain_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" }
+		{ "name" : "violas", "instrument" : "viola", "type" : "chamber_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master" },
+		{ "name" : "cellos", "instrument" : "cello", "type" : "chamber_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master" },
+		{ "name" : "violins_first", "instrument" : "violin", "type" : "chamber_accomp", "tracks_num" : "4", "mirrored_tracks_num" : "2", "input" : "master" },
+		{ "name" : "contrabasses", "instrument" : "contrabass", "type" : "chamber_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master" },
+		{ "name" : "flute", "instrument" : "flute", "type" : "chamber_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "clarinet", "instrument" : "clarinet", "type" : "chamber_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "oboe", "instrument" : "oboe", "type" : "chamber_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "bassoons", "instrument" : "bassoon", "type" : "chamber_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "french_horns", "instrument" : "french_horn", "type" : "chamber_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master" },
+		{ "name" : "trumpets", "instrument" : "trumpet", "type" : "chamber_accomp", "tracks_num" : "3", "mirrored_tracks_num" : "1", "input" : "master" },
+		{ "name" : "trombones", "instrument" : "trombone", "type" : "chamber_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "tuba", "instrument" : "tuba", "type" : "chamber_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "harp", "instrument" : "harp", "type" : "chamber_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "bells", "instrument" : "bells", "type" : "chamber_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" }
 	],
 	"scale items": [
 		{ "name" : "major", "offsets" : "0,2,4,5,7,9,11,12,14,16,17,19,21,23" },
-		{ "name" : "minor", "offsets" : "0,2,3,5,7,8,10,12,14,15,17,19,20,22" }
 	],
 	"accompaniment items": [
 		{ "name" : "I", "offsets": "0,4,7", "weight": "25", "scale item": "major" },
 		{ "name" : "IV", "offsets": "5,9,12", "weight": "30", "scale item": "major" },
 		{ "name" : "V", "offsets": "7,11,14", "weight": "30", "scale item": "major" },
 		{ "name" : "VI", "offsets": "9,13,16", "weight": "30", "scale item": "major" },
-		{ "name" : "maj6", "offsets": "0,4,7,9", "weight": "10", "scale item": "major" },
-		{ "name" : "maj7", "offsets": "0,4,7,9,11", "weight": "10", "scale item": "major" },
-		{ "name" : "maj9", "offsets": "0,4,7,11,14", "weight": "10", "scale item": "major" },
+		{ "name" : "maj6", "offsets": "0,4,7,9", "weight": "5", "scale item": "major" },
+		{ "name" : "maj7", "offsets": "0,4,7,9,11", "weight": "5", "scale item": "major" },
+		{ "name" : "maj9", "offsets": "0,4,7,11,14", "weight": "5", "scale item": "major" },
 
 		{ "name" : "i", "offsets": "0,3,7", "weight": "10", "scale item": "minor" },
 		{ "name" : "ii", "offsets": "0,2,9", "weight": "20", "scale item": "minor" },

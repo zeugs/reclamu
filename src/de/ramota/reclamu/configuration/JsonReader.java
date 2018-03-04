@@ -32,4 +32,8 @@ public class JsonReader {
     public JSONArray getArrayForItem(String itemName) {
         return (JSONArray) mainObject.get(itemName);
     }
+
+    public String getStringForItem(String itemName) {
+        return (String) mainObject.get(itemName);
+    }
 }

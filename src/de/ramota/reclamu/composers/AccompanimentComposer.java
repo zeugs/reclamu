@@ -4,7 +4,6 @@ import de.ramota.reclamu.Instrument;
 import de.ramota.reclamu.AbstractNote;
 import de.ramota.reclamu.AbstractSequence;
 import de.ramota.reclamu.AbstractTrack;
-import de.ramota.reclamu.configuration.PieceConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.math3.random.MersenneTwister;
@@ -41,10 +40,7 @@ public class AccompanimentComposer {
     }
     
     protected int addNoteHumanized(AbstractSequence sequence) {
-        int minHumanization = PieceConfiguration.getInstance().getValueAsInt("Min Humanization");
-        int humanizationScope = PieceConfiguration.getInstance().getValueAsInt("Humanization Scope");
-        
-        int delayLength = twister.nextInt(humanizationScope) + minHumanization;
+        int delayLength = twister.nextInt(15) + 5;
 
         if (delayLength > 0) {
             AbstractNote delayPseudoNote = new AbstractNote(70);

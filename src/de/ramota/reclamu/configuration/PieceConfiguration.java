@@ -1,5 +1,6 @@
 package de.ramota.reclamu.configuration;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -39,38 +40,25 @@ public class PieceConfiguration {
     }
 
     public JSONArray getAccompaniments() {
-        return reader.getArrayForItem("accompaniments");
+        return reader.getArrayForItem("accompaniment composers");
     }
     
-    public String getValue(String key) {
-        JSONArray values = reader.getArrayForItem("values");
-        
-        for (Iterator it = values.iterator(); it.hasNext();) {
-            JSONObject valueObject = (JSONObject)it.next();
-            String currentKey = valueObject.get("key").toString();
-            String currentValue = valueObject.get("value").toString();
-            
-            if (currentKey.equals(key)) {
-                return currentValue;
-            }
-        }
-        
-        return null;
+    public JSONArray getAccompanimentItems() {
+        return reader.getArrayForItem("accompaniment items");
     }
 
-    public int getValueAsInt(String key) {
-        JSONArray values = reader.getArrayForItem("values");
+    public JSONArray getScaleItems() {
+        return reader.getArrayForItem("scale items");
+    }
+
+    public ArrayList<Integer> getAllowedScaleOffsets() {
+        String[] scaleOffsetsData = reader.getStringForItem("allowed scale offsets").split(",");
         
-        for (Iterator it = values.iterator(); it.hasNext();) {
-            JSONObject valueObject = (JSONObject)it.next();
-            String currentKey = valueObject.get("key").toString();
-            int currentValue = Integer.parseInt(valueObject.get("value").toString());
-            
-            if (currentKey.equals(key)) {
-                return currentValue;
-            }
+        ArrayList<Integer> allowedOffsets = new ArrayList<>();
+        for (String offset: scaleOffsetsData) {
+            allowedOffsets.add(Integer.parseInt(offset));
         }
         
-        return -1;
+        return allowedOffsets;
     }
 }

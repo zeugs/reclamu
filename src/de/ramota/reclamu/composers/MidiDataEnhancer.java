@@ -3,7 +3,6 @@ package de.ramota.reclamu.composers;
 import de.ramota.reclamu.AbstractNote;
 import de.ramota.reclamu.Instrument;
 import de.ramota.reclamu.MidiParserListener;
-import de.ramota.reclamu.ScaleItem;
 import de.ramota.reclamu.AbstractTrack;
 import java.io.File;
 import java.io.IOException;
@@ -18,16 +17,18 @@ import org.jfugue.midi.MidiParser;
 public class MidiDataEnhancer extends TrackComposer {
     private String fileName;
     private int midiTrack;
+    private int refScale;
     
     public MidiDataEnhancer(String name) {
         super(name);
+        this.ScaleOffset = 4;
     }
 
     @Override
     public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
         MidiParser parser = new MidiParser(); 
-        MidiParserListener listener = new MidiParserListener(currentAccomp, midiTrack);
-
+        MidiParserListener listener = new MidiParserListener(midiTrack);
+        
         try {
             parser.addParserListener(listener);
             parser.parse(MidiSystem.getSequence(new File(fileName)));
@@ -39,11 +40,11 @@ public class MidiDataEnhancer extends TrackComposer {
                 
         for (AbstractNote n: track.Sequences.get(0).getNotes()) {
             if (twister.nextInt(6) == 0) {
-                currentAccomp.findNewOffset();
+                //this.findScale();
             }
             n.IntendedScaleType = currentAccomp;
             n.detectOffset();
-            //n.setValueInRange();
+            n.addValue((ScaleOffset - refScale), instrument);
         }
 
         findAttackValues(track);
@@ -59,7 +60,7 @@ public class MidiDataEnhancer extends TrackComposer {
         this.midiTrack = midiTrack;
     }
     
-    public void setScaleItem(ScaleItem scaleItem) {
-        this.currentAccomp = scaleItem;
+    public void setScale(int scale) {
+        this.refScale = scale;
     }
 }

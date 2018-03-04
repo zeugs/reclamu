@@ -64,7 +64,7 @@ public class FreeFormTrackComposer extends TrackComposer {
             double adjustedOffset = (baseOffset - maxOffset / 2) + 1;
             
             AbstractNote note = new AbstractNote(currentValue);
-            note.ScaleOffset = scaleOffset;
+            note.ScaleOffset = ScaleOffset;
             actualLength = note.setLength(actualLength, true);
 
             if (twister.nextInt(2) == 0) {

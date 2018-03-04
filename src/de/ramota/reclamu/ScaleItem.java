@@ -11,12 +11,19 @@ import org.apache.commons.math3.random.MersenneTwister;
 public class ScaleItem {
     private final List<AccompanimentItem> items = new ArrayList<>();
     private final MersenneTwister twister = new MersenneTwister();
+    public ArrayList<Integer> Offsets = new ArrayList<>();
 
     protected int currentOffset = 0;
     private int fullWeight;
     
+    public String Name;
+    
+    public ScaleItem(String name) {
+        this.Name = name;
+    }
+    
     public ArrayList<Integer> GetMapping() {
-        return null;
+        return items.get(currentOffset).Offsets;
     }
 
     public void addAccompanimentItem(AccompanimentItem item) {
@@ -60,5 +67,10 @@ public class ScaleItem {
     
     public int getOffset() {
         return currentOffset;
+    }
+
+    @Override
+    public String toString() {
+        return Name + " - " + items.get(currentOffset).Name;
     }
 }

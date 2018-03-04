@@ -12,12 +12,9 @@ public class MidiParserListener extends ParserListenerAdapter {
     int midiTrack;
     boolean ignore = true;
     AbstractNote currentNote;
-    
-    ScaleItem intendedAccomp;
-    
-    public MidiParserListener(ScaleItem intendedAccomp, int midiTrack) {
+        
+    public MidiParserListener(int midiTrack) {
         sequence = new AbstractSequence();
-        this.intendedAccomp = intendedAccomp;
         this.midiTrack = midiTrack;
     }
 
@@ -49,7 +46,6 @@ public class MidiParserListener extends ParserListenerAdapter {
             AbstractNote abstractNote = new AbstractNote(note.getValue() - 12);
             abstractNote.IsRest = note.isRest();
             abstractNote.setLength((int)(note.getDuration() * 2000), false);
-            abstractNote.IntendedScaleType = intendedAccomp;
             abstractNote.setAttack(note.getOnVelocity());
             
             sequence.addNote(abstractNote);
