@@ -22,61 +22,48 @@ public class PlainTrackComposer extends TrackComposer {
         
         sequence.setTempo(tempo);
         
-        int currentVal = twister.nextInt((int) ((instrument.MaxNoteIndex - instrument.MinNoteIndex) * 0.75)) + instrument.MinNoteIndex;
-        int sequenceLength = twister.nextInt(8) + 2;
+        if (currentVal == 0) {
+            currentVal = twister.nextInt((int) ((instrument.MaxNoteIndex - instrument.MinNoteIndex) * 0.75)) + instrument.MinNoteIndex;
+        }
+        
+        int sequenceLength = twister.nextInt(16) + 4;
         sequenceLength -= sequenceLength % 4 + 4;
         
-        int subNoteCountIndex = twister.nextInt(3);
-        int currentSubNoteCount = 0;
+        int currentLength = twister.nextInt(instrument.DefaultLength / 2) + instrument.DefaultLength / 4;
         
-        switch (subNoteCountIndex) {
-            case 0: currentSubNoteCount = 1; break;
-            case 1: currentSubNoteCount = 2; break;
-            case 2: currentSubNoteCount = 4; break;
-            case 3: currentSubNoteCount = 8; break;
-        }
- 
         for (int i = 0; i < sequenceLength; i++) {
-            if (twister.nextInt(3) == 0) {
-                int subNoteDelta = (twister.nextInt(3) - 1);
-                subNoteCountIndex += subNoteDelta;
-                if (subNoteCountIndex < 0) {
-                    subNoteCountIndex = 0;
-                } else if (subNoteCountIndex > 3) {
-                    subNoteCountIndex = 3;
-                }
-                
-                switch (subNoteCountIndex) {
-                    case 0: currentSubNoteCount = 1; break;
-                    case 1: currentSubNoteCount = 2; break;
-                    case 2: currentSubNoteCount = 4; break;
-                    case 3: currentSubNoteCount = 8; break;
-                }
+            if (twister.nextInt(2) == 0) {
+                currentLength += twister.nextInt(instrument.DefaultLength / 4) - instrument.DefaultLength / 8;        
+            } else if (twister.nextInt(10) == 0) {
+                currentLength = twister.nextInt(instrument.DefaultLength / 2) + instrument.DefaultLength / 4;        
             }
             
-            for (int j = 0; j < currentSubNoteCount; j++) {
-                AbstractNote note = new AbstractNote(currentVal);
-                
-                note.setAttack(twister.nextInt(80) + 30);
-                note.setLength((int)(instrument.DefaultLength / currentSubNoteCount / sequence.getTempo()), true);
-                note.IntendedScaleType = currentAccomp;
+            AbstractNote note = new AbstractNote(currentVal);
 
-                if (sequence.getNotes().size() > 0) {
-                    if (sequence.getNotes().get(sequence.getNotes().size() - 1).IsRest) {
-                        note.IsRest = twister.nextBoolean();
-                    } else if (twister.nextInt(5) == 0) {
-                        note.IsRest = true;
-                    }
+            note.setAttack(twister.nextInt(80) + 30);
+            note.setLength((int)(currentLength / sequence.getTempo()), true);
+            note.IntendedScaleType = currentAccomp;
+
+            if (twister.nextInt(3) == 0) {
+                note.RelativeOffset += twister.nextInt(3) - 1;
+            }
+
+            if (sequence.getNotes().size() > 0) {
+                if (sequence.getNotes().get(sequence.getNotes().size() - 1).IsRest) {
+                    note.IsRest = twister.nextBoolean();
+                } else if (twister.nextInt(4) == 0) {
+                    note.IsRest = true;
                 }
+            }
 
-                sequence.addNote(note);
+            sequence.addNote(note);
 
-                currentVal += twister.nextInt(6) - 3;                
-                if (currentVal < instrument.MinNoteIndex) {
-                    currentVal = instrument.MinNoteIndex;
-                } else if (currentVal > instrument.MaxNoteIndex) {
-                    currentVal = instrument.MaxNoteIndex;
-                }
+            currentVal += (twister.nextInt(8) - 4) * instrument.VariationGrip;                
+            
+            if (currentVal < instrument.MinNoteIndex) {
+                currentVal = instrument.MinNoteIndex;
+            } else if (currentVal > instrument.MaxNoteIndex) {
+                currentVal = instrument.MaxNoteIndex;
             }
         }
         
@@ -115,7 +102,7 @@ public class PlainTrackComposer extends TrackComposer {
             int repetitions = twister.nextInt(20);
             for (int j = 0; j < repetitions; j++) {
                 AbstractSequence adaptedSequence = sequence.getCopy();
-                boolean transposeUp = twister.nextBoolean();
+                boolean transposeUp = twister.nextInt(4) == 0;
                 sequence.getNotes().forEach(note -> {
                     note.addValue(transposeUp ? 12 : -12, instrument);
                 });
@@ -135,15 +122,12 @@ public class PlainTrackComposer extends TrackComposer {
                 this.findScale();
             }
 
-            ScaleItem oldAccomp = this.currentAccomp;
             int oldOffset = currentAccomp.getOffset();
             
             for (AbstractNote note: sequence.getNotes()) {
                 
-                if (twister.nextInt(14) == 0) {
+                if (twister.nextInt(10) == 0) {
                     this.findAccompaniment();
-                    oldAccomp = this.currentAccomp;
-                    oldOffset = this.currentAccomp.getOffset();
                 }
 
                 if (twister.nextInt(150) == 0) {
@@ -153,16 +137,15 @@ public class PlainTrackComposer extends TrackComposer {
                 note.IntendedScaleType = currentAccomp;
                 note.ScaleOffset = ScaleOffset;
                 note.setValueInRange();
-                currentAttack += twister.nextInt(36) - 18;
+                currentAttack += twister.nextInt(30) - 15;
                 
-                if (currentAttack < 40) {
-                    currentAttack = 41;
+                if (currentAttack < 25) {
+                    currentAttack = 26;
                 } else if (currentAttack > 120) {
                     currentAttack = 119;
                 }                
             }
             
-            this.currentAccomp = oldAccomp;
             this.currentAccomp.setNewOffset(oldOffset);
         }
         

@@ -22,7 +22,9 @@ public class TrackComposer {
     protected int instrumentRange;
     protected int currentValue;
     private final ArrayList<Integer> allowedScaleOffsets;
-    
+
+    int currentVal = 0;
+
     public String Name;
 
     public TrackComposer(String name) {

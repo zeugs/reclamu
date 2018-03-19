@@ -73,9 +73,7 @@ public class FreeFormTrackComposer extends TrackComposer {
             
             note.IntendedScaleType = currentAccomp;
             
-            double actualGrip = instrument.VariationGrip;
-            
-            note.addValue(adjustedOffset * actualGrip, instrument);
+            note.addValue(adjustedOffset * instrument.VariationGrip, instrument);
             note.setValueInRange();
             currentValue = note.getValue();
 

@@ -21,9 +21,9 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
     protected AbstractTrack getAccompanimentTrack(String name, AbstractTrack masterTrack, Instrument instrument) {
         AbstractTrack track = new AbstractTrack(name);
         int noteDiff = -1;
-        int audableMinRange = 60;
+        int audableMinRange = 50;
         
-        int audibleMin = twister.nextInt(audableMinRange) + 25;
+        int audibleMin = twister.nextInt(audableMinRange) + 20;
         System.out.println(String.format("Track loudness: %d", audibleMin));
 
         for (AbstractSequence refSequence: masterTrack.Sequences) {
@@ -31,10 +31,10 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
             sequence.setTempo(refSequence.getTempo());
             
             boolean mirrorsMaster = (twister.nextInt(2) == 0);
-            int restDelayRange = twister.nextInt(2) + 1;
+            int restDelayRange = twister.nextInt(3) + 1;
             int restStartRange = twister.nextInt(5) + 2;
             
-            boolean silence = twister.nextInt(5) == 0;
+            boolean silence = twister.nextInt(4) == 0;
             
             if (silence) {
                 for (int j = 0; j < refSequence.getNotes().size(); j++) {
@@ -80,7 +80,7 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                     ArrayList<Integer> offsets = refNote.IntendedScaleType.GetItemOffsets();
                 
                     if (valueIndex == -1) {
-                        valueIndex = twister.nextInt(offsets.size());
+                        valueIndex = twister.nextInt(offsets.size() - 1);
                     } else if (twister.nextInt(5) == 0) {
                         valueIndex += twister.nextInt(3) - 1;
                         if (valueIndex > offsets.size() - 1) {
