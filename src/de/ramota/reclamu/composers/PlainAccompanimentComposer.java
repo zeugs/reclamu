@@ -75,8 +75,9 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                 note.ScaleOffset = refNote.ScaleOffset;
                 note.setLength(refNote.getLength() - delayLength, false);
                 note.IntendedScaleType = refNote.IntendedScaleType;
-
-                if (!mirrorsMaster) {
+                note.IsRest = refNote.IsRest;
+                
+                if (!mirrorsMaster && !note.IsRest) {
                     ArrayList<Integer> offsets = refNote.IntendedScaleType.GetItemOffsets();
                 
                     if (valueIndex == -1) {

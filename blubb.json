@@ -1,21 +1,21 @@
 {
 	"instruments": [ 
-		{ "name" : "piano", "min_note": "24", "max_note" : "108", "variation_grip" : "0.4" },
-		{ "name" : "piano_Sec", "min_note": "24", "max_note" : "108", "variation_grip" : "0.4" },
-		{ "name" : "viola", "min_note": "36", "max_note" : "64", "variation_grip" : "0.4" },
-		{ "name" : "cello", "min_note": "24", "max_note" : "64", "variation_grip" : "0.5" },
-		{ "name" : "violin", "min_note": "45", "max_note" : "70", "variation_grip" : "0.5" },
-		{ "name" : "contrabass", "min_note": "24", "max_note" : "60", "variation_grip" : "0.4" },
-		{ "name" : "flute", "min_note": "48", "max_note" : "86", "variation_grip" : "0.4" },
-		{ "name" : "clarinet", "min_note": "40", "max_note" : "84", "variation_grip" : "0.3" },
-		{ "name" : "bassoon", "min_note": "22", "max_note" : "64", "variation_grip" : "0.3" },
-		{ "name" : "oboe", "min_note": "46", "max_note" : "81", "variation_grip" : "0.2" },
-		{ "name" : "french_horn", "min_note": "29", "max_note" : "72", "variation_grip" : "0.2" },
-		{ "name" : "trumpet", "min_note": "42", "max_note" : "74", "variation_grip" : "0.2" },
-		{ "name" : "trombone", "min_note": "33", "max_note" : "67", "variation_grip" : "0.2" },
-		{ "name" : "tuba", "min_note": "14", "max_note" : "53", "variation_grip" : "0.2" },
-		{ "name" : "harp", "min_note": "22", "max_note" : "90", "variation_grip" : "0.4" },
-		{ "name" : "bells", "min_note": "43", "max_note" : "72", "variation_grip" : "0.3" }
+		{ "name" : "piano", "min_note": "24", "max_note" : "108", "variation_grip" : "0.7" },
+		{ "name" : "piano_Sec", "min_note": "24", "max_note" : "108", "variation_grip" : "0.7" },
+		{ "name" : "viola", "min_note": "36", "max_note" : "64", "variation_grip" : "0.7" },
+		{ "name" : "cello", "min_note": "24", "max_note" : "64", "variation_grip" : "0.8" },
+		{ "name" : "violin", "min_note": "45", "max_note" : "70", "variation_grip" : "0.8" },
+		{ "name" : "contrabass", "min_note": "24", "max_note" : "60", "variation_grip" : "0.7" },
+		{ "name" : "flute", "min_note": "48", "max_note" : "86", "variation_grip" : "0.7" },
+		{ "name" : "clarinet", "min_note": "40", "max_note" : "84", "variation_grip" : "0.6" },
+		{ "name" : "bassoon", "min_note": "22", "max_note" : "64", "variation_grip" : "0.6" },
+		{ "name" : "oboe", "min_note": "46", "max_note" : "81", "variation_grip" : "0.5" },
+		{ "name" : "french_horn", "min_note": "29", "max_note" : "72", "variation_grip" : "0.5" },
+		{ "name" : "trumpet", "min_note": "42", "max_note" : "74", "variation_grip" : "0.5" },
+		{ "name" : "trombone", "min_note": "33", "max_note" : "67", "variation_grip" : "0.5" },
+		{ "name" : "tuba", "min_note": "14", "max_note" : "53", "variation_grip" : "0.5" },
+		{ "name" : "harp", "min_note": "22", "max_note" : "90", "variation_grip" : "0.8" },
+		{ "name" : "bells", "min_note": "43", "max_note" : "72", "variation_grip" : "0.6" }
 	],
 	"composers": [
 		{ "name" : "plain_composer", "type" : "PlainTrackComposer" }

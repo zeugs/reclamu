@@ -40,7 +40,7 @@ public class AccompanimentComposer {
     }
     
     protected int addNoteHumanized(AbstractSequence sequence) {
-        int delayLength = twister.nextInt(15) + 5;
+        int delayLength = twister.nextInt(35) + 5;
 
         if (delayLength > 0) {
             AbstractNote delayPseudoNote = new AbstractNote(70);

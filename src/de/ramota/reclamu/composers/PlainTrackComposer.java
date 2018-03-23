@@ -2,9 +2,9 @@ package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.Instrument;
 import de.ramota.reclamu.AbstractNote;
-import de.ramota.reclamu.ScaleItem;
 import de.ramota.reclamu.AbstractSequence;
 import de.ramota.reclamu.AbstractTrack;
+import de.ramota.reclamu.ScaleItem;
 
 /**
  *
@@ -116,17 +116,32 @@ public class PlainTrackComposer extends TrackComposer {
         this.findAccompaniment();
         this.findScale();
         
+        int sequenceCount = 0;
         for (AbstractSequence sequence: track.Sequences) {
                         
             if (twister.nextInt(6) == 0) {
                 this.findScale();
             }
 
+            int noteCount = 0;
+            boolean terminate = twister.nextInt(4) == 0 || sequenceCount == track.Sequences.size() - 1;
+            int terminateIntro = twister.nextBoolean() ? 1 : 2;
+            ScaleItem oldAccomp = this.currentAccomp;
             int oldOffset = currentAccomp.getOffset();
-            
+
             for (AbstractNote note: sequence.getNotes()) {
                 
-                if (twister.nextInt(10) == 0) {
+                if (terminate && noteCount > sequence.getNotes().size() * 0.9) {
+                    this.currentAccomp = intendedAccomps.get(0);
+                    this.currentAccomp.setNewOffset(0);                    
+                    System.out.println("!!!-!");
+                } else if (terminate && noteCount > sequence.getNotes().size() * 0.8) {
+                    oldAccomp = this.currentAccomp;
+                    oldOffset = currentAccomp.getOffset();
+                    this.currentAccomp = intendedAccomps.get(0);
+                    this.currentAccomp.setNewOffset(terminateIntro);
+                    System.out.println("!-!");
+                } else if (twister.nextInt(14) == 0) {
                     this.findAccompaniment();
                 }
 
@@ -136,17 +151,26 @@ public class PlainTrackComposer extends TrackComposer {
                 note.setAttack(currentAttack);
                 note.IntendedScaleType = currentAccomp;
                 note.ScaleOffset = ScaleOffset;
-                note.setValueInRange();
+                
+                if (twister.nextInt(5) != 0) {
+                    note.setValueInRange();
+                }
+                
                 currentAttack += twister.nextInt(30) - 15;
                 
                 if (currentAttack < 25) {
                     currentAttack = 26;
                 } else if (currentAttack > 120) {
                     currentAttack = 119;
-                }                
+                }    
+                
+                noteCount++;
             }
             
+            this.currentAccomp = oldAccomp;
             this.currentAccomp.setNewOffset(oldOffset);
+
+            sequenceCount++;
         }
         
         return track;
