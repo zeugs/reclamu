@@ -4,6 +4,7 @@ import de.ramota.reclamu.composers.AccompanimentComposer;
 import de.ramota.reclamu.composers.MidiDataEnhancer;
 import de.ramota.reclamu.composers.PlainAccompanimentComposer;
 import de.ramota.reclamu.composers.PlainTrackComposer;
+import de.ramota.reclamu.composers.SineWaveTrackComposer;
 import de.ramota.reclamu.composers.TrackComposer;
 import de.ramota.reclamu.configuration.PieceConfiguration;
 import org.jfugue.midi.MidiFileManager;
@@ -122,6 +123,9 @@ public class Composer {
                 case "PlainTrackComposer" : 
                     composers.add(new PlainTrackComposer(name)); 
                     break;
+                case "SineWaveComposer" : 
+                    composers.add(new SineWaveTrackComposer(name)); 
+                    break;
                 case "MidiDataEnhancer" : 
                     MidiDataEnhancer enhancer = new MidiDataEnhancer(name);
                     enhancer.setFileName(input.toString());
@@ -174,7 +178,7 @@ public class Composer {
                 if (composer.Name.equals(type)) {
                     Instrument refInstrument = getInstrumentByName(instruments, instr);
                     composer.initialize(refInstrument, intendedAccomps);
-                    AbstractTrack track = composer.generateTrack(refInstrument, name, 30);
+                    AbstractTrack track = composer.generateTrack(refInstrument, name, 10);
                     tracks.add(track);
                     refTracks.add(track);
                 }

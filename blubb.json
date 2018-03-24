@@ -18,7 +18,7 @@
 		{ "name" : "bells", "min_note": "43", "max_note" : "72", "variation_grip" : "0.6" }
 	],
 	"composers": [
-		{ "name" : "plain_composer", "type" : "PlainTrackComposer" }
+		{ "name" : "plain_composer", "type" : "SineWaveComposer" }
 	],
 	"accompaniment composers": [
 		{ "name" : "plain_accomp", "type" : "PlainAccompanimentComposer" }
