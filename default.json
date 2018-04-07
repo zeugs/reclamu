@@ -25,6 +25,7 @@
 	],
 	"tracks": [
 		{ "name" : "master", "instrument" : "piano", "type" : "plain_composer", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "generated" },
+		{ "name" : "piano_Sec", "instrument" : "piano", "type" : "plain_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" },
 		{ "name" : "violas", "instrument" : "viola", "type" : "plain_accomp", "tracks_num" : "12", "mirrored_tracks_num" : "6", "input" : "master" },
 		{ "name" : "cellos", "instrument" : "cello", "type" : "plain_accomp", "tracks_num" : "10", "mirrored_tracks_num" : "5", "input" : "master" },
 		{ "name" : "violins_first", "instrument" : "violin", "type" : "plain_accomp", "tracks_num" : "16", "mirrored_tracks_num" : "8", "input" : "master" },

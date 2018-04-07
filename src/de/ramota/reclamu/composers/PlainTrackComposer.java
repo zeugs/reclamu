@@ -152,7 +152,7 @@ public class PlainTrackComposer extends TrackComposer {
                 note.IntendedScaleType = currentAccomp;
                 note.ScaleOffset = ScaleOffset;
                 
-                if (twister.nextInt(5) != 0) {
+                if (twister.nextInt(7) != 0) {
                     note.setValueInRange();
                 }
                 

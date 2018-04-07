@@ -32,10 +32,10 @@ public class SineWaveTrackComposer extends TrackComposer {
         double currentX = initialOffset;
         
         while (currentX < 2 * Math.PI + initialOffset) {
-            currentLength += instrument.DefaultLength / 50 * direction;
+            currentLength += instrument.DefaultLength / 30 * direction;
             
-            if (currentLength >= instrument.DefaultLength * 1.5 || currentLength <= instrument.DefaultLength / 15) {
-                direction *= -direction; 
+            if (currentLength >= AbstractNote.MAX_LENGTH || currentLength <= instrument.DefaultLength / 15) {
+                direction *= -1; 
             }
             
             AbstractNote note = new AbstractNote(currentVal);
@@ -52,7 +52,7 @@ public class SineWaveTrackComposer extends TrackComposer {
         
         return sequence;
     }    
-    
+        
     @Override
     public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
         AbstractTrack track = new AbstractTrack(name);
@@ -112,7 +112,7 @@ public class SineWaveTrackComposer extends TrackComposer {
                 note.IntendedScaleType = currentAccomp;
                 note.ScaleOffset = ScaleOffset;
                 note.setAttack((int) ((Math.sin(currentAttackOffset)) * 40 + 70));
-                note.setValueInRange();
+                //note.setValueInRange();
     
                 currentAttackOffset += Math.PI / 70;
                 noteCount++;

@@ -1,6 +1,7 @@
 package de.ramota.reclamu;
 
 import de.ramota.reclamu.composers.AccompanimentComposer;
+import de.ramota.reclamu.composers.FreeFormTrackComposer;
 import de.ramota.reclamu.composers.MidiDataEnhancer;
 import de.ramota.reclamu.composers.PlainAccompanimentComposer;
 import de.ramota.reclamu.composers.PlainTrackComposer;
@@ -120,10 +121,13 @@ public class Composer {
             Object input = instrumentObject.get("input");
             
             switch (type) {
+                case "FreeFormTrackComposer" : 
+                    composers.add(new FreeFormTrackComposer(name)); 
+                    break;
                 case "PlainTrackComposer" : 
                     composers.add(new PlainTrackComposer(name)); 
                     break;
-                case "SineWaveComposer" : 
+                case "SineWaveTrackComposer" : 
                     composers.add(new SineWaveTrackComposer(name)); 
                     break;
                 case "MidiDataEnhancer" : 

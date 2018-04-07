@@ -9,8 +9,8 @@ public class AbstractNote {
     public boolean IsRest;
     public int ScaleOffset;
     public ScaleItem IntendedScaleType;
-    public static int MAX_LENGTH = 1500;
-    public static int MIN_LENGTH = 200;
+    public static int MAX_LENGTH = 300;
+    public static int MIN_LENGTH = 100;
     private int attack;
     public int RelativeOffset = 0;
 

@@ -8,7 +8,7 @@ public class Instrument {
     public int DefaultLength;
     
     public Instrument(int minNoteIndex, int maxNoteIndex, String name, double variationGrip) {
-        this.DefaultLength = 800;
+        this.DefaultLength = 200;
 
         this.MinNoteIndex = minNoteIndex;
         this.MaxNoteIndex = maxNoteIndex;
