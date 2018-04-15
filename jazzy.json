@@ -1,0 +1,48 @@
+{
+	"instruments": [ 
+		{ "name" : "lead", "min_note": "24", "max_note" : "96", "variation_grip" : "0.5" },
+		{ "name" : "lead_Sec", "min_note": "24", "max_note" : "96", "variation_grip" : "0.5" },
+		{ "name" : "bass", "min_note": "24", "max_note" : "60", "variation_grip" : "0.5" },
+		{ "name" : "alto_sax", "min_note": "36", "max_note" : "68", "variation_grip" : "0.5" },
+		{ "name" : "guitar", "min_note": "23", "max_note" : "62", "variation_grip" : "0.3" },
+		{ "name" : "xylophone", "min_note": "42", "max_note" : "86", "variation_grip" : "0.5" },
+		{ "name" : "drums_low", "min_note": "24", "max_note" : "35", "variation_grip" : "0.5" },
+		{ "name" : "drums_high", "min_note": "36", "max_note" : "47", "variation_grip" : "0.5" },
+	],
+	"composers": [
+		{ "name" : "plain_composer", "type" : "PlainTrackComposer" }
+	],
+	"accompaniment composers": [
+		{ "name" : "plain_accomp", "type" : "PlainAccompanimentComposer" }
+	],
+	"tracks": [
+		{ "name" : "master", "instrument" : "lead", "type" : "plain_composer", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "generated" },
+		{ "name" : "lead_Sec", "instrument" : "lead", "type" : "plain_accomp", "tracks_num" : "4", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "bass", "instrument" : "bass", "type" : "plain_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "alto_sax", "instrument" : "alto_sax", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "guitar", "instrument" : "guitar", "type" : "plain_accomp", "tracks_num" : "3", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "xylophone", "instrument" : "xylophone", "type" : "plain_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "drums_low", "instrument" : "drums_low", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "drums_high", "instrument" : "drums_high", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "0", "input" : "master" },
+	],
+	"scale items": [
+		{ "name" : "major", "offsets" : "0,2,4,5,7,9,11,12,14,16,17,19,21,23" },
+		{ "name" : "minor", "offsets" : "0,2,3,5,7,8,10,12,14,15,17,19,20,22" }		
+	],
+	"accompaniment items": [
+		{ "name" : "I", "offsets": "0,4,7", "weight": "25", "scale item": "major" },
+		{ "name" : "IV", "offsets": "5,9,12", "weight": "30", "scale item": "major" },
+		{ "name" : "V", "offsets": "7,11,14", "weight": "30", "scale item": "major" },
+		{ "name" : "VI", "offsets": "9,13,16", "weight": "30", "scale item": "major" },
+		{ "name" : "maj6", "offsets": "0,4,7,9", "weight": "10", "scale item": "major" },
+		{ "name" : "maj7", "offsets": "0,4,7,9,11", "weight": "10", "scale item": "major" },
+		{ "name" : "maj9", "offsets": "0,4,7,11,14", "weight": "10", "scale item": "major" },
+
+		{ "name" : "i", "offsets": "0,3,7", "weight": "10", "scale item": "minor" },
+		{ "name" : "ii", "offsets": "0,2,9", "weight": "20", "scale item": "minor" },
+		{ "name" : "iv", "offsets": "5,8,12", "weight": "10", "scale item": "minor" },
+		{ "name" : "v", "offsets": "7,10,14", "weight": "30", "scale item": "minor" },
+		{ "name" : "vi", "offsets": "8,12,16", "weight": "10", "scale item": "minor" },
+	],
+	"allowed scale offsets": "0,1,2,3,4,5,6,7,8,9"
+}

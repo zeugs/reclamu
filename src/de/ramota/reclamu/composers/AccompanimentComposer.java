@@ -40,7 +40,7 @@ public class AccompanimentComposer {
     }
     
     protected int addNoteHumanized(AbstractSequence sequence) {
-        int delayLength = twister.nextInt(20) + 5;
+        int delayLength = twister.nextInt(13) + 5;
 
         if (delayLength > 0) {
             AbstractNote delayPseudoNote = new AbstractNote(70);
@@ -68,10 +68,12 @@ public class AccompanimentComposer {
     protected int findNoteDiff(Instrument instrument, AbstractSequence refSequence) {
         int noteDiff = 0;
         int instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
-        int absoluteValue = twister.nextInt(instrumentRange) + instrument.MinNoteIndex;
-        absoluteValue -= absoluteValue % 12;
-        if (refSequence.getNotes().size() > 0) {
-            noteDiff = absoluteValue - refSequence.getNotes().get(0).getValue();
+        if (instrumentRange > 0) {
+            int absoluteValue = twister.nextInt(instrumentRange) + instrument.MinNoteIndex;
+            absoluteValue -= absoluteValue % 12;
+            if (refSequence.getNotes().size() > 0) {
+                noteDiff = absoluteValue - refSequence.getNotes().get(0).getValue();
+            }
         }
         return -noteDiff;
     }    

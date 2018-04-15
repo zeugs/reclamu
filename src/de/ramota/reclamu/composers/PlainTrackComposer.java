@@ -26,16 +26,16 @@ public class PlainTrackComposer extends TrackComposer {
             currentVal = twister.nextInt((int) ((instrument.MaxNoteIndex - instrument.MinNoteIndex) * 0.75)) + instrument.MinNoteIndex;
         }
         
-        int sequenceLength = twister.nextInt(16) + 4;
+        int sequenceLength = twister.nextInt(32) + 8;
         sequenceLength -= sequenceLength % 4 + 4;
         
         int currentLength = twister.nextInt(instrument.DefaultLength / 2) + instrument.DefaultLength / 4;
         
         for (int i = 0; i < sequenceLength; i++) {
-            if (twister.nextInt(2) == 0) {
-                currentLength += twister.nextInt(instrument.DefaultLength / 4) - instrument.DefaultLength / 8;        
+            if (twister.nextInt(3) == 0) {
+                currentLength += twister.nextInt(instrument.DefaultLength / 8) - instrument.DefaultLength / 16;        
             } else if (twister.nextInt(10) == 0) {
-                currentLength = twister.nextInt(instrument.DefaultLength / 2) + instrument.DefaultLength / 4;        
+                currentLength = twister.nextInt(instrument.DefaultLength / 6) + instrument.DefaultLength / 12;        
             }
             
             AbstractNote note = new AbstractNote(currentVal);
@@ -99,7 +99,7 @@ public class PlainTrackComposer extends TrackComposer {
             }
             track.addSequence(sequence);
             
-            int repetitions = twister.nextInt(20);
+            int repetitions = twister.nextInt(30) + 5;
             for (int j = 0; j < repetitions; j++) {
                 AbstractSequence adaptedSequence = sequence.getCopy();
                 boolean transposeUp = twister.nextInt(4) == 0;

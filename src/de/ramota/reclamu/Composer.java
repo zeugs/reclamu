@@ -182,7 +182,7 @@ public class Composer {
                 if (composer.Name.equals(type)) {
                     Instrument refInstrument = getInstrumentByName(instruments, instr);
                     composer.initialize(refInstrument, intendedAccomps);
-                    AbstractTrack track = composer.generateTrack(refInstrument, name, 10);
+                    AbstractTrack track = composer.generateTrack(refInstrument, name, 30);
                     tracks.add(track);
                     refTracks.add(track);
                 }

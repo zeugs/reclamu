@@ -4,6 +4,7 @@ import de.ramota.reclamu.Instrument;
 import de.ramota.reclamu.AbstractNote;
 import de.ramota.reclamu.AbstractSequence;
 import de.ramota.reclamu.AbstractTrack;
+import de.ramota.reclamu.ScaleItem;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,15 +138,21 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
             return i;
         }
 
-        Integer noteValue = refNotes.get(startPos).getValue();
+        Integer scaleOffset = refNotes.get(startPos).ScaleOffset;
+        ScaleItem scaleType = refNotes.get(startPos).IntendedScaleType;
         
         for (int j = startPos; j < startPos + skip; j++) {
-            if (j < refNotes.size() && noteValue == refNotes.get(j).getValue()) {
-                note.setLength(note.getLength() + refNotes.get(j).getLength(), false);
-                i++;
-            } else {
+            if (j >= refNotes.size()) {
                 break;
             }
+            
+            AbstractNote refNote = refNotes.get(j);
+            boolean noteFits = (refNote.IntendedScaleType == scaleType && refNote.ScaleOffset == scaleOffset);
+            
+            if (noteFits) {
+                note.setLength(note.getLength() + refNote.getLength(), false);
+                i++;
+            } 
         }
         return i;
     }    

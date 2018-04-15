@@ -114,7 +114,7 @@ public class FreeFormTrackComposer extends TrackComposer {
                 sequence = this.getSequence(instrument, 1);   
             }
             
-            int repetitions = twister.nextInt(6);
+            int repetitions = twister.nextInt(12);
             System.out.println(String.format("Number of repetitions: %d", repetitions));
             for (int j = 0; j < repetitions; j++) {
                 if (twister.nextInt(5) == 0) {

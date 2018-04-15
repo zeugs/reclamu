@@ -15,9 +15,12 @@
 		{ "name" : "trombone", "min_note": "33", "max_note" : "67", "variation_grip" : "0.5" },
 		{ "name" : "tuba", "min_note": "14", "max_note" : "53", "variation_grip" : "0.5" },
 		{ "name" : "harp", "min_note": "22", "max_note" : "90", "variation_grip" : "0.8" },
+		{ "name" : "bells", "min_note": "43", "max_note" : "72", "variation_grip" : "0.3" },
+		{ "name" : "percussion_low", "min_note": "10", "max_note" : "30", "variation_grip" : "0.2" },
+		{ "name" : "percussion_high", "min_note": "31", "max_note" : "69", "variation_grip" : "0.2" }
 	],
 	"composers": [
-		{ "name" : "plain_composer", "type" : "FreeFormTrackComposer" }
+		{ "name" : "plain_composer", "type" : "PlainTrackComposer" }
 	],
 	"accompaniment composers": [
 		{ "name" : "plain_accomp", "type" : "PlainAccompanimentComposer" }
@@ -39,6 +42,9 @@
 		{ "name" : "trombones", "instrument" : "trombone", "type" : "plain_accomp", "tracks_num" : "5", "mirrored_tracks_num" : "2", "input" : "master" },
 		{ "name" : "tubas", "instrument" : "tuba", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master" },
 		{ "name" : "harps", "instrument" : "harp", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master" },
+		{ "name" : "bells", "instrument" : "bells", "type" : "chamber_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" }
+		{ "name" : "percussion_low", "instrument" : "percussion_low", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "percussion_high", "instrument" : "percussion_high", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "0", "input" : "master" }
 	],
 	"scale items": [
 		{ "name" : "major", "offsets" : "0,2,4,5,7,9,11,12,14,16,17,19,21,23" },
