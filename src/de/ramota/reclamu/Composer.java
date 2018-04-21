@@ -5,6 +5,8 @@ import de.ramota.reclamu.composers.FreeFormTrackComposer;
 import de.ramota.reclamu.composers.MidiDataEnhancer;
 import de.ramota.reclamu.composers.PlainAccompanimentComposer;
 import de.ramota.reclamu.composers.PlainTrackComposer;
+import de.ramota.reclamu.composers.SimpleAccompanimentComposer;
+import de.ramota.reclamu.composers.SimpleTrackComposer;
 import de.ramota.reclamu.composers.SineWaveTrackComposer;
 import de.ramota.reclamu.composers.TrackComposer;
 import de.ramota.reclamu.configuration.PieceConfiguration;
@@ -127,6 +129,9 @@ public class Composer {
                 case "PlainTrackComposer" : 
                     composers.add(new PlainTrackComposer(name)); 
                     break;
+                case "SimpleTrackComposer" : 
+                    composers.add(new SimpleTrackComposer(name)); 
+                    break;
                 case "SineWaveTrackComposer" : 
                     composers.add(new SineWaveTrackComposer(name)); 
                     break;
@@ -157,6 +162,9 @@ public class Composer {
                 case "PlainAccompanimentComposer" : 
                     composers.add(new PlainAccompanimentComposer(name)); 
                     break;
+                case "SimpleAccompanimentComposer" : 
+                    composers.add(new SimpleAccompanimentComposer(name)); 
+                    break;
                 default: 
                     break;
             }
@@ -182,7 +190,7 @@ public class Composer {
                 if (composer.Name.equals(type)) {
                     Instrument refInstrument = getInstrumentByName(instruments, instr);
                     composer.initialize(refInstrument, intendedAccomps);
-                    AbstractTrack track = composer.generateTrack(refInstrument, name, 30);
+                    AbstractTrack track = composer.generateTrack(refInstrument, name, 60);
                     tracks.add(track);
                     refTracks.add(track);
                 }
