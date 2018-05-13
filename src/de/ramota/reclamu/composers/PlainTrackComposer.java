@@ -21,26 +21,41 @@ public class PlainTrackComposer extends TrackComposer {
         AbstractSequence sequence = new AbstractSequence();
         
         sequence.setTempo(tempo);
-        
-        if (currentVal == 0) {
+
+        if (currentVal == 0 || twister.nextInt(3) == 0) {
             currentVal = twister.nextInt((int) ((instrument.MaxNoteIndex - instrument.MinNoteIndex) * 0.75)) + instrument.MinNoteIndex;
         }
-        
-        int sequenceLength = twister.nextInt(32) + 8;
-        sequenceLength -= sequenceLength % 4 + 4;
-        
-        int currentLength = twister.nextInt(instrument.DefaultLength / 2) + instrument.DefaultLength / 4;
-        
-        for (int i = 0; i < sequenceLength; i++) {
+
+        int divisionStartRange = twister.nextInt(3) + 5;
+        int lengthenStartRange = twister.nextInt(3) + 1;
+
+        int sequenceLength = (twister.nextInt(2) + 1) * 8 * AbstractNote.MIN_LENGTH;
+
+        int currentLength = twister.nextInt(instrument.DefaultLength / 4) + instrument.DefaultLength / 8;
+        int summedLength = 0;
+
+        while (summedLength < sequenceLength) {
             if (twister.nextInt(3) == 0) {
                 currentLength += twister.nextInt(instrument.DefaultLength / 8) - instrument.DefaultLength / 16;        
-            } else if (twister.nextInt(10) == 0) {
+            } else if (twister.nextInt(30) == 0) {
                 currentLength = twister.nextInt(instrument.DefaultLength / 6) + instrument.DefaultLength / 12;        
             }
             
             AbstractNote note = new AbstractNote(currentVal);
 
-            note.setAttack(twister.nextInt(80) + 30);
+            if (twister.nextInt(6) == 0) {
+                note.AttackSet = true;
+            }
+
+            if (twister.nextInt(lengthenStartRange) == 0) {
+                note.LengtheningPossible = true;
+            }
+
+            if (twister.nextInt(divisionStartRange) == 0) {
+                note.DividingPossible = true;
+            }
+
+            note.setAttack(60);
             note.setLength((int)(currentLength / sequence.getTempo()), true);
             note.IntendedScaleType = currentAccomp;
 
@@ -51,15 +66,16 @@ public class PlainTrackComposer extends TrackComposer {
             if (sequence.getNotes().size() > 0) {
                 if (sequence.getNotes().get(sequence.getNotes().size() - 1).IsRest) {
                     note.IsRest = twister.nextBoolean();
-                } else if (twister.nextInt(4) == 0) {
+                } else if (twister.nextInt(10) == 0) {
                     note.IsRest = true;
                 }
             }
 
             sequence.addNote(note);
+            summedLength += currentLength;
 
-            currentVal += (twister.nextInt(8) - 4) * instrument.VariationGrip;                
-            
+            currentVal += (twister.nextInt(6) - 3) * instrument.VariationGrip;
+
             if (currentVal < instrument.MinNoteIndex) {
                 currentVal = instrument.MinNoteIndex;
             } else if (currentVal > instrument.MaxNoteIndex) {
@@ -68,8 +84,26 @@ public class PlainTrackComposer extends TrackComposer {
         }
         
         return sequence;
-    }    
-    
+    }
+
+    protected AbstractNote generateNote(int currentNoteLength, AbstractSequence sequence) {
+        AbstractNote note = new AbstractNote(currentVal);
+        note.setAttack(twister.nextInt(80) + 30);
+        note.setLength((int)(currentNoteLength / sequence.getTempo()), true);
+        note.IntendedScaleType = currentAccomp;
+        if (twister.nextInt(3) == 0) {
+            note.RelativeOffset += twister.nextInt(3) - 1;
+        }
+        if (sequence.getNotes().size() > 0) {
+            if (sequence.getNotes().get(sequence.getNotes().size() - 1).IsRest) {
+                note.IsRest = twister.nextBoolean();
+            } else if (twister.nextInt(400) == 0) {
+                note.IsRest = true;
+            }
+        }
+        return note;
+    }
+
     @Override
     public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
         AbstractTrack track = new AbstractTrack(name);
@@ -87,68 +121,69 @@ public class PlainTrackComposer extends TrackComposer {
                 }
                 System.out.println(String.format("Tempo: %d", (int)(currentTempo * 100)));
             }
-            
-            AbstractSequence sequence;
-            if (i > 5 && twister.nextInt(2) == 0) {
-                int itemToCopy = twister.nextInt(track.Sequences.size());
-                sequence = track.Sequences.get(itemToCopy).getCopy();
-                                
-                System.out.println(String.format("Just copied sequence %d", itemToCopy));
-            } else {
-                sequence = this.getSequence(instrument, currentTempo);   
-            }
-            track.addSequence(sequence);
-            
-            int repetitions = twister.nextInt(30) + 5;
-            for (int j = 0; j < repetitions; j++) {
-                AbstractSequence adaptedSequence = sequence.getCopy();
-                boolean transposeUp = twister.nextInt(4) == 0;
-                sequence.getNotes().forEach(note -> {
-                    note.addValue(transposeUp ? 12 : -12, instrument);
-                });
-                
+
+            if (twister.nextInt(10) != 0 && i > 0) {
+                AbstractSequence sequenceToCopy = track.Sequences.get(twister.nextInt(track.Sequences.size()));
+                if (twister.nextInt(5) != 0) {
+                    sequenceToCopy = track.Sequences.get(track.Sequences.size() - 1);
+                }
+                AbstractSequence adaptedSequence = sequenceToCopy.getCopy();
+
+                boolean alterSequence = twister.nextInt(3) == 0;
+                if (alterSequence) {
+                    boolean transpose = twister.nextInt(4) == 0;
+                    boolean transposeUp = twister.nextInt(4) == 0;
+                    for (AbstractNote note: adaptedSequence.getNotes()) {
+                        if (twister.nextInt(2) == 0) {
+                            note = this.generateNote(note.getValue(), sequenceToCopy);
+                        }
+                        if (transpose) {
+                            note.addValue(transposeUp ? 12 : -12, instrument);
+                        }
+                    }
+                }
+
                 track.addSequence(adaptedSequence);
+            } else {
+                AbstractSequence sequence;
+                sequence = this.getSequence(instrument, currentTempo);
+                track.addSequence(sequence);
             }
         }
-        
+
         int currentAttack = twister.nextInt(80) + 40;
-        
+
         this.findAccompaniment();
         this.findScale();
-        
-        int sequenceCount = 0;
+
         for (AbstractSequence sequence: track.Sequences) {
                         
             if (twister.nextInt(6) == 0) {
                 this.findScale();
             }
 
-            int noteCount = 0;
-            boolean terminate = twister.nextInt(4) == 0 || sequenceCount == track.Sequences.size() - 1;
-            int terminateIntro = twister.nextBoolean() ? 1 : 2;
-            ScaleItem oldAccomp = this.currentAccomp;
-            int oldOffset = currentAccomp.getOffset();
+            if (twister.nextInt(3) == 0) {
+                currentAttack = twister.nextInt(80) + 40;
+            }
 
             for (AbstractNote note: sequence.getNotes()) {
-                
-                if (terminate && noteCount > sequence.getNotes().size() * 0.9) {
-                    this.currentAccomp = intendedAccomps.get(0);
-                    this.currentAccomp.setNewOffset(0);                    
-                    System.out.println("!!!-!");
-                } else if (terminate && noteCount > sequence.getNotes().size() * 0.8) {
-                    oldAccomp = this.currentAccomp;
-                    oldOffset = currentAccomp.getOffset();
-                    this.currentAccomp = intendedAccomps.get(0);
-                    this.currentAccomp.setNewOffset(terminateIntro);
-                    System.out.println("!-!");
-                } else if (twister.nextInt(14) == 0) {
+
+                if (twister.nextInt(6) == 0) {
                     this.findAccompaniment();
                 }
 
-                if (twister.nextInt(150) == 0) {
-                    currentAttack = twister.nextInt(80) + 40;
+                int actualAttack = currentAttack;
+                if (note.AttackSet) {
+                    actualAttack = currentAttack + twister.nextInt(80) - 40;
+                    if (actualAttack > 119) {
+                        actualAttack = 119;
+                    } else if (actualAttack < 0) {
+                        actualAttack = 0;
+                    }
                 }
-                note.setAttack(currentAttack);
+
+                note.setAttack(actualAttack);
+
                 note.IntendedScaleType = currentAccomp;
                 note.ScaleOffset = ScaleOffset;
                 
@@ -162,15 +197,8 @@ public class PlainTrackComposer extends TrackComposer {
                     currentAttack = 26;
                 } else if (currentAttack > 120) {
                     currentAttack = 119;
-                }    
-                
-                noteCount++;
+                }
             }
-            
-            this.currentAccomp = oldAccomp;
-            this.currentAccomp.setNewOffset(oldOffset);
-
-            sequenceCount++;
         }
         
         return track;

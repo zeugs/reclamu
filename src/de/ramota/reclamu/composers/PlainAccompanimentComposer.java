@@ -22,10 +22,6 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
     protected AbstractTrack getAccompanimentTrack(String name, AbstractTrack masterTrack, Instrument instrument) {
         AbstractTrack track = new AbstractTrack(name);
         int noteDiff = -1;
-        int audableMinRange = 50;
-        
-        int audibleMin = twister.nextInt(audableMinRange) + 20;
-        System.out.println(String.format("Track loudness: %d", audibleMin));
 
         for (AbstractSequence refSequence: masterTrack.Sequences) {
             AbstractSequence sequence = new AbstractSequence();
@@ -33,9 +29,9 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
             
             boolean mirrorsMaster = (twister.nextInt(2) == 0);
             int restDelayRange = twister.nextInt(2) + 1;
-            int restStartRange = twister.nextInt(8) + 2;
-            
-            boolean silence = twister.nextInt(4) == 0;
+            int restStartRange = twister.nextInt(40) + 2;
+
+            boolean silence = twister.nextInt(8) == 0;
             
             if (silence) {
                 for (int j = 0; j < refSequence.getNotes().size(); j++) {
@@ -46,63 +42,49 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                 track.Sequences.add(sequence);
                 
                 continue;
-            }                
+            }
+
+            if (twister.nextInt(3) != 0 && refSequence.getParentSequence() != null) {
+                boolean sequenceFound = false;
+                for (AbstractSequence accompSequence: track.Sequences) {
+                    if (accompSequence.getParentSequence() == refSequence.getParentSequence()) {
+                        track.Sequences.add(accompSequence.getCopy());
+                        sequenceFound = true;
+                        break;
+                    }
+                }
+                if (sequenceFound) {
+                    continue;
+                }
+            }
 
             if (noteDiff == -1) {
                 noteDiff = findNoteDiff(instrument, refSequence);
             }
             
             int valueIndex = -1;
-            
+
+            int divisionSustainRange = twister.nextInt(5) + 1;
+            int lengthenSustainRange = twister.nextInt(5) + 1;
+            boolean lengthening = false;
+            boolean dividing = false;
+
             for (int i = 0; i < refSequence.getNotes().size(); i++) {
     
                 if (twister.nextInt(15) == 0) {
                     noteDiff = this.findNoteDiff(instrument, refSequence);
                 }
-                
-                AbstractNote refNote = refSequence.getNotes().get(i);
-                
-                int delayLength = this.addNoteHumanized(sequence);
-                int noteVal;
-                
-                if (!mirrorsMaster) {
-                    noteVal = (refNote.getValue() - refNote.getValue() % 12) - (noteDiff - noteDiff % 12) + refNote.ScaleOffset;
-                } else {
-                    noteVal = refNote.getValue() - (noteDiff - noteDiff % 12);
-                }
-                
-                AbstractNote note = new AbstractNote(noteVal);
-                note.setAttack(refNote.getAttack() + twister.nextInt(40) - 20);
-                note.ScaleOffset = refNote.ScaleOffset;
-                note.setLength(refNote.getLength() - delayLength, false);
-                note.IntendedScaleType = refNote.IntendedScaleType;
-                note.IsRest = refNote.IsRest;
-                
-                if (!mirrorsMaster && !note.IsRest) {
-                    ArrayList<Integer> offsets = refNote.IntendedScaleType.GetItemOffsets();
-                
-                    if (valueIndex == -1) {
-                        valueIndex = twister.nextInt(offsets.size() - 1);
-                    } else if (twister.nextInt(5) == 0) {
-                        valueIndex += twister.nextInt(3) - 1;
-                        if (valueIndex > offsets.size() - 1) {
-                            valueIndex = offsets.size() - 1;
-                        } else if (valueIndex < 0) {
-                            valueIndex = 0;
-                        }
-                    }
-                    
-                    int valueToAdd = offsets.get(valueIndex);
 
-                    note.addValue(valueToAdd, instrument);
-                } else {
-                    note.addValue(0, instrument);
-                }
+                AbstractNote refNote = refSequence.getNotes().get(i);
+
+                AbstractNote note = generateNote(noteDiff, mirrorsMaster, refNote);
+
+                valueIndex = setValueToAdd(instrument, mirrorsMaster, valueIndex, refNote, note);
 
                 List<AbstractNote> notes = sequence.getNotes();
                 List<AbstractNote> refNotes = refSequence.getNotes();
 
-                if (refNotes.get(i).getAttack() >= audibleMin && (!refNotes.get(i).IsRest || twister.nextInt(5) == 0)) {
+                if (!refNotes.get(i).IsRest || twister.nextInt(5) == 0) {
                     if (notes.size() > 0 && sequence.getNotes().get(sequence.getNotes().size() - 1).IsRest) {
                         note.IsRest = true;
                         if (twister.nextInt(restDelayRange) == 0) {
@@ -113,11 +95,62 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                     }                    
 
                     if (!note.IsRest) {
-                        if (twister.nextInt(3) == 0) {
-                            int skip = twister.nextInt(4) + 1;
-                            int startPos = i + 1;
+                        if (!note.AttackSet) {
+                            if ((refNote.LengtheningPossible && twister.nextInt(3) == 0) || lengthening) {
+                                if (!dividing || twister.nextInt(1) == 0) {
+                                    int skip = twister.nextInt(4) + 1;
+                                    int startPos = i + 1;
 
-                            i = lengthenNotes(startPos, skip, refNotes, note, i);
+                                    i = lengthenNotes(startPos, skip, refNotes, note, i);
+
+                                    if (twister.nextInt(4) == 0) {
+                                        lengthenSustainRange = twister.nextInt(5) + 1;
+                                    }
+
+                                    if (!lengthening) {
+                                        lengthening = true;
+                                    }
+
+                                    if (twister.nextInt(lengthenSustainRange) == 0) {
+                                        lengthening = false;
+                                    }
+                                }
+                            }
+
+                            if ((refNote.DividingPossible && twister.nextInt(3) == 0) || dividing) {
+                                if (!lengthening || twister.nextInt(3) == 0) {
+                                    int divisions = twister.nextInt(3) + 2;
+                                    int oldLength = note.getLength();
+
+                                    if (note.getLength() < AbstractNote.MIN_LENGTH * 2) {
+                                        divisions = 2;
+                                    }
+
+                                    note.setLength(note.getLength() / divisions, false);
+
+                                    AbstractNote extraNote = null;
+                                    for (int j = 0; j < divisions - 1; j++) {
+                                        extraNote = generateNote(noteDiff, mirrorsMaster, note);
+                                        valueIndex = setValueToAdd(instrument, mirrorsMaster, valueIndex, note, extraNote);
+                                        extraNote.IsRest = !(twister.nextInt(restStartRange) == 0);
+
+                                        sequence.addNote(extraNote);
+                                    }
+                                    extraNote.setLength(extraNote.getLength() + oldLength % divisions, false);
+
+                                    if (twister.nextInt(4) == 0) {
+                                        divisionSustainRange = twister.nextInt(5) + 1;
+                                    }
+
+                                    if (!dividing) {
+                                        dividing = true;
+                                    }
+
+                                    if (twister.nextInt(divisionSustainRange) == 0) {
+                                        dividing = false;
+                                    }
+                                }
+                            }
                         }
                     }
                 } else {
@@ -126,12 +159,53 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                 
                 sequence.addNote(note);                
             }
-            
+
+            sequence.setParentSequence(refSequence);
             track.Sequences.add(sequence);
         }
-        
+
+        postProcessTrack(track);
+
         return track;
-    }     
+    }
+
+    private int setValueToAdd(Instrument instrument, boolean mirrorsMaster, int valueIndex, AbstractNote refNote, AbstractNote note) {
+        if (!mirrorsMaster && !note.IsRest) {
+            ArrayList<Integer> offsets = refNote.IntendedScaleType.GetItemOffsets();
+
+            if (valueIndex == -1) {
+                valueIndex = twister.nextInt(offsets.size());
+            } else if (twister.nextInt(5) == 0) {
+                valueIndex += twister.nextInt(3) - 1;
+            }
+
+            if (valueIndex > offsets.size() - 1) {
+                valueIndex = offsets.size() - 1;
+            } else if (valueIndex < 0) {
+                valueIndex = 0;
+            }
+
+            int valueToAdd = offsets.get(valueIndex);
+
+            note.addValue(valueToAdd, instrument);
+        } else {
+            note.addValue(0, instrument);
+        }
+        return valueIndex;
+    }
+
+    private void postProcessTrack(AbstractTrack track) {
+        int audibleMinRange = 66;
+
+        for (AbstractSequence sequence: track.Sequences) {
+            int audibleMin = twister.nextInt(audibleMinRange) + 20;
+            for (AbstractNote note: sequence.getNotes()) {
+                if (note.getAttack() < audibleMin) {
+                    note.IsRest = true;
+                }
+            }
+        }
+    }
     
     private int lengthenNotes(int startPos, int skip, List<AbstractNote> refNotes, AbstractNote note, int i) {
         if (startPos >= refNotes.size() - 1) {

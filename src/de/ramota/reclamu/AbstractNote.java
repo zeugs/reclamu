@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class AbstractNote {
+    public int DelayLength;
+    public boolean AttackSet;
+    public boolean LengtheningPossible;
+    public boolean DividingPossible;
     private int Value;
     private int Length;
     public boolean IsRest;
@@ -35,18 +39,17 @@ public class AbstractNote {
     }
 
     public int setLength(int length, boolean limit) {
-        
         if (limit) {
             length -= length % AbstractNote.MIN_LENGTH;
-            
+
             if (length < AbstractNote.MIN_LENGTH) {
                 length = AbstractNote.MIN_LENGTH;
             } else if (length > AbstractNote.MAX_LENGTH) {
                 length = AbstractNote.MAX_LENGTH;
             }
         }
-        
-        this.Length = length;    
+
+        this.Length = length;
         return this.Length;
     }
 
@@ -67,7 +70,7 @@ public class AbstractNote {
     }
     
     public void setValueInRange() {
-        ArrayList<Integer> offsets = IntendedScaleType.GetMapping();
+        ArrayList<Integer> offsets = IntendedScaleType.Offsets;
         int relativeValue = (Value - ScaleOffset) % 12;
         
         int distance = 1000;
@@ -102,12 +105,22 @@ public class AbstractNote {
     public String toString() {
         String convertedString = "";
         try {
-            String outputLength = String.format(Locale.US, "%.4f", this.Length / (AbstractNote.MAX_LENGTH * 1.0));
+            int actualLength = this.Length;
+
+            if (!this.IsRest) {
+                actualLength -= this.DelayLength;
+            }
+
+            String delayOutputLength = String.format(Locale.US, "%.4f", this.DelayLength / (AbstractNote.MAX_LENGTH * 1.0));
+            String outputLength = String.format(Locale.US, "%.4f", actualLength / (AbstractNote.MAX_LENGTH * 1.0));
             
             if (IsRest) {
                 convertedString = "R/" + outputLength;
             } else {
-                convertedString = (this.Value + 12) + String.valueOf("/" + outputLength + "a" + attack);                
+                if (this.DelayLength > 0) {
+                    convertedString += "R/" + delayOutputLength + " ";
+                }
+                convertedString += (this.Value + 12) + String.valueOf("/" + outputLength + "a" + attack);
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -122,7 +135,10 @@ public class AbstractNote {
         note.Length = this.Length;
         note.IntendedScaleType = this.IntendedScaleType;
         note.IsRest = this.IsRest;
-        
+        note.AttackSet = this.AttackSet;
+        note.RelativeOffset = this.RelativeOffset;
+        note.DelayLength = this.DelayLength;
+
         return note;
     }
 

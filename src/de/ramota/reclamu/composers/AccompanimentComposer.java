@@ -38,20 +38,7 @@ public class AccompanimentComposer {
         
         return newTracks;
     }
-    
-    protected int addNoteHumanized(AbstractSequence sequence) {
-        int delayLength = twister.nextInt(13) + 5;
 
-        if (delayLength > 0) {
-            AbstractNote delayPseudoNote = new AbstractNote(70);
-            delayPseudoNote.IsRest = true;
-            delayPseudoNote.setLength(delayLength, false);
-            sequence.addNote(delayPseudoNote);
-        }
-        
-        return delayLength;
-    }
-    
     protected AbstractTrack getAccompanimentTrack(String name, AbstractTrack masterTrack, Instrument instrument) {
         return null;
     }   
@@ -76,5 +63,23 @@ public class AccompanimentComposer {
             }
         }
         return -noteDiff;
-    }    
+    }
+
+    protected AbstractNote generateNote(int noteDiff, boolean mirrorsMaster, AbstractNote refNote) {
+        int delayLength = twister.nextInt(8);
+        int noteVal;
+
+        if (!mirrorsMaster) {
+            noteVal = (refNote.getValue() - refNote.getValue() % 12) - (noteDiff - noteDiff % 12) + refNote.ScaleOffset;
+        } else {
+            noteVal = refNote.getValue() - (noteDiff - noteDiff % 12);
+        }
+
+        AbstractNote note = refNote.getCopy();
+        note.setValue(noteVal);
+        note.setAttack(refNote.getAttack() + twister.nextInt(40) - 20);
+        note.DelayLength = delayLength;
+
+        return note;
+    }
 }

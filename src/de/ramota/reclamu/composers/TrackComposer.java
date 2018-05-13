@@ -1,10 +1,6 @@
 package de.ramota.reclamu.composers;
 
-import de.ramota.reclamu.AbstractNote;
-import de.ramota.reclamu.Instrument;
-import de.ramota.reclamu.ScaleItem;
-import de.ramota.reclamu.AbstractSequence;
-import de.ramota.reclamu.AbstractTrack;
+import de.ramota.reclamu.*;
 import de.ramota.reclamu.configuration.PieceConfiguration;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,13 +54,39 @@ public class TrackComposer {
         ScaleOffset = twister.nextInt(allowedScaleOffsets.size());        
         System.out.println(String.format("Scale changed to %d", ScaleOffset));
     }
-    
+
+    /*
+    gets a new accompaniment based on the weighting defined
+    in the configuration file.
+
+    Takes the accumulated weights of the configured scale items to
+    decide, which scale item to use. Then uses the weights of the item to
+    find an actual accompaniment
+     */
     public void findAccompaniment() {
-        currentAccomp = intendedAccomps.get(twister.nextInt(intendedAccomps.size()));
-        currentAccomp.findNewOffset();
-        System.out.println(String.format("Intended Accomp changed to %s!", currentAccomp.toString()));
-    }  
-    
+        int fullWeight = 0;
+
+        for (ScaleItem item: intendedAccomps) {
+            fullWeight += item.FullWeight;
+        }
+
+        int val = twister.nextInt(fullWeight);
+        int counter = 0;
+
+        for (int i = 0; i < intendedAccomps.size(); i++) {
+            ScaleItem tempItem = intendedAccomps.get(i);
+            if (val > counter) {
+                if (counter + tempItem.FullWeight > val) {
+                    currentAccomp = intendedAccomps.get(i);
+                    currentAccomp.findNewOffset();
+                    System.out.println(String.format("Intended Accomp changed to %s!", currentAccomp.toString()));
+                    break;
+                }
+            }
+            counter += intendedAccomps.get(i).FullWeight;
+        }
+    }
+
     protected void findAttackValues(AbstractTrack track) throws IllegalArgumentException {
         int currentAttack = twister.nextInt(80) + 40;
         
