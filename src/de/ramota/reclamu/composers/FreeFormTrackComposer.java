@@ -19,11 +19,9 @@ public class FreeFormTrackComposer extends TrackComposer {
     }
 
     @Override
-    public AbstractSequence getSequence(Instrument instrument, double tempo) {
+    public AbstractSequence getSequence(Instrument instrument) {
         AbstractSequence sequence = new AbstractSequence();
 
-        sequence.setTempo(1);
-        
         int lengthRange = MAX_SEQUENCE_LENGTH - MIN_SEQUENCE_LENGTH;
         int patternLength = twister.nextInt(lengthRange);
         int targetLength = patternLength + MIN_SEQUENCE_LENGTH;
@@ -111,7 +109,7 @@ public class FreeFormTrackComposer extends TrackComposer {
                 sequence = track.Sequences.get(itemToCopy).getCopy();
                 System.out.println(String.format("Just copied sequence %d", itemToCopy));
             } else {
-                sequence = this.getSequence(instrument, 1);   
+                sequence = this.getSequence(instrument);
             }
             
             int repetitions = twister.nextInt(12);

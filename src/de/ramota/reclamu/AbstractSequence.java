@@ -5,7 +5,6 @@ import java.util.List;
 
 public class AbstractSequence {
     private final List<AbstractNote> notes = new ArrayList<>();
-    private double tempo;
     private AbstractSequence parentSequence;
 
     public AbstractSequence() {
@@ -18,14 +17,6 @@ public class AbstractSequence {
     
     public void addNote(AbstractNote note) {
         notes.add(note);
-    }
-
-    public void setTempo(double tempo) {
-        this.tempo = tempo;
-    }
-    
-    public double getTempo() {
-        return this.tempo;
     }
     
     public AbstractSequence getParentSequence() {
@@ -49,8 +40,7 @@ public class AbstractSequence {
 
     public AbstractSequence getCopy() {
         AbstractSequence sequence = new AbstractSequence();
-        
-        sequence.setTempo(this.tempo);
+
         sequence.setParentSequence(this);
         
         this.notes.forEach((note) -> {

@@ -66,7 +66,7 @@ public class AccompanimentComposer {
     }
 
     protected AbstractNote generateNote(int noteDiff, boolean mirrorsMaster, AbstractNote refNote) {
-        int delayLength = twister.nextInt(8);
+        int delayLength = twister.nextInt(4) + 2;
         int noteVal;
 
         if (!mirrorsMaster) {

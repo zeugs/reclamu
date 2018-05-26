@@ -17,10 +17,8 @@ public class SineWaveTrackComposer extends TrackComposer {
     }
         
     @Override
-    public AbstractSequence getSequence(Instrument instrument, double tempo) {
+    public AbstractSequence getSequence(Instrument instrument) {
         AbstractSequence sequence = new AbstractSequence();
-        
-        sequence.setTempo(tempo);
         
         if (currentVal == 0) {
             currentVal = twister.nextInt((int) ((instrument.MaxNoteIndex - instrument.MinNoteIndex) * 0.75)) + instrument.MinNoteIndex;
@@ -40,7 +38,7 @@ public class SineWaveTrackComposer extends TrackComposer {
             
             AbstractNote note = new AbstractNote(currentVal);
 
-            note.setLength((int)(currentLength / sequence.getTempo()), true);
+            note.setLength(currentLength, true);
             note.IntendedScaleType = currentAccomp;
             note.IsRest = false;
             
@@ -57,22 +55,9 @@ public class SineWaveTrackComposer extends TrackComposer {
     public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
         AbstractTrack track = new AbstractTrack(name);
         
-        double currentTempo = twister.nextDouble() * 2 + 0.1;
-
         for (int i = 0; i < sequenceNum; i++) {
-            if (twister.nextInt(3) == 0) {
-                currentTempo += (twister.nextDouble() - 0.5) / 2;
-
-                if (currentTempo < 0) {
-                    currentTempo = 0;
-                } else if (currentTempo > 2) {
-                    currentTempo = 2;
-                }
-                System.out.println(String.format("Tempo: %d", (int)(currentTempo * 100)));
-            }
-            
             AbstractSequence sequence;
-            sequence = this.getSequence(instrument, currentTempo);   
+            sequence = this.getSequence(instrument);
             track.addSequence(sequence);            
         }
                 

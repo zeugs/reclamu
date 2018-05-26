@@ -25,13 +25,12 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
 
         for (AbstractSequence refSequence: masterTrack.Sequences) {
             AbstractSequence sequence = new AbstractSequence();
-            sequence.setTempo(refSequence.getTempo());
             
             boolean mirrorsMaster = (twister.nextInt(2) == 0);
-            int restDelayRange = twister.nextInt(2) + 1;
-            int restStartRange = twister.nextInt(40) + 2;
+            int restDelayRange = twister.nextInt(2);
+            int restStartRange = twister.nextInt(40);
 
-            boolean silence = twister.nextInt(8) == 0;
+            boolean silence = twister.nextInt(16) == 0;
             
             if (silence) {
                 for (int j = 0; j < refSequence.getNotes().size(); j++) {
@@ -68,6 +67,7 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
             int lengthenSustainRange = twister.nextInt(5) + 1;
             boolean lengthening = false;
             boolean dividing = false;
+            int divisions = 0;
 
             for (int i = 0; i < refSequence.getNotes().size(); i++) {
     
@@ -96,7 +96,7 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
 
                     if (!note.IsRest) {
                         if (!note.AttackSet) {
-                            if ((refNote.LengtheningPossible && twister.nextInt(3) == 0) || lengthening) {
+                            if (refNote.LengtheningAllowed || lengthening) {
                                 if (!dividing || twister.nextInt(1) == 0) {
                                     int skip = twister.nextInt(4) + 1;
                                     int startPos = i + 1;
@@ -117,14 +117,16 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
                                 }
                             }
 
-                            if ((refNote.DividingPossible && twister.nextInt(3) == 0) || dividing) {
-                                if (!lengthening || twister.nextInt(3) == 0) {
-                                    int divisions = twister.nextInt(3) + 2;
-                                    int oldLength = note.getLength();
-
+                            if (refNote.DividingAllowed || dividing) {
+                                if (refNote.DividingAllowed) {
+                                    divisions = refNote.SubDivisions;
                                     if (note.getLength() < AbstractNote.MIN_LENGTH * 2) {
                                         divisions = 2;
                                     }
+                                }
+
+                                if (!lengthening || twister.nextInt(1) == 0) {
+                                    int oldLength = note.getLength();
 
                                     note.setLength(note.getLength() / divisions, false);
 
@@ -195,7 +197,7 @@ public class PlainAccompanimentComposer extends AccompanimentComposer {
     }
 
     private void postProcessTrack(AbstractTrack track) {
-        int audibleMinRange = 66;
+        int audibleMinRange = 50;
 
         for (AbstractSequence sequence: track.Sequences) {
             int audibleMin = twister.nextInt(audibleMinRange) + 20;

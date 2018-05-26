@@ -37,7 +37,7 @@ public class TrackComposer {
         this.findScale();        
     }
 
-    public AbstractSequence getSequence(Instrument instrument, double tempo) {
+    public AbstractSequence getSequence(Instrument instrument) {
         return null;
     }
     

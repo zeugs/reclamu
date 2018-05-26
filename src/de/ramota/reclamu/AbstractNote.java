@@ -6,15 +6,16 @@ import java.util.Locale;
 public class AbstractNote {
     public int DelayLength;
     public boolean AttackSet;
-    public boolean LengtheningPossible;
-    public boolean DividingPossible;
+    public boolean LengtheningAllowed;
+    public boolean DividingAllowed;
+    public int SubDivisions;
     private int Value;
     private int Length;
     public boolean IsRest;
     public int ScaleOffset;
     public ScaleItem IntendedScaleType;
     public static int MAX_LENGTH = 207;
-    public static int MIN_LENGTH = 66;
+    public static int MIN_LENGTH = 40;
     private int attack;
     public int RelativeOffset = 0;
 
@@ -138,6 +139,9 @@ public class AbstractNote {
         note.AttackSet = this.AttackSet;
         note.RelativeOffset = this.RelativeOffset;
         note.DelayLength = this.DelayLength;
+        note.DividingAllowed = this.DividingAllowed;
+        note.LengtheningAllowed = this.LengtheningAllowed;
+        note.SubDivisions = this.SubDivisions;
 
         return note;
     }
