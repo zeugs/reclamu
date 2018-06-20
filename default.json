@@ -8,18 +8,23 @@
 		{ "name" : "flute", "min_note": "48", "max_note" : "86", "variation_grip" : "0.7" },
 	],
 	"composers": [
-		{ "name" : "plain_composer", "type" : "PlainTrackComposer" }
+		{ "name" : "plain_composer1", "type" : "StairTrackComposer", "properties" : "plain_props", "startDirection" : "1" }
+        { "name" : "plain_composer2", "type" : "StairTrackComposer", "properties" : "plain_props", "startDirection" : "0" }
+	],
+	"composer properties": [
+		{ "name" : "plain_props", "type" : "PlainComposerProperties" }
 	],
 	"accompaniment composers": [
 		{ "name" : "plain_accomp", "type" : "PlainAccompanimentComposer" }
 	],
 	"tracks": [
-		{ "name" : "master", "instrument" : "piano", "type" : "plain_composer", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "generated" },
-		{ "name" : "violas", "instrument" : "viola", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "0", "input" : "master" },
-		{ "name" : "cello", "instrument" : "cello", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "0", "input" : "master" },
-		{ "name" : "violins_first", "instrument" : "violin", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "0", "input" : "master" },
-		{ "name" : "contrabass", "instrument" : "contrabass", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "0", "input" : "master" },
-		{ "name" : "flute", "instrument" : "flute", "type" : "plain_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master" },
+		{ "name" : "master1", "instrument" : "piano", "type" : "plain_composer1", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "generated" },
+        { "name" : "master2", "instrument" : "piano", "type" : "plain_composer2", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "generated" },
+		{ "name" : "violas", "instrument" : "viola", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "0", "input" : "master1" },
+		{ "name" : "cello", "instrument" : "cello", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "0", "input" : "master2" },
+		{ "name" : "violins_first", "instrument" : "violin", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "0", "input" : "master1" },
+		{ "name" : "contrabass", "instrument" : "contrabass", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "0", "input" : "master2" },
+		{ "name" : "flute", "instrument" : "flute", "type" : "plain_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master1" },
 	],
 	"scale items": [
 		{ "name" : "major", "offsets" : "0,2,4,5,7,9,11,12,14,16,17,19,21,23" },
@@ -40,12 +45,5 @@
 		{ "name" : "v", "offsets": "7,10,14", "weight": "10", "scale item": "minor" },
 		{ "name" : "vi", "offsets": "8,12,16", "weight": "5", "scale item": "minor" },
 	],
-	"allowed scale offsets": "0,1,2,7,9",
-	"accompaniment track configurations": [
-		{ "name" : "default",
-			"mirrorsMasterL" : "2",
-			"restStartDelay" : "40", "restDelayRange" : "3",
-			"silenceL" : "16", "copySequenceL" : "3",
-			"divisionSusR" : "5", "lengthenSusR" : "5" }
-	]
+	"allowed scale offsets": "0,1,2,7,9"
 }

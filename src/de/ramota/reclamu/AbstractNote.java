@@ -7,8 +7,6 @@ public class AbstractNote {
     public int DelayLength;
     public boolean AttackSet;
     public boolean LengtheningAllowed;
-    public boolean DividingAllowed;
-    public int SubDivisions;
     private int Value;
     private int Length;
     public boolean IsRest;
@@ -139,9 +137,7 @@ public class AbstractNote {
         note.AttackSet = this.AttackSet;
         note.RelativeOffset = this.RelativeOffset;
         note.DelayLength = this.DelayLength;
-        note.DividingAllowed = this.DividingAllowed;
         note.LengtheningAllowed = this.LengtheningAllowed;
-        note.SubDivisions = this.SubDivisions;
 
         return note;
     }

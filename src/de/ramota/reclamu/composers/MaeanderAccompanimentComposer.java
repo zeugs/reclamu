@@ -19,7 +19,7 @@ public class MaeanderAccompanimentComposer extends AccompanimentComposer {
             
     @Override
     protected AbstractTrack getAccompanimentTrack(String name, AbstractTrack masterTrack, Instrument instrument) {
-        AbstractTrack track = new AbstractTrack(name);
+        AbstractTrack track = new AbstractTrack(name, instrument);
         int noteDiff = -1;
         int audibleMin = twister.nextInt(60) + 35;
         System.out.println(String.format("Track loudness: %d", audibleMin));
@@ -50,7 +50,7 @@ public class MaeanderAccompanimentComposer extends AccompanimentComposer {
                 
                 AbstractNote refNote = refSequence.getNotes().get(i);
 
-                AbstractNote note = generateNote(noteDiff, false, refNote);
+                AbstractNote note = getNextNote(noteDiff, false, refNote);
 
                 ArrayList<Integer> offsets = refNote.IntendedScaleType.GetItemOffsets();
 

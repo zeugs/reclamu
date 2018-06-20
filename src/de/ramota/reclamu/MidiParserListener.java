@@ -18,8 +18,8 @@ public class MidiParserListener extends ParserListenerAdapter {
         this.midiTrack = midiTrack;
     }
 
-    public AbstractTrack getMidiTrack(String name) {
-        AbstractTrack track = new AbstractTrack(name);
+    public AbstractTrack getMidiTrack(String name, Instrument instrument) {
+        AbstractTrack track = new AbstractTrack(name, instrument);
         track.addSequence(sequence);
         return track;
     }

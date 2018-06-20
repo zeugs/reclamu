@@ -1,53 +1,56 @@
 package de.ramota.reclamu.composers;
 
-import de.ramota.reclamu.Instrument;
-import de.ramota.reclamu.AbstractNote;
-import de.ramota.reclamu.AbstractSequence;
-import de.ramota.reclamu.AbstractTrack;
-import de.ramota.reclamu.ScaleItem;
+import de.ramota.reclamu.*;
 
 /**
  *
  * @author Mathies Gräske
  */
-public class SineWaveTrackComposer extends TrackComposer {
+public class StairTrackComposer extends TrackComposer {
 
-    public SineWaveTrackComposer(String name) {
+    private final int startDirection;
+
+    public StairTrackComposer(String name, int startDirection) {
         super(name);
+        this.startDirection = startDirection;
     }
         
     @Override
     public AbstractSequence getSequence(Instrument instrument) {
         AbstractSequence sequence = new AbstractSequence();
-        
-        if (currentVal == 0) {
-            currentVal = twister.nextInt((int) ((instrument.MaxNoteIndex - instrument.MinNoteIndex) * 0.75)) + instrument.MinNoteIndex;
+
+        int currentLength = instrument.DefaultLength;
+        int dirChanges = 0;
+        boolean up = false;
+
+        if (startDirection == 1) {
+            currentVal = instrument.MinNoteIndex;
+        } else {
+            currentVal = instrument.MaxNoteIndex;
+            up = true;
         }
-        
-        int currentLength = twister.nextInt(instrument.DefaultLength / 2) + instrument.DefaultLength / 4;
-        int direction = 1;
-        double initialOffset = twister.nextDouble() * Math.PI;
-        double currentX = initialOffset;
-        
-        while (currentX < 2 * Math.PI + initialOffset) {
-            currentLength += instrument.DefaultLength / 30 * direction;
-            
-            if (currentLength >= AbstractNote.MAX_LENGTH || currentLength <= instrument.DefaultLength / 15) {
-                direction *= -1; 
-            }
-            
+
+        while (true) {
+            currentLength += instrument.DefaultLength / 30 * (up ? 1 : 0);
             AbstractNote note = new AbstractNote(currentVal);
 
             note.setLength(currentLength, true);
             note.IntendedScaleType = currentAccomp;
             note.IsRest = false;
-            
-            sequence.addNote(note);
 
-            currentVal = (int) ((Math.sin(currentX) + 1) * (instrument.MaxNoteIndex - instrument.MinNoteIndex) / 2) + instrument.MinNoteIndex;
-            currentX += Math.PI / 100;
+            if (currentVal == instrument.MaxNoteIndex || currentVal == instrument.MinNoteIndex) {
+                dirChanges++;
+                up = !up;
+            }
+
+            sequence.addNote(note);
+            currentVal = up ? currentVal + 1 : currentVal - 1;
+
+            if (dirChanges == 3) {
+                break;
+            }
         }
-        
+
         return sequence;
     }    
         
@@ -97,7 +100,7 @@ public class SineWaveTrackComposer extends TrackComposer {
                 note.IntendedScaleType = currentAccomp;
                 note.ScaleOffset = ScaleOffset;
                 note.setAttack((int) ((Math.sin(currentAttackOffset)) * 40 + 70));
-                //note.setValueInRange();
+                note.setValueInRange();
     
                 currentAttackOffset += Math.PI / 70;
                 noteCount++;

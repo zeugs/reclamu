@@ -1,13 +1,13 @@
 - make random values configurable via config file
-- accomp: likeliness to play longer notes
 - overtone frequencies instead of notes
 	-> allow blue notes
 - move accomp accords like notes (random up/down) instead of choosing random fitting accord note (possibly high distance)
 	-> create config GUI
-- allow different scale systems (pentatonic etc.)
-
 - use monophonic voice midi as input for accomp, then add actual acapella music
 - make a riddle on YT, let a song play with so many changes that it becomes difficult to find out, what was used
 
 - notes to image feature
-- java => groovy
+
+~ java => groovy
++ accomp: likeliness to play longer notes
++ allow different scale systems (pentatonic etc.)

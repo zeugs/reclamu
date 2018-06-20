@@ -97,7 +97,7 @@ public class FreeFormTrackComposer extends TrackComposer {
 
     @Override
     public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
-        AbstractTrack track = new AbstractTrack(name);
+        AbstractTrack track = new AbstractTrack(name, instrument);
         AbstractSequence adaptedSequence;
         AbstractSequence sequenceToAdd;
         

@@ -31,6 +31,10 @@ public class PieceConfiguration {
         return reader.getArrayForItem("instruments");
     }
 
+    public JSONArray getComposerProperties() {
+        return reader.getArrayForItem("composer properties");
+    }
+
     public JSONArray getComposers() {
         return reader.getArrayForItem("composers");
     }

@@ -15,7 +15,8 @@ import org.apache.commons.math3.random.MersenneTwister;
 public class AccompanimentComposer {
     protected MersenneTwister twister = new MersenneTwister();
     public String Name;
-    
+    public Instrument Instrument;
+
     public AccompanimentComposer(String name) {
         this.Name = name;
     }
@@ -23,7 +24,7 @@ public class AccompanimentComposer {
     public List<AbstractTrack> generateTracks(String name, AbstractTrack masterTrack, Instrument instrument, int trackNum, int mirroredTrackNum) {
         List<AbstractTrack> newTracks = new ArrayList<>();
         List<AbstractTrack> mirroredTracks = new ArrayList<>();
-        
+
         for (int i = 0; i < trackNum - mirroredTrackNum; i++) {
             AbstractTrack accompTrack = this.getAccompanimentTrack(name, masterTrack, instrument);
             newTracks.add(accompTrack);
@@ -40,6 +41,7 @@ public class AccompanimentComposer {
     }
 
     protected AbstractTrack getAccompanimentTrack(String name, AbstractTrack masterTrack, Instrument instrument) {
+        this.Instrument = instrument;
         return null;
     }   
     
@@ -65,7 +67,7 @@ public class AccompanimentComposer {
         return -noteDiff;
     }
 
-    protected AbstractNote generateNote(int noteDiff, boolean mirrorsMaster, AbstractNote refNote) {
+    public AbstractNote getNextNote(int noteDiff, boolean mirrorsMaster, AbstractNote refNote) {
         int delayLength = twister.nextInt(4) + 2;
         int noteVal;
 

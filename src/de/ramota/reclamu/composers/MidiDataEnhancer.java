@@ -36,7 +36,7 @@ public class MidiDataEnhancer extends TrackComposer {
             
         }
         
-        AbstractTrack track = listener.getMidiTrack(name);
+        AbstractTrack track = listener.getMidiTrack(name, instrument);
                 
         for (AbstractNote n: track.Sequences.get(0).getNotes()) {
             if (twister.nextInt(6) == 0) {

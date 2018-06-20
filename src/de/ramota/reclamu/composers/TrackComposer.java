@@ -4,6 +4,8 @@ import de.ramota.reclamu.*;
 import de.ramota.reclamu.configuration.PieceConfiguration;
 import java.util.ArrayList;
 import java.util.List;
+
+import jdk.jshell.spi.ExecutionControl;
 import org.apache.commons.math3.random.MersenneTwister;
 
 /**
@@ -44,7 +46,9 @@ public class TrackComposer {
     public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
         return null;
     }
-    
+
+    public AbstractNote getNextNote(AbstractSequence sequence, int lengthenStartRange, int currentLength) { return null; }
+
     public void findNoteValue(Instrument instrument) {
         instrumentRange = instrument.MaxNoteIndex - instrument.MinNoteIndex;
         currentValue = twister.nextInt(instrumentRange / 2) + instrument.MinNoteIndex + instrumentRange / 4;        

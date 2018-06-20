@@ -1,13 +1,9 @@
 package de.ramota.reclamu;
 
-import de.ramota.reclamu.composers.AccompanimentComposer;
-import de.ramota.reclamu.composers.FreeFormTrackComposer;
-import de.ramota.reclamu.composers.MidiDataEnhancer;
-import de.ramota.reclamu.composers.PlainAccompanimentComposer;
-import de.ramota.reclamu.composers.PlainTrackComposer;
-import de.ramota.reclamu.composers.SineWaveTrackComposer;
-import de.ramota.reclamu.composers.TrackComposer;
+import de.ramota.reclamu.composers.*;
 import de.ramota.reclamu.configuration.PieceConfiguration;
+import de.ramota.reclamu.properties.ComposerProperties;
+import de.ramota.reclamu.properties.PlainComposerProperties;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 
@@ -29,25 +25,53 @@ public class Composer {
     private void compose() {
         List<ScaleItem> intendedAccomps = this.GetScaleData();
         List<Instrument> instruments = this.fetchInstruments();
+        List<ComposerProperties> composerProperties = this.fetchComposerProperties();
         List<TrackComposer> composers = this.fetchComposers();
         List<AccompanimentComposer> accompComposers = this.fetchAccompaniments();
         List<AbstractTrack> tracks = this.fetchTracks(composers, accompComposers, instruments, intendedAccomps);
         Piece piece = new Piece();
         piece.Tracks = tracks;
-        
-        int counter = 0;
-        
-        for (AbstractTrack track : tracks) {
-            Pattern p1 = new Pattern(track.toString());
-            System.out.println(track);
 
-            try {
-                MidiFileManager.savePatternToMidi(p1, new File("test" + String.valueOf(counter++) + ".mid"));
-            } catch (IOException e) {
+        StringBuffer buffer = new StringBuffer();
+        int i = 0;
+        for (AbstractTrack track : tracks) {
+            if (i == 9) {
+                i++;
             }
+            String trackData = "V" + Integer.toString(i++) + track.toString();
+            buffer.append(trackData);
+            System.out.println(trackData);
+        }
+
+        try {
+            Pattern p1 = new Pattern(buffer.toString());
+            MidiFileManager.savePatternToMidi(p1, new File("test.mid"));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
-           
+
+    private List<ComposerProperties> fetchComposerProperties() {
+        List<ComposerProperties> composersProperties = new ArrayList<>();
+        JSONArray composerPropertyData = PieceConfiguration.getInstance().getComposerProperties();
+
+        for (Iterator it = composerPropertyData.iterator(); it.hasNext();) {
+            JSONObject instrumentObject = (JSONObject)it.next();
+            String name = instrumentObject.get("name").toString();
+            String type = instrumentObject.get("type").toString();
+
+            switch (type) {
+                case "PlainComposerProperties" :
+                    composersProperties.add(new PlainComposerProperties(name));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return composersProperties;
+    }
+
     protected List<ScaleItem> GetScaleData() {
         List<ScaleItem> intendedScaleItems = new ArrayList<>();
         
@@ -130,7 +154,11 @@ public class Composer {
                 case "SineWaveTrackComposer" : 
                     composers.add(new SineWaveTrackComposer(name)); 
                     break;
-                case "MidiDataEnhancer" : 
+                case "StairTrackComposer" :
+                    int startDirection = Integer.parseInt(instrumentObject.get("startDirection").toString());
+                    composers.add(new StairTrackComposer(name, startDirection));
+                    break;
+                case "MidiDataEnhancer" :
                     MidiDataEnhancer enhancer = new MidiDataEnhancer(name);
                     enhancer.setFileName(input.toString());
                     enhancer.setMidiTrack(3);
@@ -157,7 +185,7 @@ public class Composer {
                 case "PlainAccompanimentComposer" : 
                     composers.add(new PlainAccompanimentComposer(name)); 
                     break;
-                default: 
+                default:
                     break;
             }
         }
@@ -182,7 +210,7 @@ public class Composer {
                 if (composer.Name.equals(type)) {
                     Instrument refInstrument = getInstrumentByName(instruments, instr);
                     composer.initialize(refInstrument, intendedAccomps);
-                    AbstractTrack track = composer.generateTrack(refInstrument, name, 180);
+                    AbstractTrack track = composer.generateTrack(refInstrument, name, 10);
                     tracks.add(track);
                     refTracks.add(track);
                 }
