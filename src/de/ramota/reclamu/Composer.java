@@ -25,7 +25,6 @@ public class Composer {
     private void compose() {
         List<ScaleItem> intendedAccomps = this.GetScaleData();
         List<Instrument> instruments = this.fetchInstruments();
-        List<ComposerProperties> composerProperties = this.fetchComposerProperties();
         List<TrackComposer> composers = this.fetchComposers();
         List<AccompanimentComposer> accompComposers = this.fetchAccompaniments();
         List<AbstractTrack> tracks = this.fetchTracks(composers, accompComposers, instruments, intendedAccomps);
@@ -49,27 +48,6 @@ public class Composer {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    private List<ComposerProperties> fetchComposerProperties() {
-        List<ComposerProperties> composersProperties = new ArrayList<>();
-        JSONArray composerPropertyData = PieceConfiguration.getInstance().getComposerProperties();
-
-        for (Iterator it = composerPropertyData.iterator(); it.hasNext();) {
-            JSONObject instrumentObject = (JSONObject)it.next();
-            String name = instrumentObject.get("name").toString();
-            String type = instrumentObject.get("type").toString();
-
-            switch (type) {
-                case "PlainComposerProperties" :
-                    composersProperties.add(new PlainComposerProperties(name));
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        return composersProperties;
     }
 
     protected List<ScaleItem> GetScaleData() {
@@ -185,6 +163,8 @@ public class Composer {
                 case "PlainAccompanimentComposer" : 
                     composers.add(new PlainAccompanimentComposer(name)); 
                     break;
+                case "InvertingAccompanimentComposer":
+                    composers.add(new InvertingAccompanimentComposer(name));
                 default:
                     break;
             }
@@ -193,7 +173,8 @@ public class Composer {
         return composers;
     }
 
-    private List<AbstractTrack> fetchTracks(List<TrackComposer> composers, List<AccompanimentComposer> accompComposers, List<Instrument> instruments, List<ScaleItem> intendedAccomps) {
+    private List<AbstractTrack> fetchTracks(List<TrackComposer> composers, List<AccompanimentComposer> accompComposers,
+                                            List<Instrument> instruments, List<ScaleItem> intendedAccomps) {
         List<AbstractTrack> tracks = new ArrayList<>();
         List<AbstractTrack> refTracks = new ArrayList<>();
         JSONArray trackData = PieceConfiguration.getInstance().getTracks();
@@ -222,6 +203,7 @@ public class Composer {
                     Instrument refInstrument = getInstrumentByName(instruments, instr);
                     List<AbstractTrack> accompTracks = composer.generateTracks(name, refTrack, refInstrument, trackNum, mirroredTrackNum);
                     tracks.addAll(accompTracks);
+                    refTracks.add(accompTracks.get(0));
                 }
             }
         }

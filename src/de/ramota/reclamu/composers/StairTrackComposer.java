@@ -19,7 +19,7 @@ public class StairTrackComposer extends TrackComposer {
     public AbstractSequence getSequence(Instrument instrument) {
         AbstractSequence sequence = new AbstractSequence();
 
-        int currentLength = instrument.DefaultLength;
+        int currentLength = instrument.DefaultLength / 2;
         int dirChanges = 0;
         boolean up = false;
 
@@ -31,7 +31,14 @@ public class StairTrackComposer extends TrackComposer {
         }
 
         while (true) {
-            currentLength += instrument.DefaultLength / 30 * (up ? 1 : 0);
+            currentLength += instrument.DefaultLength / 30 * (twister.nextBoolean() ? 1 : -1);
+
+            if (currentLength > AbstractNote.MAX_LENGTH) {
+                currentLength = AbstractNote.MAX_LENGTH;
+            } else if (currentLength < AbstractNote.MIN_LENGTH * 2) {
+                currentLength = AbstractNote.MIN_LENGTH * 2;
+            }
+
             AbstractNote note = new AbstractNote(currentVal);
 
             note.setLength(currentLength, true);
@@ -43,6 +50,7 @@ public class StairTrackComposer extends TrackComposer {
                 up = !up;
             }
 
+            note.setValueInRange();
             sequence.addNote(note);
             currentVal = up ? currentVal + 1 : currentVal - 1;
 
