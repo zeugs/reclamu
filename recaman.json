@@ -1,0 +1,57 @@
+{
+  "instruments": [
+    { "name" : "piano", "min_note": "24", "max_note" : "96", "variation_grip" : "0.7" },
+    { "name" : "viola", "min_note": "36", "max_note" : "64", "variation_grip" : "0.7" },
+    { "name" : "cello", "min_note": "24", "max_note" : "64", "variation_grip" : "0.9" },
+    { "name" : "violin", "min_note": "45", "max_note" : "96", "variation_grip" : "0.9" },
+    { "name" : "contrabass", "min_note": "24", "max_note" : "60", "variation_grip" : "0.7" },
+    { "name" : "flute", "min_note": "48", "max_note" : "86", "variation_grip" : "0.7" },
+  ],
+  "composers": [
+    { "name" : "plain_composer", "type" : "RecamanTrackComposer"  },
+    { "name" : "stair_composer", "type" : "StairTrackComposer", "startDirection" : "1" }
+  ],
+  "accompaniment composers": [
+    { "name" : "plain_accomp", "type" : "PlainAccompanimentComposer" },
+    { "name" : "inverter", "type" : "InvertingAccompanimentComposer" }
+  ],
+  "tracks": [
+    { "name" : "master1", "instrument" : "piano", "type" : "plain_composer", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "generated" },
+    { "name" : "master2", "instrument" : "piano", "type" : "inverter", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master1" },
+    { "name" : "violas", "instrument" : "viola", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master1" },
+    { "name" : "cello", "instrument" : "cello", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master2" },
+    { "name" : "violins_first", "instrument" : "violin", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master1" },
+    { "name" : "contrabass", "instrument" : "contrabass", "type" : "plain_accomp", "tracks_num" : "2", "mirrored_tracks_num" : "1", "input" : "master2" },
+    { "name" : "flute", "instrument" : "flute", "type" : "plain_accomp", "tracks_num" : "1", "mirrored_tracks_num" : "0", "input" : "master1" },
+  ],
+  "scale items": [
+    { "name" : "major", "offsets" : "0,2,4,5,7,9,11,12,14,16,17,19,21,23" },
+  ],
+  "parameters": [
+    { "name" : "plain seq recalc current note", "min value" : "0", "range" : "3", "description" : "likeliness for current not recalculation" },
+    { "name" : "plain seq lengthen start range", "min value" : "1", "range" : "3", "description" : "likeliness range for note lengthening" },
+    { "name" : "plain seq length", "min value" : "1", "range" : "6", "description" : "sequence length range (notes), gets multiplied with 8" },
+    { "name" : "plain seq note val change range", "min value" : "1", "range" : "7", "description" : "sequence note value delta range, will be divided by 2" },
+    { "name" : "plain seq minor length change probability", "min value" : "1", "range" : "3", "description" : "sequence minor note length change probability" },
+    { "name" : "plain seq medium length change probability", "min value" : "1", "range" : "29", "description" : "sequence medium note length change probability" },
+    { "name" : "plain seq set relative offset probability", "min value" : "0", "range" : "60", "description" : "sequence relative note value offset change probability" },
+    { "name" : "plain seq note rest start probability", "min value" : "0", "range" : "60", "description" : "sequence note rest start probability" },
+    { "name" : "plain seq note rest continue probability", "min value" : "0", "range" : "2", "description" : "sequence note rest continue probability" }
+  ],
+  "accompaniment items": [
+    { "name" : "I", "offsets": "0,4,7", "weight": "60", "scale item": "major" },
+    { "name" : "IV", "offsets": "5,9,12", "weight": "30", "scale item": "major" },
+    { "name" : "V", "offsets": "7,11,14", "weight": "30", "scale item": "major" },
+    { "name" : "VI", "offsets": "9,13,16", "weight": "30", "scale item": "major" },
+    { "name" : "maj6", "offsets": "0,4,7,9", "weight": "10", "scale item": "major" },
+    { "name" : "maj7", "offsets": "0,4,7,9,11", "weight": "10", "scale item": "major" },
+    { "name" : "maj9", "offsets": "0,4,7,11,14", "weight": "10", "scale item": "major" },
+
+    { "name" : "i", "offsets": "0,3,7", "weight": "5", "scale item": "minor" },
+    { "name" : "ii", "offsets": "0,2,9", "weight": "10", "scale item": "minor" },
+    { "name" : "iv", "offsets": "5,8,12", "weight": "5", "scale item": "minor" },
+    { "name" : "v", "offsets": "7,10,14", "weight": "10", "scale item": "minor" },
+    { "name" : "vi", "offsets": "8,12,16", "weight": "5", "scale item": "minor" },
+  ],
+  "allowed scale offsets": "0,1,2,7,9"
+}

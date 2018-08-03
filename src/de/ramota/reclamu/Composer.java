@@ -2,8 +2,7 @@ package de.ramota.reclamu;
 
 import de.ramota.reclamu.composers.*;
 import de.ramota.reclamu.configuration.PieceConfiguration;
-import de.ramota.reclamu.properties.ComposerProperties;
-import de.ramota.reclamu.properties.PlainComposerProperties;
+import org.apache.commons.math3.random.MersenneTwister;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 
@@ -16,13 +15,11 @@ import org.json.simple.JSONObject;
 public class Composer {
     public static int MIN_SEQUENCE_LENGTH =  100;
     public static int MAX_SEQUENCE_LENGTH = 10000;
-    public static double MAX_OFFSET = 4;
+    private MersenneTwister twister;
 
-    public Composer() {
-        compose();
-    }
+    protected void compose() {
+        twister = new MersenneTwister();
 
-    private void compose() {
         List<ScaleItem> intendedAccomps = this.GetScaleData();
         List<Instrument> instruments = this.fetchInstruments();
         List<TrackComposer> composers = this.fetchComposers();
@@ -31,6 +28,10 @@ public class Composer {
         Piece piece = new Piece();
         piece.Tracks = tracks;
 
+        SaveToMidi(tracks);
+    }
+
+    private void SaveToMidi(List<AbstractTrack> tracks) {
         StringBuffer buffer = new StringBuffer();
         int i = 0;
         for (AbstractTrack track : tracks) {
@@ -124,20 +125,23 @@ public class Composer {
             
             switch (type) {
                 case "FreeFormTrackComposer" : 
-                    composers.add(new FreeFormTrackComposer(name)); 
+                    composers.add(new FreeFormTrackComposer(name, twister));
                     break;
                 case "PlainTrackComposer" : 
-                    composers.add(new PlainTrackComposer(name));
+                    composers.add(new PlainTrackComposer(name, twister));
                     break;
                 case "SineWaveTrackComposer" : 
-                    composers.add(new SineWaveTrackComposer(name)); 
+                    composers.add(new SineWaveTrackComposer(name, twister));
                     break;
                 case "StairTrackComposer" :
                     int startDirection = Integer.parseInt(instrumentObject.get("startDirection").toString());
-                    composers.add(new StairTrackComposer(name, startDirection));
+                    composers.add(new StairTrackComposer(name, startDirection, twister));
+                    break;
+                case "RecamanTrackComposer" :
+                    composers.add(new RecamanTrackComposer(name, twister));
                     break;
                 case "MidiDataEnhancer" :
-                    MidiDataEnhancer enhancer = new MidiDataEnhancer(name);
+                    MidiDataEnhancer enhancer = new MidiDataEnhancer(name, twister);
                     enhancer.setFileName(input.toString());
                     enhancer.setMidiTrack(3);
                     enhancer.setScale(4);                    

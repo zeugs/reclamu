@@ -6,6 +6,8 @@ import de.ramota.reclamu.AbstractTrack;
 import static de.ramota.reclamu.Composer.MAX_SEQUENCE_LENGTH;
 import static de.ramota.reclamu.Composer.MIN_SEQUENCE_LENGTH;
 import de.ramota.reclamu.Instrument;
+import org.apache.commons.math3.random.MersenneTwister;
+
 import java.util.List;
 
 /**
@@ -14,8 +16,8 @@ import java.util.List;
  */
 public class FreeFormTrackComposer extends TrackComposer {
 
-    public FreeFormTrackComposer(String name) {
-        super(name);
+    public FreeFormTrackComposer(String name, MersenneTwister twister) {
+        super(name, twister);
     }
 
     @Override

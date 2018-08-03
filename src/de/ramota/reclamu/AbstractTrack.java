@@ -19,7 +19,7 @@ public final class AbstractTrack {
         
     @Override
     public String toString() {
-        String sequenceInfo = " I[" + this.Instrument.Name + "] ";
+        String sequenceInfo = " ";//" I[" + this.Instrument.Name + "] ";
 
         for (AbstractSequence sequence : Sequences) {
             sequenceInfo += sequence.toString();

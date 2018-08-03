@@ -4,6 +4,7 @@ import de.ramota.reclamu.Instrument;
 import de.ramota.reclamu.AbstractNote;
 import de.ramota.reclamu.AbstractSequence;
 import de.ramota.reclamu.AbstractTrack;
+import org.apache.commons.math3.random.MersenneTwister;
 
 /**
  *
@@ -11,8 +12,8 @@ import de.ramota.reclamu.AbstractTrack;
  */
 public class PlainTrackComposer extends TrackComposer {
 
-    public PlainTrackComposer(String name) {
-        super(name);
+    public PlainTrackComposer(String name, MersenneTwister twister) {
+        super(name, twister);
     }
         
     @Override

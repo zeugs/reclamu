@@ -1,57 +1,73 @@
 package de.ramota.reclamu.composers;
 
-import de.ramota.reclamu.Instrument;
-import de.ramota.reclamu.AbstractNote;
-import de.ramota.reclamu.AbstractSequence;
-import de.ramota.reclamu.AbstractTrack;
-import de.ramota.reclamu.ScaleItem;
+import de.ramota.reclamu.*;
 import org.apache.commons.math3.random.MersenneTwister;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Mathies Gräske
  */
-public class SineWaveTrackComposer extends TrackComposer {
+public class RecamanTrackComposer extends TrackComposer {
 
-    public SineWaveTrackComposer(String name, MersenneTwister twister) {
+    private int currentAdd = 0;
+    private int currentNum = 0;
+    private List<Integer> usedNumbers;
+
+    public RecamanTrackComposer(String name, MersenneTwister twister) {
         super(name, twister);
+        usedNumbers = new ArrayList<>();
     }
         
     @Override
     public AbstractSequence getSequence(Instrument instrument) {
         AbstractSequence sequence = new AbstractSequence();
-        
-        if (currentVal == 0) {
-            currentVal = twister.nextInt((int) ((instrument.MaxNoteIndex - instrument.MinNoteIndex) * 0.75)) + instrument.MinNoteIndex;
-        }
-        
-        int currentLength = twister.nextInt(instrument.DefaultLength / 2) + instrument.DefaultLength / 4;
-        int direction = 1;
-        double initialOffset = twister.nextDouble() * Math.PI;
-        double currentX = initialOffset;
-        
-        while (currentX < 2 * Math.PI + initialOffset) {
-            currentLength += instrument.DefaultLength / 30 * direction;
-            
-            if (currentLength >= AbstractNote.MAX_LENGTH || currentLength <= instrument.DefaultLength / 15) {
-                direction *= -1; 
-            }
-            
+
+        int currentLength = instrument.DefaultLength / 2;
+        int nextNote = 0;
+
+        while (nextNote < 6000) {
+            nextNote = getNextNumber();
+            currentVal = nextNote % (instrument.MaxNoteIndex - instrument.MinNoteIndex) + instrument.MinNoteIndex;
+
             AbstractNote note = new AbstractNote(currentVal);
 
             note.setLength(currentLength, true);
             note.IntendedScaleType = currentAccomp;
             note.IsRest = false;
-            
-            sequence.addNote(note);
 
-            currentVal = (int) ((Math.sin(currentX) + 1) * (instrument.MaxNoteIndex - instrument.MinNoteIndex) / 2) + instrument.MinNoteIndex;
-            currentX += Math.PI / 100;
+            sequence.addNote(note);
         }
-        
+
         return sequence;
-    }    
-        
+    }
+
+    private int getNextNumber() {
+        int tryValue = currentNum - currentAdd;
+
+        boolean found = false;
+        for (int entry : usedNumbers) {
+            if (entry == tryValue) {
+                currentNum = currentNum + currentAdd;
+                found = true;
+                break;
+            }
+        }
+
+        if (tryValue < 0) {
+            currentNum = currentNum + currentAdd;
+        } else if (!found) {
+            currentNum = currentNum - currentAdd;
+        }
+
+        currentAdd++;
+        usedNumbers.add(currentNum);
+        System.out.println(String.format("%d", currentNum));
+        return currentNum;
+    }
+
     @Override
     public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
         AbstractTrack track = new AbstractTrack(name, instrument);

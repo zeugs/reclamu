@@ -5,7 +5,6 @@ import de.ramota.reclamu.configuration.PieceConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-import jdk.jshell.spi.ExecutionControl;
 import org.apache.commons.math3.random.MersenneTwister;
 
 /**
@@ -13,8 +12,8 @@ import org.apache.commons.math3.random.MersenneTwister;
  * @author Mathies Gräske
  */
 public class TrackComposer {
-    public int ScaleOffset;
     protected final MersenneTwister twister;
+    public int ScaleOffset;
     protected List<ScaleItem> intendedAccomps = null;
     protected ScaleItem currentAccomp;
     protected int instrumentRange;
@@ -25,9 +24,9 @@ public class TrackComposer {
 
     public String Name;
 
-    public TrackComposer(String name) {
+    public TrackComposer(String name, MersenneTwister twister) {
+        this.twister = twister;
         this.Name = name;
-        this.twister = new MersenneTwister();
         this.allowedScaleOffsets = PieceConfiguration.getInstance().getAllowedScaleOffsets();
     }
     
@@ -36,7 +35,7 @@ public class TrackComposer {
         
         this.findNoteValue(instrument);
         this.findAccompaniment();
-        this.findScale();        
+        this.findScale();
     }
 
     public AbstractSequence getSequence(Instrument instrument) {

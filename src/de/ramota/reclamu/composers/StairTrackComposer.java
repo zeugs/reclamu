@@ -1,6 +1,7 @@
 package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.*;
+import org.apache.commons.math3.random.MersenneTwister;
 
 /**
  *
@@ -10,8 +11,8 @@ public class StairTrackComposer extends TrackComposer {
 
     private final int startDirection;
 
-    public StairTrackComposer(String name, int startDirection) {
-        super(name);
+    public StairTrackComposer(String name, int startDirection, MersenneTwister twister) {
+        super(name, twister);
         this.startDirection = startDirection;
     }
         
@@ -50,7 +51,6 @@ public class StairTrackComposer extends TrackComposer {
                 up = !up;
             }
 
-            note.setValueInRange();
             sequence.addNote(note);
             currentVal = up ? currentVal + 1 : currentVal - 1;
 

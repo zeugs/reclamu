@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
+
+import org.apache.commons.math3.random.MersenneTwister;
 import org.jfugue.midi.MidiParser;
 
 /**
@@ -19,8 +21,8 @@ public class MidiDataEnhancer extends TrackComposer {
     private int midiTrack;
     private int refScale;
     
-    public MidiDataEnhancer(String name) {
-        super(name);
+    public MidiDataEnhancer(String name, MersenneTwister twister) {
+        super(name, twister);
         this.ScaleOffset = 4;
     }
 

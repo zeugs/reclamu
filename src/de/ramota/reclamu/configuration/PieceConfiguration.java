@@ -2,6 +2,10 @@ package de.ramota.reclamu.configuration;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
+import de.ramota.reclamu.Piece;
+import org.apache.commons.math3.random.MersenneTwister;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -9,31 +13,25 @@ import org.json.simple.JSONObject;
  *
  * @author Mathies Gräske
  */
-public class PieceConfiguration {
+public class PieceConfiguration implements IPieceConfiguration {
  
     private static PieceConfiguration instance;
     private JsonReader reader;
-
-    private PieceConfiguration () {}
 
     public static PieceConfiguration getInstance () {
       if (PieceConfiguration.instance == null) {
         PieceConfiguration.instance = new PieceConfiguration();
       }
       return PieceConfiguration.instance;
-    }   
+    }
 
     public void setInputFile(String filePath) {
         reader = new JsonReader(filePath);
     }
 
-    public JSONArray getInstruments() {
-        return reader.getArrayForItem("instruments");
-    }
+    public JSONArray getParameters() { return reader.getArrayForItem("parameters"); }
 
-    public JSONArray getComposerProperties() {
-        return reader.getArrayForItem("composer properties");
-    }
+    public JSONArray getInstruments() { return reader.getArrayForItem("instruments"); }
 
     public JSONArray getComposers() {
         return reader.getArrayForItem("composers");
