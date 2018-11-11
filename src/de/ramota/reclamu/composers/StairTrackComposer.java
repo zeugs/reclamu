@@ -1,6 +1,7 @@
 package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.*;
+import de.ramota.reclamu.configuration.PieceConfiguration;
 import org.apache.commons.math3.random.MersenneTwister;
 
 /**
@@ -14,6 +15,7 @@ public class StairTrackComposer extends TrackComposer {
     public StairTrackComposer(String name, int startDirection, MersenneTwister twister) {
         super(name, twister);
         this.startDirection = startDirection;
+        this.readAllowedScaleOffsets(PieceConfiguration.getInstance());
     }
         
     @Override

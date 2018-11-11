@@ -1,7 +1,7 @@
 package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.*;
-import de.ramota.reclamu.configuration.PieceConfiguration;
+import de.ramota.reclamu.configuration.IPieceConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class TrackComposer {
     protected ScaleItem currentAccomp;
     protected int instrumentRange;
     protected int currentValue;
-    private final ArrayList<Integer> allowedScaleOffsets;
+    private ArrayList<Integer> allowedScaleOffsets;
 
     int currentVal = 0;
 
@@ -27,10 +27,19 @@ public class TrackComposer {
     public TrackComposer(String name, MersenneTwister twister) {
         this.twister = twister;
         this.Name = name;
-        this.allowedScaleOffsets = PieceConfiguration.getInstance().getAllowedScaleOffsets();
+    }
+
+    public void readAllowedScaleOffsets(IPieceConfiguration configuration) {
+        this.allowedScaleOffsets = configuration.getAllowedScaleOffsets();
     }
     
     public void initialize(Instrument instrument, List<ScaleItem> intendedAccomps) {
+        if (instrument == null)
+            throw new IllegalArgumentException("Instrument is null");
+        else if (intendedAccomps == null) {
+            throw new IllegalArgumentException("intendedAccomps is null");
+        }
+
         this.intendedAccomps = intendedAccomps;
         
         this.findNoteValue(instrument);

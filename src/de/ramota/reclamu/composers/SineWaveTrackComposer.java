@@ -5,6 +5,7 @@ import de.ramota.reclamu.AbstractNote;
 import de.ramota.reclamu.AbstractSequence;
 import de.ramota.reclamu.AbstractTrack;
 import de.ramota.reclamu.ScaleItem;
+import de.ramota.reclamu.configuration.PieceConfiguration;
 import org.apache.commons.math3.random.MersenneTwister;
 
 /**
@@ -15,6 +16,7 @@ public class SineWaveTrackComposer extends TrackComposer {
 
     public SineWaveTrackComposer(String name, MersenneTwister twister) {
         super(name, twister);
+        this.readAllowedScaleOffsets(PieceConfiguration.getInstance());
     }
         
     @Override

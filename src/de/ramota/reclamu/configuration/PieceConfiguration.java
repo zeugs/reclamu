@@ -18,7 +18,7 @@ public class PieceConfiguration implements IPieceConfiguration {
     private static PieceConfiguration instance;
     private JsonReader reader;
 
-    public static PieceConfiguration getInstance () {
+    public static IPieceConfiguration getInstance () {
       if (PieceConfiguration.instance == null) {
         PieceConfiguration.instance = new PieceConfiguration();
       }

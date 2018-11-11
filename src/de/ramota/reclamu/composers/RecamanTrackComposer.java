@@ -1,6 +1,7 @@
 package de.ramota.reclamu.composers;
 
 import de.ramota.reclamu.*;
+import de.ramota.reclamu.configuration.PieceConfiguration;
 import org.apache.commons.math3.random.MersenneTwister;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class RecamanTrackComposer extends TrackComposer {
 
     public RecamanTrackComposer(String name, MersenneTwister twister) {
         super(name, twister);
+        this.readAllowedScaleOffsets(PieceConfiguration.getInstance());
         usedNumbers = new ArrayList<>();
     }
         

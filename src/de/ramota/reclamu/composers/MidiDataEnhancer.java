@@ -9,6 +9,7 @@ import java.io.IOException;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 
+import de.ramota.reclamu.configuration.PieceConfiguration;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.jfugue.midi.MidiParser;
 
@@ -24,6 +25,7 @@ public class MidiDataEnhancer extends TrackComposer {
     public MidiDataEnhancer(String name, MersenneTwister twister) {
         super(name, twister);
         this.ScaleOffset = 4;
+        this.readAllowedScaleOffsets(PieceConfiguration.getInstance());
     }
 
     @Override

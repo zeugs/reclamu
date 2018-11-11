@@ -20,4 +20,6 @@ public interface IPieceConfiguration {
     JSONArray getScaleItems();
 
     ArrayList<Integer> getAllowedScaleOffsets();
+
+    void setInputFile(String filePath);
 }
