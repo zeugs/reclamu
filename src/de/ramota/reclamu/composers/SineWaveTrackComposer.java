@@ -8,19 +8,21 @@ import de.ramota.reclamu.ScaleItem;
 import de.ramota.reclamu.configuration.PieceConfiguration;
 import org.apache.commons.math3.random.MersenneTwister;
 
+import java.util.List;
+
 /**
  *
  * @author Mathies Gräske
  */
 public class SineWaveTrackComposer extends TrackComposer {
 
-    public SineWaveTrackComposer(String name, MersenneTwister twister) {
-        super(name, twister);
+    public SineWaveTrackComposer(String name, MersenneTwister twister, List<ScaleItem> intendedAccomps) {
+        super(name, twister, intendedAccomps);
         this.readAllowedScaleOffsets(PieceConfiguration.getInstance());
     }
         
     @Override
-    public AbstractSequence getSequence(Instrument instrument) {
+    public AbstractSequence getSequence() {
         AbstractSequence sequence = new AbstractSequence();
         
         if (currentVal == 0) {
@@ -55,12 +57,12 @@ public class SineWaveTrackComposer extends TrackComposer {
     }    
         
     @Override
-    public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
+    public AbstractTrack generateTrack(String name, int sequenceNum) {
         AbstractTrack track = new AbstractTrack(name, instrument);
         
         for (int i = 0; i < sequenceNum; i++) {
             AbstractSequence sequence;
-            sequence = this.getSequence(instrument);
+            sequence = this.getSequence();
             track.addSequence(sequence);            
         }
                 

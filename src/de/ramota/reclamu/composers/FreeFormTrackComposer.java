@@ -1,11 +1,10 @@
 package de.ramota.reclamu.composers;
 
-import de.ramota.reclamu.AbstractNote;
-import de.ramota.reclamu.AbstractSequence;
-import de.ramota.reclamu.AbstractTrack;
+import de.ramota.reclamu.*;
+
 import static de.ramota.reclamu.Composer.MAX_SEQUENCE_LENGTH;
 import static de.ramota.reclamu.Composer.MIN_SEQUENCE_LENGTH;
-import de.ramota.reclamu.Instrument;
+
 import de.ramota.reclamu.configuration.PieceConfiguration;
 import org.apache.commons.math3.random.MersenneTwister;
 
@@ -17,13 +16,13 @@ import java.util.List;
  */
 public class FreeFormTrackComposer extends TrackComposer {
 
-    public FreeFormTrackComposer(String name, MersenneTwister twister) {
-        super(name, twister);
+    public FreeFormTrackComposer(String name, MersenneTwister twister, List<ScaleItem> intendedAccomps) {
+        super(name, twister, intendedAccomps);
         this.readAllowedScaleOffsets(PieceConfiguration.getInstance());
     }
 
     @Override
-    public AbstractSequence getSequence(Instrument instrument) {
+    public AbstractSequence getSequence() {
         AbstractSequence sequence = new AbstractSequence();
 
         int lengthRange = MAX_SEQUENCE_LENGTH - MIN_SEQUENCE_LENGTH;
@@ -100,7 +99,7 @@ public class FreeFormTrackComposer extends TrackComposer {
     }    
 
     @Override
-    public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
+    public AbstractTrack generateTrack(String name, int sequenceNum) {
         AbstractTrack track = new AbstractTrack(name, instrument);
         AbstractSequence adaptedSequence;
         AbstractSequence sequenceToAdd;
@@ -113,7 +112,7 @@ public class FreeFormTrackComposer extends TrackComposer {
                 sequence = track.Sequences.get(itemToCopy).getCopy();
                 System.out.println(String.format("Just copied sequence %d", itemToCopy));
             } else {
-                sequence = this.getSequence(instrument);
+                sequence = this.getSequence();
             }
             
             int repetitions = twister.nextInt(12);

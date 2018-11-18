@@ -1,11 +1,10 @@
 package de.ramota.reclamu.composers;
 
-import de.ramota.reclamu.AbstractNote;
-import de.ramota.reclamu.Instrument;
-import de.ramota.reclamu.MidiParserListener;
-import de.ramota.reclamu.AbstractTrack;
+import de.ramota.reclamu.*;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 
@@ -22,14 +21,14 @@ public class MidiDataEnhancer extends TrackComposer {
     private int midiTrack;
     private int refScale;
     
-    public MidiDataEnhancer(String name, MersenneTwister twister) {
-        super(name, twister);
+    public MidiDataEnhancer(String name, MersenneTwister twister, List<ScaleItem> intendedAccomps) {
+        super(name, twister, intendedAccomps);
         this.ScaleOffset = 4;
         this.readAllowedScaleOffsets(PieceConfiguration.getInstance());
     }
 
     @Override
-    public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
+    public AbstractTrack generateTrack(String name, int sequenceNum) {
         MidiParser parser = new MidiParser(); 
         MidiParserListener listener = new MidiParserListener(midiTrack);
         

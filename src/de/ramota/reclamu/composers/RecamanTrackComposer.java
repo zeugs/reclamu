@@ -17,14 +17,14 @@ public class RecamanTrackComposer extends TrackComposer {
     private int currentNum = 0;
     private List<Integer> usedNumbers;
 
-    public RecamanTrackComposer(String name, MersenneTwister twister) {
-        super(name, twister);
+    public RecamanTrackComposer(String name, MersenneTwister twister, List<ScaleItem> intendedAccomps) {
+        super(name, twister, intendedAccomps);
         this.readAllowedScaleOffsets(PieceConfiguration.getInstance());
         usedNumbers = new ArrayList<>();
     }
         
     @Override
-    public AbstractSequence getSequence(Instrument instrument) {
+    public AbstractSequence getSequence() {
         AbstractSequence sequence = new AbstractSequence();
 
         int currentLength = instrument.DefaultLength / 2;
@@ -71,12 +71,12 @@ public class RecamanTrackComposer extends TrackComposer {
     }
 
     @Override
-    public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
+    public AbstractTrack generateTrack(String name, int sequenceNum) {
         AbstractTrack track = new AbstractTrack(name, instrument);
         
         for (int i = 0; i < sequenceNum; i++) {
             AbstractSequence sequence;
-            sequence = this.getSequence(instrument);
+            sequence = this.getSequence();
             track.addSequence(sequence);            
         }
                 

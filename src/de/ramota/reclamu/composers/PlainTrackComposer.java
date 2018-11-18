@@ -1,11 +1,10 @@
 package de.ramota.reclamu.composers;
 
-import de.ramota.reclamu.Instrument;
-import de.ramota.reclamu.AbstractNote;
-import de.ramota.reclamu.AbstractSequence;
-import de.ramota.reclamu.AbstractTrack;
+import de.ramota.reclamu.*;
 import de.ramota.reclamu.configuration.PieceConfiguration;
 import org.apache.commons.math3.random.MersenneTwister;
+
+import java.util.List;
 
 /**
  *
@@ -13,13 +12,13 @@ import org.apache.commons.math3.random.MersenneTwister;
  */
 public class PlainTrackComposer extends TrackComposer {
 
-    public PlainTrackComposer(String name, MersenneTwister twister) {
-        super(name, twister);
+    public PlainTrackComposer(String name, MersenneTwister twister, List<ScaleItem> intendedAccomps) {
+        super(name, twister, intendedAccomps);
         this.readAllowedScaleOffsets(PieceConfiguration.getInstance());
     }
         
     @Override
-    public AbstractSequence getSequence(Instrument instrument) {
+    public AbstractSequence getSequence() {
         AbstractSequence sequence = new AbstractSequence();
 
         if (currentVal == 0 || twister.nextInt(3) == 0) {
@@ -111,7 +110,7 @@ public class PlainTrackComposer extends TrackComposer {
     }
 
     @Override
-    public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
+    public AbstractTrack generateTrack(String name, int sequenceNum) {
         AbstractTrack track = new AbstractTrack(name, instrument);
         
         for (int i = 0; i < sequenceNum; i++) {
@@ -140,7 +139,7 @@ public class PlainTrackComposer extends TrackComposer {
                 track.addSequence(adaptedSequence);
             } else {
                 AbstractSequence sequence;
-                sequence = this.getSequence(instrument);
+                sequence = this.getSequence();
                 track.addSequence(sequence);
             }
         }

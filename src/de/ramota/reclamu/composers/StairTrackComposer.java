@@ -4,6 +4,8 @@ import de.ramota.reclamu.*;
 import de.ramota.reclamu.configuration.PieceConfiguration;
 import org.apache.commons.math3.random.MersenneTwister;
 
+import java.util.List;
+
 /**
  *
  * @author Mathies Gräske
@@ -12,14 +14,14 @@ public class StairTrackComposer extends TrackComposer {
 
     private final int startDirection;
 
-    public StairTrackComposer(String name, int startDirection, MersenneTwister twister) {
-        super(name, twister);
+    public StairTrackComposer(String name, int startDirection, MersenneTwister twister, List<ScaleItem> intendedAccomps) {
+        super(name, twister, intendedAccomps);
         this.startDirection = startDirection;
         this.readAllowedScaleOffsets(PieceConfiguration.getInstance());
     }
         
     @Override
-    public AbstractSequence getSequence(Instrument instrument) {
+    public AbstractSequence getSequence() {
         AbstractSequence sequence = new AbstractSequence();
 
         int currentLength = instrument.DefaultLength / 2;
@@ -65,12 +67,12 @@ public class StairTrackComposer extends TrackComposer {
     }    
         
     @Override
-    public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
+    public AbstractTrack generateTrack(String name, int sequenceNum) {
         AbstractTrack track = new AbstractTrack(name, instrument);
         
         for (int i = 0; i < sequenceNum; i++) {
             AbstractSequence sequence;
-            sequence = this.getSequence(instrument);
+            sequence = this.getSequence();
             track.addSequence(sequence);            
         }
                 

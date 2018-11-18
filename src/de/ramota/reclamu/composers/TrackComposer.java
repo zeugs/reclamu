@@ -16,6 +16,7 @@ public class TrackComposer {
     public int ScaleOffset;
     protected List<ScaleItem> intendedAccomps = null;
     protected ScaleItem currentAccomp;
+    protected Instrument instrument;
     protected int instrumentRange;
     protected int currentValue;
     private ArrayList<Integer> allowedScaleOffsets;
@@ -23,35 +24,41 @@ public class TrackComposer {
     int currentVal = 0;
 
     public String Name;
+    private boolean initialized;
 
-    public TrackComposer(String name, MersenneTwister twister) {
+    public TrackComposer(String name, MersenneTwister twister, List<ScaleItem> intendedAccomps) {
         this.twister = twister;
         this.Name = name;
+        this.allowedScaleOffsets = new ArrayList<>();
+        this.intendedAccomps = intendedAccomps;
     }
 
     public void readAllowedScaleOffsets(IPieceConfiguration configuration) {
         this.allowedScaleOffsets = configuration.getAllowedScaleOffsets();
     }
     
-    public void initialize(Instrument instrument, List<ScaleItem> intendedAccomps) {
-        if (instrument == null)
-            throw new IllegalArgumentException("Instrument is null");
-        else if (intendedAccomps == null) {
-            throw new IllegalArgumentException("intendedAccomps is null");
+    public void initialize(Instrument instrument) {
+        if (instrument == null) {
+            throw new IllegalArgumentException("Instrument is null! Cannot initialize!");
         }
-
-        this.intendedAccomps = intendedAccomps;
-        
+        if (intendedAccomps == null) {
+            throw new IllegalArgumentException("ScaleItems are null! Cannot initialize!");
+        }
+        this.instrument = instrument;
         this.findNoteValue(instrument);
         this.findAccompaniment();
         this.findScale();
+        this.initialized = true;
     }
 
-    public AbstractSequence getSequence(Instrument instrument) {
+    public AbstractSequence getSequence() throws Exception {
+        if (!initialized) {
+            throw new Exception("Object not initialized!");
+        }
         return null;
     }
     
-    public AbstractTrack generateTrack(Instrument instrument, String name, int sequenceNum) {
+    public AbstractTrack generateTrack(String name, int sequenceNum) {
         return null;
     }
 
@@ -63,8 +70,12 @@ public class TrackComposer {
     }
     
     public void findScale() {
-        ScaleOffset = twister.nextInt(allowedScaleOffsets.size());        
-        System.out.println(String.format("Scale changed to %d", ScaleOffset));
+        if (allowedScaleOffsets.size() > 0) {
+            ScaleOffset = twister.nextInt(allowedScaleOffsets.size());
+            System.out.println(String.format("Scale changed to %d", ScaleOffset));
+        } else {
+            System.out.println("There are no scale offsets defined!");
+        }
     }
 
     /*
@@ -82,7 +93,7 @@ public class TrackComposer {
             fullWeight += item.FullWeight;
         }
 
-        int val = twister.nextInt(fullWeight);
+        int val = fullWeight > 0 ? twister.nextInt(fullWeight) : 0;
         int counter = 0;
 
         for (int i = 0; i < intendedAccomps.size(); i++) {

@@ -22,7 +22,7 @@ public class Composer {
 
         List<ScaleItem> intendedAccomps = this.GetScaleData();
         List<Instrument> instruments = this.fetchInstruments();
-        List<TrackComposer> composers = this.fetchComposers();
+        List<TrackComposer> composers = this.fetchComposers(intendedAccomps);
         List<AccompanimentComposer> accompComposers = this.fetchAccompaniments();
         List<AbstractTrack> tracks = this.fetchTracks(composers, accompComposers, instruments, intendedAccomps);
         Piece piece = new Piece();
@@ -114,7 +114,7 @@ public class Composer {
         return instruments;
     }
 
-    private List<TrackComposer> fetchComposers() {
+    private List<TrackComposer> fetchComposers(List<ScaleItem> intendedAccomps) {
         List<TrackComposer> composers = new ArrayList<>();
         JSONArray composerData = PieceConfiguration.getInstance().getComposers();
         for (Iterator it = composerData.iterator(); it.hasNext();) {
@@ -125,23 +125,23 @@ public class Composer {
             
             switch (type) {
                 case "FreeFormTrackComposer" : 
-                    composers.add(new FreeFormTrackComposer(name, twister));
+                    composers.add(new FreeFormTrackComposer(name, twister, intendedAccomps));
                     break;
                 case "PlainTrackComposer" : 
-                    composers.add(new PlainTrackComposer(name, twister));
+                    composers.add(new PlainTrackComposer(name, twister, intendedAccomps));
                     break;
                 case "SineWaveTrackComposer" : 
-                    composers.add(new SineWaveTrackComposer(name, twister));
+                    composers.add(new SineWaveTrackComposer(name, twister, intendedAccomps));
                     break;
                 case "StairTrackComposer" :
                     int startDirection = Integer.parseInt(instrumentObject.get("startDirection").toString());
-                    composers.add(new StairTrackComposer(name, startDirection, twister));
+                    composers.add(new StairTrackComposer(name, startDirection, twister, intendedAccomps));
                     break;
                 case "RecamanTrackComposer" :
-                    composers.add(new RecamanTrackComposer(name, twister));
+                    composers.add(new RecamanTrackComposer(name, twister, intendedAccomps));
                     break;
                 case "MidiDataEnhancer" :
-                    MidiDataEnhancer enhancer = new MidiDataEnhancer(name, twister);
+                    MidiDataEnhancer enhancer = new MidiDataEnhancer(name, twister, intendedAccomps);
                     enhancer.setFileName(input.toString());
                     enhancer.setMidiTrack(3);
                     enhancer.setScale(4);                    
@@ -194,8 +194,8 @@ public class Composer {
             for (TrackComposer composer : composers) {
                 if (composer.Name.equals(type)) {
                     Instrument refInstrument = getInstrumentByName(instruments, instr);
-                    composer.initialize(refInstrument, intendedAccomps);
-                    AbstractTrack track = composer.generateTrack(refInstrument, name, 10);
+                    composer.initialize(refInstrument);
+                    AbstractTrack track = composer.generateTrack(name, 10);
                     tracks.add(track);
                     refTracks.add(track);
                 }
